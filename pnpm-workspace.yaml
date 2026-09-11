@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "workers/*"
+  - "packages/*"
+
+onlyBuiltDependencies:
+  - esbuild
+  - unrs-resolver
+  - workerd

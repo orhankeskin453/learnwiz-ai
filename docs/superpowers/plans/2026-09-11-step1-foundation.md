@@ -34,11 +34,13 @@ Copied verbatim from the spec — every task must honor these:
 ### Task 1: Monorepo skeleton (root toolchain)
 
 **Files:**
+
 - Create: `.gitignore`, `.gitattributes`, `.prettierrc`, `.prettierignore`, `pnpm-workspace.yaml`, `package.json`, `eslint.config.js`
 - Create: `db/migrations/.gitkeep`, `db/seed/.gitkeep`
 - Modify (formatting only, via `pnpm format`): `CLAUDE.md`, `.mcp.json`, `docs/superpowers/specs/2026-09-11-step1-foundation-design.md`
 
 **Interfaces:**
+
 - Consumes: nothing (first task)
 - Produces: root scripts `dev`, `typecheck`, `lint`, `format`, `format:check`, `build`, `test` (used by CI in Task 8 and by every later task); pnpm workspace globs `apps/*`, `workers/*`, `packages/*`; `db/migrations/` directory (referenced by `wrangler.jsonc` in Task 6).
 
@@ -200,12 +202,14 @@ git commit -m "chore: scaffold monorepo toolchain (pnpm workspaces, eslint, pret
 ### Task 2: packages/config — shared TypeScript configs
 
 **Files:**
+
 - Create: `packages/config/package.json`
 - Create: `packages/config/tsconfig.base.json`
 - Create: `packages/config/tsconfig.react.json`
 - Create: `packages/config/tsconfig.worker.json`
 
 **Interfaces:**
+
 - Consumes: pnpm workspace glob `packages/*` (Task 1).
 - Produces: config entry points `@learwizai/config/tsconfig.base.json`, `@learwizai/config/tsconfig.react.json`, `@learwizai/config/tsconfig.worker.json` — extended by Tasks 3, 4, 5, 6 via their `tsconfig.json` `extends` field.
 
@@ -297,9 +301,11 @@ git commit -m "feat(config): shared strict tsconfig presets (base/react/worker)"
 ### Task 3: packages/types — shared domain contracts
 
 **Files:**
+
 - Create: `packages/types/package.json`, `packages/types/tsconfig.json`, `packages/types/src/index.ts`
 
 **Interfaces:**
+
 - Consumes: `@learwizai/config/tsconfig.base.json` (Task 2).
 - Produces: `@learwizai/types` exporting `type Locale = "en" | "tr"` and `interface HealthResponse { status: "ok"; service: "learwizai-api"; environment: string; timestamp: string; checks: { db: "ok" | "unavailable" } }`. Consumed by Task 4 (validation), Task 5 (web), Task 6 (worker + tests).
 
@@ -370,11 +376,13 @@ git commit -m "feat(types): shared Locale and HealthResponse contracts"
 ### Task 4: packages/validation — zod schemas (TDD)
 
 **Files:**
+
 - Create: `packages/validation/package.json`, `packages/validation/tsconfig.json`
 - Test: `packages/validation/test/locale.test.ts`
 - Create: `packages/validation/src/index.ts`
 
 **Interfaces:**
+
 - Consumes: `@learwizai/types` `Locale` (Task 3), `@learwizai/config/tsconfig.base.json` (Task 2).
 - Produces: `@learwizai/validation` exporting `localeSchema` (zod enum `["en","tr"]`, compile-time-locked to `Locale` via `satisfies`) and re-exported `type Locale`. This is the seed of the shared request/response contract layer (CLAUDE.md §40.6).
 
@@ -477,10 +485,12 @@ git commit -m "feat(validation): locale schema locked to shared Locale type (TDD
 ### Task 5: apps/web — Vite + React + Tailwind placeholder status page
 
 **Files:**
+
 - Create: `apps/web/package.json`, `apps/web/tsconfig.json`, `apps/web/index.html`, `apps/web/vite.config.ts`
 - Create: `apps/web/src/main.tsx`, `apps/web/src/App.tsx`, `apps/web/src/copy.ts`, `apps/web/src/index.css`, `apps/web/src/vite-env.d.ts`
 
 **Interfaces:**
+
 - Consumes: `@learwizai/types` `HealthResponse` (Task 3), `@learwizai/config/tsconfig.react.json` (Task 2).
 - Produces: build artifact `apps/web/dist/` — REQUIRED to exist before Task 6's worker tests and dry-run build run (the `assets.directory` in `wrangler.jsonc` points at it). Dev server on :5173 proxying `/api` → :8787 (wrangler dev).
 
@@ -721,12 +731,14 @@ git commit -m "feat(web): placeholder status page (Vite + React + Tailwind v4)"
 ### Task 6: workers/api — Hono worker with /api/health (TDD) + wrangler config
 
 **Files:**
+
 - Create: `workers/api/package.json`, `workers/api/tsconfig.json`, `workers/api/vitest.config.ts`, `workers/api/wrangler.jsonc`
 - Create: `workers/api/src/index.ts` (stub first, then final)
 - Test: `workers/api/test/health.test.ts`
 - Create: `workers/api/src/env.ts`, `workers/api/src/routes/health.ts`
 
 **Interfaces:**
+
 - Consumes: `@learwizai/types` `HealthResponse` (Task 3), `@learwizai/config/tsconfig.worker.json` (Task 2), `apps/web/dist/` must exist (Task 5 — the assets binding points at it), `db/migrations/` (Task 1).
 - Produces: default-exported Hono `app` (fetch handler) mounted at basePath `/api`; routes: `GET /api/health` → `HealthResponse`; 404 JSON for unknown `/api/*`. npm scripts consumed later: `dev` (Task 9), `build` (root build, CI), `deploy:dev|deploy:staging|deploy:prod` (CI Task 8, Task 9), `db:validate` (CI Task 8). `Env` interface: `{ ENVIRONMENT: string; DB: D1Database; CACHE: KVNamespace; DOCS: R2Bucket; ASSETS: Fetcher }`.
 
@@ -808,7 +820,7 @@ export default defineWorkersConfig({
     "directory": "../../apps/web/dist",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*"],
   },
   "d1_databases": [
     {
@@ -816,12 +828,10 @@ export default defineWorkersConfig({
       "database_name": "learwizai-db-prod",
       // PLACEHOLDER — replaced with the real ID in Task 7 (provisioning)
       "database_id": "00000000-0000-0000-0000-000000000000",
-      "migrations_dir": "../../db/migrations"
-    }
+      "migrations_dir": "../../db/migrations",
+    },
   ],
-  "kv_namespaces": [
-    { "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }
-  ],
+  "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
   "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-prod" }],
   "env": {
     "staging": {
@@ -832,13 +842,11 @@ export default defineWorkersConfig({
           "binding": "DB",
           "database_name": "learwizai-db-staging",
           "database_id": "00000000-0000-0000-0000-000000000000",
-          "migrations_dir": "../../db/migrations"
-        }
+          "migrations_dir": "../../db/migrations",
+        },
       ],
-      "kv_namespaces": [
-        { "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }
-      ],
-      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-staging" }]
+      "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-staging" }],
     },
     "dev": {
       "name": "learwizai-api-dev",
@@ -848,15 +856,13 @@ export default defineWorkersConfig({
           "binding": "DB",
           "database_name": "learwizai-db-dev",
           "database_id": "00000000-0000-0000-0000-000000000000",
-          "migrations_dir": "../../db/migrations"
-        }
+          "migrations_dir": "../../db/migrations",
+        },
       ],
-      "kv_namespaces": [
-        { "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }
-      ],
-      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-dev" }]
-    }
-  }
+      "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-dev" }],
+    },
+  },
 }
 ```
 
@@ -1009,15 +1015,18 @@ git commit -m "feat(api): Hono worker with /api/health, env-typed bindings, work
 ### Task 7: Provision Cloudflare resources via MCP + bind real IDs
 
 **Files:**
+
 - Modify: `workers/api/wrangler.jsonc` (replace 3 D1 `database_id` + 3 KV `id` placeholders; remove PLACEHOLDER comments)
 
 **Interfaces:**
+
 - Consumes: Cloudflare MCP servers (`cloudflare-bindings` tools) authenticated; naming table from Global Constraints.
 - Produces: live resources `learwizai-db-{dev,staging,prod}` (D1, weur), `learwizai-kv-{dev,staging,prod}` (KV), `learwizai-docs-{dev,staging,prod}` (R2); `wrangler.jsonc` containing their real IDs — required by Task 8 (CI staging deploy) and Task 9 (deploys).
 
 - [ ] **Step 1: Create the three D1 databases**
 
 Call `mcp__cloudflare-bindings__d1_database_create` three times:
+
 - `{ "name": "learwizai-db-dev", "primary_location_hint": "weur" }`
 - `{ "name": "learwizai-db-staging", "primary_location_hint": "weur" }`
 - `{ "name": "learwizai-db-prod", "primary_location_hint": "weur" }`
@@ -1027,6 +1036,7 @@ Record each returned `uuid` (the `database_id`).
 - [ ] **Step 2: Create the three KV namespaces**
 
 Call `mcp__cloudflare-bindings__kv_namespace_create` three times:
+
 - `{ "title": "learwizai-kv-dev" }`
 - `{ "title": "learwizai-kv-staging" }`
 - `{ "title": "learwizai-kv-prod" }`
@@ -1036,6 +1046,7 @@ Record each returned `id`.
 - [ ] **Step 3: Create the three R2 buckets**
 
 Call `mcp__cloudflare-bindings__r2_bucket_create` three times:
+
 - `{ "name": "learwizai-docs-dev" }`
 - `{ "name": "learwizai-docs-staging" }`
 - `{ "name": "learwizai-docs-prod" }`
@@ -1050,6 +1061,7 @@ Expected: 3 D1 (location hint reflected), 3 KV, 3 R2 with the exact names from t
 - [ ] **Step 5: Write real IDs into `workers/api/wrangler.jsonc`**
 
 Six edits (keep everything else byte-identical):
+
 - Top-level `d1_databases[0].database_id` → prod D1 uuid (block with `database_name: "learwizai-db-prod"`); delete the PLACEHOLDER comment line.
 - Top-level `kv_namespaces[0].id` → prod KV id.
 - `env.staging.d1_databases[0].database_id` → staging D1 uuid; `env.staging.kv_namespaces[0].id` → staging KV id.
@@ -1075,9 +1087,11 @@ git commit -m "chore(infra): provision D1/KV/R2 for dev+staging+prod and bind re
 ### Task 8: GitHub repo + CI pipeline + protected environments
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 **Interfaces:**
+
 - Consumes: root scripts `typecheck`, `lint`, `format:check`, `build`, `test` (Task 1); `@learwizai/api` scripts `db:validate`, `deploy:staging`, `deploy:prod` (Task 6); real resource IDs committed (Task 7); `gh` CLI 2.90 authenticated as `orhankeskin453` (verified 2026-09-11).
 - Produces: GitHub private repo `orhankeskin453/learnwiz-ai` with `origin` remote; secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`; GitHub environments `staging` (no protection) and `production` (required reviewer); a first green pipeline that auto-deploys staging.
 
@@ -1184,6 +1198,7 @@ Run: `gh secret set CLOUDFLARE_ACCOUNT_ID --body "b61e3474a67089ddc06413a847ed31
 - [ ] **Step 5: USER ACTION — create the Cloudflare API token, then store it**
 
 Ask the user to: Cloudflare dashboard → My Profile → API Tokens → Create Token → **Custom token** with permissions:
+
 - Account · Workers Scripts · Edit
 - Account · Workers KV Storage · Edit
 - Account · D1 · Edit
@@ -1223,6 +1238,7 @@ Expected: `checks` ✓ and `deploy-staging` ✓. The staging deploy output conta
 Subdomain contingency: if the deploy fails with a "workers.dev subdomain" error, the account has no workers.dev subdomain yet. Register one: query `mcp__cloudflare-api__docs` for "register workers.dev subdomain" to confirm the endpoint, then call it via `mcp__cloudflare-api__execute` with subdomain `learwizai` (if taken, ask the user for an alternative). Re-run the failed job: `gh run rerun <run-id> --failed`.
 
 Checks-job failure triage (most likely first-run issues):
+
 - `format:check` red → run `pnpm format`, commit, push again.
 - pnpm build-script warnings → ensure `onlyBuiltDependencies` (Task 1 Step 5) matches what the lockfile reports.
 - frozen-lockfile mismatch → `pnpm install` locally, commit the updated lockfile.
@@ -1239,6 +1255,7 @@ Run: `git grep -iE "(api[_-]?token|secret)\s*[:=]\s*['\"][A-Za-z0-9_\-]{20,}" --
 **Files:** none (operational task; URLs recorded for Task 10)
 
 **Interfaces:**
+
 - Consumes: `deploy:dev`/`deploy:prod` scripts (Task 6), CI workflow + environments (Task 8), staging already deployed (Task 8 Step 8).
 - Produces: three live environments and their recorded URLs: `DEV_URL`, `STAGING_URL`, `PROD_URL` (each `https://<worker-name>.<SUBDOMAIN>.workers.dev`) — written into docs in Task 10. This satisfies the spec §11 Definition of Done.
 
@@ -1289,10 +1306,12 @@ Write down for Task 10: `DEV_URL`, `STAGING_URL`, `PROD_URL`, the workers.dev `<
 ### Task 10: Docs skeleton + final verification
 
 **Files:**
+
 - Create: `README.md`, `docs/architecture.md`, `docs/deployment.md`
 - Create: `docs/runbooks/ai-outage.md`, `docs/runbooks/billing-webhook-failure.md`, `docs/runbooks/queue-backlog.md`, `docs/runbooks/database-incident.md`
 
 **Interfaces:**
+
 - Consumes: recorded URLs/subdomain from Task 9.
 - Produces: §44-compliant docs skeleton; final green pipeline on `main`.
 
@@ -1324,14 +1343,14 @@ pnpm dev        # web on :5173 (proxies /api) + worker on :8787
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Vite dev server + `wrangler dev --env dev` in parallel |
-| `pnpm typecheck` | `tsc --noEmit` across all packages |
-| `pnpm lint` | ESLint (flat config) |
-| `pnpm format` / `format:check` | Prettier write / CI check |
-| `pnpm build` | Web bundle → worker dry-run bundle (ordered) |
-| `pnpm test` | Vitest (unit + worker integration via miniflare) |
+| Command                                    | What it does                                           |
+| ------------------------------------------ | ------------------------------------------------------ |
+| `pnpm dev`                                 | Vite dev server + `wrangler dev --env dev` in parallel |
+| `pnpm typecheck`                           | `tsc --noEmit` across all packages                     |
+| `pnpm lint`                                | ESLint (flat config)                                   |
+| `pnpm format` / `format:check`             | Prettier write / CI check                              |
+| `pnpm build`                               | Web bundle → worker dry-run bundle (ordered)           |
+| `pnpm test`                                | Vitest (unit + worker integration via miniflare)       |
 | `pnpm --filter @learwizai/api db:validate` | Apply D1 migrations to a LOCAL database (never remote) |
 
 ## Layout
@@ -1348,11 +1367,11 @@ docs/           # architecture, deployment, runbooks
 
 ## Environments
 
-| Env | Worker | URL |
-| --- | --- | --- |
-| dev | `learwizai-api-dev` | https://learwizai-api-dev.<SUBDOMAIN>.workers.dev |
-| staging | `learwizai-api-staging` | https://learwizai-api-staging.<SUBDOMAIN>.workers.dev |
-| production | `learwizai-api` | https://learwizai-api.<SUBDOMAIN>.workers.dev |
+| Env        | Worker                  | URL                                                   |
+| ---------- | ----------------------- | ----------------------------------------------------- |
+| dev        | `learwizai-api-dev`     | https://learwizai-api-dev.<SUBDOMAIN>.workers.dev     |
+| staging    | `learwizai-api-staging` | https://learwizai-api-staging.<SUBDOMAIN>.workers.dev |
+| production | `learwizai-api`         | https://learwizai-api.<SUBDOMAIN>.workers.dev         |
 
 ## Deployment
 
@@ -1384,11 +1403,11 @@ changes (spec §5).
 
 ## Environments & resources
 
-| Env | Worker | D1 (weur) | KV | R2 |
-| --- | --- | --- | --- | --- |
-| dev | learwizai-api-dev | learwizai-db-dev | learwizai-kv-dev | learwizai-docs-dev |
-| staging | learwizai-api-staging | learwizai-db-staging | learwizai-kv-staging | learwizai-docs-staging |
-| production | learwizai-api | learwizai-db-prod | learwizai-kv-prod | learwizai-docs-prod |
+| Env        | Worker                | D1 (weur)            | KV                   | R2                     |
+| ---------- | --------------------- | -------------------- | -------------------- | ---------------------- |
+| dev        | learwizai-api-dev     | learwizai-db-dev     | learwizai-kv-dev     | learwizai-docs-dev     |
+| staging    | learwizai-api-staging | learwizai-db-staging | learwizai-kv-staging | learwizai-docs-staging |
+| production | learwizai-api         | learwizai-db-prod    | learwizai-kv-prod    | learwizai-docs-prod    |
 
 Resource IDs live in `workers/api/wrangler.jsonc` (committed source of truth).
 URLs: `https://<worker>.<SUBDOMAIN>.workers.dev`.

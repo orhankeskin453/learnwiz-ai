@@ -201,16 +201,16 @@ Potential guest data can reference `guest_session_id`.
 
 Target MVP defaults:
 
-| Capability | Guest |
-|---|---:|
-| AI Tutor | 3 AI interactions |
-| Learn Mode | 1 learning topic/session |
-| Practice Mode | 3 questions |
-| Quiz Generator | 1 quiz |
-| PDF Upload | No |
-| Document RAG | No |
-| Persistent Progress | No |
-| Account required | Only when persistence / restricted feature is reached |
+| Capability          |                                                 Guest |
+| ------------------- | ----------------------------------------------------: |
+| AI Tutor            |                                     3 AI interactions |
+| Learn Mode          |                              1 learning topic/session |
+| Practice Mode       |                                           3 questions |
+| Quiz Generator      |                                                1 quiz |
+| PDF Upload          |                                                    No |
+| Document RAG        |                                                    No |
+| Persistent Progress |                                                    No |
+| Account required    | Only when persistence / restricted feature is reached |
 
 These values must be configuration/entitlement data, not frontend hardcoded rules.
 
@@ -282,9 +282,9 @@ English is the default fallback.
 Use the browser/locale APIs when practical:
 
 ```ts
-Intl.DateTimeFormat
-Intl.NumberFormat
-Intl.RelativeTimeFormat
+Intl.DateTimeFormat;
+Intl.NumberFormat;
+Intl.RelativeTimeFormat;
 ```
 
 ## 6.2 Translation Structure
@@ -324,9 +324,8 @@ Use semantic translation keys:
 ```ts
 // good
 `tutor.suggested.explain`
-
 // bad
-`t("Explain this concept")`
+`t("Explain this concept")`;
 ```
 
 ## 6.3 Locale Resolution
@@ -815,11 +814,11 @@ Create Account
 
 Plans:
 
-| Plan | Monthly | Annual | AI entitlement |
-|---|---:|---:|---:|
-| Free | $0 | $0 | 10 AI messages/day |
+| Plan    |  Monthly |      Annual |        AI entitlement |
+| ------- | -------: | ----------: | --------------------: |
+| Free    |       $0 |          $0 |    10 AI messages/day |
 | Learner | $2.99/mo | $24.99/year | 150 AI messages/month |
-| Pro | $7.99/mo | $69.99/year | 750 AI messages/month |
+| Pro     | $7.99/mo | $69.99/year | 750 AI messages/month |
 
 Feature intent:
 
@@ -1357,9 +1356,9 @@ Entitlements should be centralized.
 Example conceptual API:
 
 ```ts
-canUseFeature(user, feature)
-checkUsageBudget(user, feature)
-getPlanEntitlements(plan)
+canUseFeature(user, feature);
+checkUsageBudget(user, feature);
+getPlanEntitlements(plan);
 ```
 
 Do not scatter plan checks throughout components such as:
@@ -1883,21 +1882,21 @@ Guest-accessible routes should remain accessible without login where product rul
 
 # 32. Initial Entitlement Matrix
 
-| Feature | Guest | Free | Learner | Pro |
-|---|---|---|---|---|
-| AI Tutor | Limited | Yes | Yes | Yes |
-| Learn Mode | Limited | Yes | Yes | Yes |
-| Practice | Limited | Yes | Yes | Yes |
-| Quiz Generator | Limited | 5/month | Unlimited | Unlimited |
-| Basic Progress | Temporary | Yes | Yes | Yes |
-| AI Recommendations | Temporary/basic | Basic | Yes | Advanced |
-| PDF Upload | No | No | Yes | Yes |
-| Document RAG | No | No | Yes | Yes |
-| AI Summary/Notes | No | No | Yes | Yes |
-| Topic Mastery | No/temporary | Basic | Yes | Advanced |
-| Image Questions | No | No | No | Yes |
-| Advanced Document Analysis | No | No | No | Yes |
-| Adaptive Learning | No | Basic/limited | Yes | Advanced |
+| Feature                    | Guest           | Free          | Learner   | Pro       |
+| -------------------------- | --------------- | ------------- | --------- | --------- |
+| AI Tutor                   | Limited         | Yes           | Yes       | Yes       |
+| Learn Mode                 | Limited         | Yes           | Yes       | Yes       |
+| Practice                   | Limited         | Yes           | Yes       | Yes       |
+| Quiz Generator             | Limited         | 5/month       | Unlimited | Unlimited |
+| Basic Progress             | Temporary       | Yes           | Yes       | Yes       |
+| AI Recommendations         | Temporary/basic | Basic         | Yes       | Advanced  |
+| PDF Upload                 | No              | No            | Yes       | Yes       |
+| Document RAG               | No              | No            | Yes       | Yes       |
+| AI Summary/Notes           | No              | No            | Yes       | Yes       |
+| Topic Mastery              | No/temporary    | Basic         | Yes       | Advanced  |
+| Image Questions            | No              | No            | No        | Yes       |
+| Advanced Document Analysis | No              | No            | No        | Yes       |
+| Adaptive Learning          | No              | Basic/limited | Yes       | Advanced  |
 
 Exact feature gating must be implemented through entitlements, not UI conditionals alone.
 
@@ -3189,18 +3188,18 @@ Do not expose email-provider credentials to the frontend.
 
 Initial email catalog:
 
-| Email | Trigger | Required in MVP |
-|---|---|---|
-| Email Verification | Account created | Yes |
-| Welcome | Email verified / onboarding completed | Yes |
-| Password Reset | User requests reset | Yes |
-| Magic Link | User requests passwordless login | Yes, when magic link auth is enabled |
-| Subscription Started | Polar subscription activated | Yes |
-| Payment Confirmation | Successful payment event when applicable | Yes |
-| Subscription Cancelled | Cancellation event | Yes |
-| Usage Warning | Usage threshold reached | Yes |
-| Document Ready | Async document processing completed | Yes |
-| Security Notification | Important auth/security event | Yes |
+| Email                  | Trigger                                  | Required in MVP                      |
+| ---------------------- | ---------------------------------------- | ------------------------------------ |
+| Email Verification     | Account created                          | Yes                                  |
+| Welcome                | Email verified / onboarding completed    | Yes                                  |
+| Password Reset         | User requests reset                      | Yes                                  |
+| Magic Link             | User requests passwordless login         | Yes, when magic link auth is enabled |
+| Subscription Started   | Polar subscription activated             | Yes                                  |
+| Payment Confirmation   | Successful payment event when applicable | Yes                                  |
+| Subscription Cancelled | Cancellation event                       | Yes                                  |
+| Usage Warning          | Usage threshold reached                  | Yes                                  |
+| Document Ready         | Async document processing completed      | Yes                                  |
+| Security Notification  | Important auth/security event            | Yes                                  |
 
 Do not send marketing emails from the transactional email abstraction unless a future marketing system is explicitly introduced with consent management.
 
@@ -3716,11 +3715,11 @@ in the frontend as a security control.
 Use centralized authorization/entitlement services such as:
 
 ```ts
-requireAuthenticatedUser(ctx)
-requireRole(ctx, "admin")
-requirePermission(ctx, "documents:read")
-requireFeature(ctx, "document_rag")
-requireOwnership(ctx, resource)
+requireAuthenticatedUser(ctx);
+requireRole(ctx, "admin");
+requirePermission(ctx, "documents:read");
+requireFeature(ctx, "document_rag");
+requireOwnership(ctx, resource);
 ```
 
 ## 40.6 Roles and Permissions

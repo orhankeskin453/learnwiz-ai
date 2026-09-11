@@ -23,32 +23,32 @@ Target audience note: the product is **global** (English default, Turkish suppor
 
 ## 2. Out of Scope (deferred by CLAUDE.md step order)
 
-| Item | Lands in |
-|---|---|
-| Design system, UI primitives, i18n foundation | Step 2–3 |
-| Guest sessions, identity foundations | Step 5 (§48) |
-| Auth, email, sessions | Step 6 (§48) |
-| D1 schema content (users, sessions, …) | Auth step — Step 1 provides the migration *harness* only (`db/migrations/` + apply scripts + CI validation) |
-| Vectorize indexes, Queues | Step 6 (RAG) — rule 14: no premature infrastructure |
-| Workers AI, AI Router, usage ledger | Step 7 (§48) |
-| Polar billing | Step 11 (§48) |
-| Custom domain | Production launch; `*.workers.dev` until then |
-| Playwright / E2E | Testing-infrastructure item (§48 item 4); CI slot prepared now |
+| Item                                          | Lands in                                                                                                    |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Design system, UI primitives, i18n foundation | Step 2–3                                                                                                    |
+| Guest sessions, identity foundations          | Step 5 (§48)                                                                                                |
+| Auth, email, sessions                         | Step 6 (§48)                                                                                                |
+| D1 schema content (users, sessions, …)        | Auth step — Step 1 provides the migration _harness_ only (`db/migrations/` + apply scripts + CI validation) |
+| Vectorize indexes, Queues                     | Step 6 (RAG) — rule 14: no premature infrastructure                                                         |
+| Workers AI, AI Router, usage ledger           | Step 7 (§48)                                                                                                |
+| Polar billing                                 | Step 11 (§48)                                                                                               |
+| Custom domain                                 | Production launch; `*.workers.dev` until then                                                               |
+| Playwright / E2E                              | Testing-infrastructure item (§48 item 4); CI slot prepared now                                              |
 
 ## 3. Decisions Summary
 
-| Area | Decision |
-|---|---|
-| Package manager / workspace | pnpm 11 workspaces, no orchestrator (no Turborepo/Nx) |
-| Worker router | Hono (lightweight, Workers-native; middleware chain per CLAUDE.md §22) |
-| Validation | zod, schemas shared via `packages/validation` |
-| Lint/format | ESLint 9 flat config + typescript-eslint + eslint-plugin-react-hooks; Prettier |
-| Unit/integration tests | Vitest; `@cloudflare/vitest-pool-workers` for Worker tests |
-| Deploy topology | Single Worker serving `/api/*` + SPA static assets (same-origin) |
-| Environments | One `wrangler.jsonc`: top-level = production, `env.staging`, `env.dev` |
-| VCS / CI | GitHub private repo `learnwiz-ai`; GitHub Actions |
-| Resource provisioning | Via Cloudflare MCP (bindings/API servers); IDs committed to `wrangler.jsonc` |
-| D1 location hint | `weur` (balanced global hub; changeable later without data migration) |
+| Area                        | Decision                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| Package manager / workspace | pnpm 11 workspaces, no orchestrator (no Turborepo/Nx)                          |
+| Worker router               | Hono (lightweight, Workers-native; middleware chain per CLAUDE.md §22)         |
+| Validation                  | zod, schemas shared via `packages/validation`                                  |
+| Lint/format                 | ESLint 9 flat config + typescript-eslint + eslint-plugin-react-hooks; Prettier |
+| Unit/integration tests      | Vitest; `@cloudflare/vitest-pool-workers` for Worker tests                     |
+| Deploy topology             | Single Worker serving `/api/*` + SPA static assets (same-origin)               |
+| Environments                | One `wrangler.jsonc`: top-level = production, `env.staging`, `env.dev`         |
+| VCS / CI                    | GitHub private repo `learnwiz-ai`; GitHub Actions                              |
+| Resource provisioning       | Via Cloudflare MCP (bindings/API servers); IDs committed to `wrangler.jsonc`   |
+| D1 location hint            | `weur` (balanced global hub; changeable later without data migration)          |
 
 ## 4. Monorepo Layout
 
@@ -111,20 +111,20 @@ Rationale: HttpOnly session cookies (§47.9) work same-origin with no CORS/CSRF 
 
 Environments (single `wrangler.jsonc`):
 
-| Environment | Config block | Worker name | URL (initial) |
-|---|---|---|---|
-| production | top-level | `learwizai-api` | `learwizai-api.<account-subdomain>.workers.dev` |
-| staging | `env.staging` | `learwizai-api-staging` | `learwizai-api-staging.<account-subdomain>.workers.dev` |
-| dev | `env.dev` | `learwizai-api-dev` | `learwizai-api-dev.<account-subdomain>.workers.dev` |
+| Environment | Config block  | Worker name             | URL (initial)                                           |
+| ----------- | ------------- | ----------------------- | ------------------------------------------------------- |
+| production  | top-level     | `learwizai-api`         | `learwizai-api.<account-subdomain>.workers.dev`         |
+| staging     | `env.staging` | `learwizai-api-staging` | `learwizai-api-staging.<account-subdomain>.workers.dev` |
+| dev         | `env.dev`     | `learwizai-api-dev`     | `learwizai-api-dev.<account-subdomain>.workers.dev`     |
 
 Binding names are identical across environments so code stays env-agnostic:
 
-| Binding | Type | Purpose |
-|---|---|---|
-| `DB` | D1 | Primary relational database |
-| `CACHE` | KV | Rate-limit counters, cache, short-lived config |
-| `DOCS` | R2 | User-uploaded documents (PDFs; used from Step 6) |
-| `ASSETS` | Static assets | SPA bundle |
+| Binding  | Type          | Purpose                                          |
+| -------- | ------------- | ------------------------------------------------ |
+| `DB`     | D1            | Primary relational database                      |
+| `CACHE`  | KV            | Rate-limit counters, cache, short-lived config   |
+| `DOCS`   | R2            | User-uploaded documents (PDFs; used from Step 6) |
+| `ASSETS` | Static assets | SPA bundle                                       |
 
 Later bindings (Step 6+): `VECTORS` (Vectorize), `DOC_QUEUE` (Queues producer), `AI` (Workers AI).
 
@@ -132,11 +132,11 @@ Later bindings (Step 6+): `VECTORS` (Vectorize), `DOC_QUEUE` (Queues producer), 
 
 Provisioned via Cloudflare MCP (one-time; IDs committed to `wrangler.jsonc` as source of truth):
 
-| Resource | dev | staging | prod |
-|---|---|---|---|
-| D1 (`primary_location_hint: weur`) | `learwizai-db-dev` | `learwizai-db-staging` | `learwizai-db-prod` |
-| KV namespace | `learwizai-kv-dev` | `learwizai-kv-staging` | `learwizai-kv-prod` |
-| R2 bucket | `learwizai-docs-dev` | `learwizai-docs-staging` | `learwizai-docs-prod` |
+| Resource                           | dev                  | staging                  | prod                  |
+| ---------------------------------- | -------------------- | ------------------------ | --------------------- |
+| D1 (`primary_location_hint: weur`) | `learwizai-db-dev`   | `learwizai-db-staging`   | `learwizai-db-prod`   |
+| KV namespace                       | `learwizai-kv-dev`   | `learwizai-kv-staging`   | `learwizai-kv-prod`   |
+| R2 bucket                          | `learwizai-docs-dev` | `learwizai-docs-staging` | `learwizai-docs-prod` |
 
 - All resources are free-tier while empty/low-use; no billing impact at MVP scale.
 - `weur` chosen as a balanced global hub (NA/EU/MEA/India). D1 location hint is changeable later via `wrangler d1 update` without data migration.
@@ -182,28 +182,28 @@ Rollback (§39.8): redeploy previous known-good version (`wrangler versions` / r
 
 ## 9. Delivery Phases
 
-| # | Phase | Output | Verification |
-|---|---|---|---|
-| 1 | git init (`main`) + monorepo skeleton | workspace files, tsconfig.base, eslint, prettier, .gitignore, root scripts | `pnpm install` + `pnpm typecheck` pass locally |
-| 2 | `packages/*` | config, types, validation (+ smoke test) | `pnpm test` passes |
-| 3 | `workers/api` | Hono app, `/api/health`, worker test, `wrangler.jsonc` (env blocks, placeholder IDs) | worker test green; `wrangler dev` responds 200 |
-| 4 | `apps/web` | Vite + React + Tailwind v4, minimal status page calling `/api/health` | `pnpm build` produces dist; local preview works |
-| 5 | GitHub + CI | private repo `learnwiz-ai`, ci.yml, first green pipeline | CI checks green on main |
-| 6 | Provision via MCP | D1×3 (`weur`), KV×3, R2×3; IDs written to `wrangler.jsonc`; commit | resource list matches naming table; IDs committed |
-| 7 | Deploy | dev → staging → production | `/api/health` returns 200 on all three workers.dev URLs |
-| 8 | Docs | README, `docs/architecture.md`, `docs/deployment.md`, `docs/runbooks/` skeleton | links resolve; runbook placeholders per §43 |
+| #   | Phase                                 | Output                                                                               | Verification                                            |
+| --- | ------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| 1   | git init (`main`) + monorepo skeleton | workspace files, tsconfig.base, eslint, prettier, .gitignore, root scripts           | `pnpm install` + `pnpm typecheck` pass locally          |
+| 2   | `packages/*`                          | config, types, validation (+ smoke test)                                             | `pnpm test` passes                                      |
+| 3   | `workers/api`                         | Hono app, `/api/health`, worker test, `wrangler.jsonc` (env blocks, placeholder IDs) | worker test green; `wrangler dev` responds 200          |
+| 4   | `apps/web`                            | Vite + React + Tailwind v4, minimal status page calling `/api/health`                | `pnpm build` produces dist; local preview works         |
+| 5   | GitHub + CI                           | private repo `learnwiz-ai`, ci.yml, first green pipeline                             | CI checks green on main                                 |
+| 6   | Provision via MCP                     | D1×3 (`weur`), KV×3, R2×3; IDs written to `wrangler.jsonc`; commit                   | resource list matches naming table; IDs committed       |
+| 7   | Deploy                                | dev → staging → production                                                           | `/api/health` returns 200 on all three workers.dev URLs |
+| 8   | Docs                                  | README, `docs/architecture.md`, `docs/deployment.md`, `docs/runbooks/` skeleton      | links resolve; runbook placeholders per §43             |
 
 Prerequisites (verified 2026-09-11): `gh` CLI 2.90.0 authenticated as `orhankeskin453` (scopes: `repo`, `workflow`); Cloudflare MCP servers authenticated; Node v24.15.0, pnpm 11.24.0, git 2.54.
 
 ## 10. Risks & Mitigations
 
-| Risk | Mitigation |
-|---|---|
-| D1 location hint suboptimal for future traffic mix | Hint changeable without data migration (`wrangler d1 update`) |
-| Single-Worker topology constrains scaling | Split later: assets detachable from worker config without monorepo changes |
-| Provisioning drift (account vs config) | IDs committed to `wrangler.jsonc`; provisioning is one-time in Phase 6; CI deploys only from committed config |
-| pnpm/lockfile friction in CI | `--frozen-lockfile` from the first pipeline; `packageManager` pinned |
-| Accidental prod mutation during development | Prod deploys manual-only with environment protection; migration validation is local-only in CI |
+| Risk                                               | Mitigation                                                                                                    |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| D1 location hint suboptimal for future traffic mix | Hint changeable without data migration (`wrangler d1 update`)                                                 |
+| Single-Worker topology constrains scaling          | Split later: assets detachable from worker config without monorepo changes                                    |
+| Provisioning drift (account vs config)             | IDs committed to `wrangler.jsonc`; provisioning is one-time in Phase 6; CI deploys only from committed config |
+| pnpm/lockfile friction in CI                       | `--frozen-lockfile` from the first pipeline; `packageManager` pinned                                          |
+| Accidental prod mutation during development        | Prod deploys manual-only with environment protection; migration validation is local-only in CI                |
 
 ## 11. Definition of Done (Step 1)
 
