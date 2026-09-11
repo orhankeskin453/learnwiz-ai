@@ -30,6 +30,8 @@ importers:
         specifier: ^8.0.0
         version: 8.70.0(eslint@9.39.5(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
 
+  packages/config: {}
+
 packages:
 
   '@eslint-community/eslint-utils@4.10.1':
