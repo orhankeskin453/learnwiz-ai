@@ -1,0 +1,4 @@
+{
+  "extends": "@learwizai/config/tsconfig.base.json",
+  "include": ["src", "test"]
+}
