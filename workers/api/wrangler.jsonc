@@ -5,7 +5,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "learwizai-api",
   "main": "src/index.ts",
-  "compatibility_date": "2026-09-01",
+  // Pinned to the max date supported by the installed workerd/minifare to keep local test output pristine.
+  // Remote edge accepts any past date; bump together with wrangler upgrades.
+  "compatibility_date": "2025-09-06",
   "vars": { "ENVIRONMENT": "production" },
   "observability": { "enabled": true },
   "assets": {
