@@ -4,6 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LearWizAI</title>
+    <script>
+      // Pre-paint theme application — prevents light/dark flash (spec §5.4).
+      (function () {
+        try {
+          var stored = localStorage.getItem("learwiz_theme");
+          var mode =
+            stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+          var dark =
+            mode === "dark" ||
+            (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var root = document.documentElement;
+          root.setAttribute("data-theme", dark ? "dark" : "light");
+          root.classList.toggle("dark", dark);
+        } catch (e) {
+          /* private mode / storage blocked — default light */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
