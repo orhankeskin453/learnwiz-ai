@@ -3,12 +3,18 @@ packages:
   - "workers/*"
   - "packages/*"
 
+# pnpm 11 has two build-approval mechanisms: `allowBuilds` (newer, per-package
+# true/false decisions written by pnpm tooling) and `onlyBuiltDependencies`
+# (legacy whitelist). Keep both lists with identical membership until the
+# legacy key is removed in a future pnpm major.
 allowBuilds:
   esbuild: true
   sharp: true
+  unrs-resolver: true
   workerd: true
 
 onlyBuiltDependencies:
   - esbuild
+  - sharp
   - unrs-resolver
   - workerd
