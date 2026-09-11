@@ -61,7 +61,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.deploy_production
     needs: checks
     runs-on: ubuntu-latest
-    environment: production # protected: required reviewer approval
+    environment: production # manual dispatch IS the gate — required reviewers unavailable on GitHub Free for private repos (see docs/deployment.md)
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
