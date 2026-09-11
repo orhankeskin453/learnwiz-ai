@@ -15,10 +15,10 @@ declare module "vitest" {
   }
 }
 
-// Document-level accessibility rules that don't apply in isolated component tests.
-// These fire because jsdom has no <title>, no <html lang>, and renders bare divs.
+// Document-level accessibility rules that only apply to full-page audits.
+// jsdom has no <title>, no <html lang> — these always fire on bare containers.
 // They are never relevant when auditing individual React components in isolation.
-const SKIP_RULES = ["document-title", "html-has-lang", "region"];
+const SKIP_RULES = ["document-title", "html-has-lang"];
 
 expect.extend({
   async toHaveNoViolations(_received: unknown) {
@@ -37,10 +37,11 @@ expect.extend({
         message: () =>
           `Expected axe results to have no violations but found ${violations.length}: ${JSON.stringify(violations, null, 2)}`,
       };
-    } catch {
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err);
       return {
-        pass: true,
-        message: () => `axe.run failed but treating as clean.`,
+        pass: false,
+        message: () => `axe.run threw during assertion — ${detail}`,
       };
     }
   },

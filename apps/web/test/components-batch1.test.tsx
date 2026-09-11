@@ -100,11 +100,11 @@ describe("State components", () => {
 
   it("state components have no axe violations", async () => {
     const { container } = render(
-      <>
+      <main>
         <EmptyState title="Empty" />
         <LoadingState />
         <ErrorState />
-      </>,
+      </main>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
