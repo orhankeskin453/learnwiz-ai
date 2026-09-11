@@ -1,0 +1,58 @@
+{
+  // LearWizAI API Worker — single worker serving /api/* and the SPA assets.
+  // Top-level config = production. env.staging / env.dev = other environments.
+  // See docs/superpowers/specs/2026-09-11-step1-foundation-design.md §5-§6.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "learwizai-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "vars": { "ENVIRONMENT": "production" },
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "../../apps/web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "learwizai-db-prod",
+      // PLACEHOLDER — replaced with the real ID in Task 7 (provisioning)
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "../../db/migrations",
+    },
+  ],
+  "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+  "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-prod" }],
+  "env": {
+    "staging": {
+      "name": "learwizai-api-staging",
+      "vars": { "ENVIRONMENT": "staging" },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "learwizai-db-staging",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "../../db/migrations",
+        },
+      ],
+      "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-staging" }],
+    },
+    "dev": {
+      "name": "learwizai-api-dev",
+      "vars": { "ENVIRONMENT": "dev" },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "learwizai-db-dev",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "../../db/migrations",
+        },
+      ],
+      "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-dev" }],
+    },
+  },
+}
