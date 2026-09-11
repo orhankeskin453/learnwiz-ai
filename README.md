@@ -56,5 +56,5 @@ docs/           # architecture, deployment, runbooks
 ## Deployment
 
 - **staging:** automatic on push to `main` (after CI checks pass).
-- **production:** manual — Actions → CI → "Run workflow" with `deploy_production=true`, then approve the protected `production` environment gate.
+- **production:** manual — Actions → CI → "Run workflow" with `deploy_production=true`; the dispatch itself is the production gate (required-reviewer protection is unavailable on GitHub Free for private repos — see [docs/deployment.md](docs/deployment.md)).
 - Details + rollback: [docs/deployment.md](docs/deployment.md).
