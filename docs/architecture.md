@@ -30,8 +30,9 @@ URLs: `https://<worker>.orhankeskinn1.workers.dev`.
 ## Monorepo
 
 pnpm workspaces; internal packages export TypeScript source (bundlers compile).
-`packages/validation` schemas are compile-time-locked to `packages/types` via
-`satisfies` — cross-layer contract drift fails `pnpm typecheck` (CLAUDE.md §40.6).
+`packages/validation` schemas are compile-time-locked to `packages/types` via a
+bidirectional `LocaleLock` forcing function — cross-layer contract drift fails
+`pnpm typecheck` (CLAUDE.md §40.6).
 
 ## Planned additions (not yet deployed)
 
