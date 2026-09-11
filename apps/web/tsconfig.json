@@ -1,0 +1,7 @@
+{
+  "extends": "@learwizai/config/tsconfig.react.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "types": ["vite/client"]
+  }
+}
