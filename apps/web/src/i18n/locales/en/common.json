@@ -1,0 +1,39 @@
+{
+  "actions": {
+    "retry": "Try again",
+    "back": "Go back",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue"
+  },
+  "states": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "empty": "Nothing here yet"
+  },
+  "theme": {
+    "label": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": {
+    "label": "Language",
+    "switchAria": "Switch language, currently {{language}}"
+  },
+  "plan": {
+    "currentPlan": "Plan",
+    "free": "Free",
+    "usageUnavailable": "Usage details arrive with your account"
+  },
+  "errors": {
+    "unexpected": "An unexpected error occurred. Please try again."
+  },
+  "aria": {
+    "mainNavigation": "Main navigation",
+    "mobileNavigation": "Mobile navigation",
+    "moreMenu": "More options",
+    "skipToContent": "Skip to content"
+  }
+}

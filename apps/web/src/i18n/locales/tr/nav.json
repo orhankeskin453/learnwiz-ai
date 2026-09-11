@@ -1,0 +1,55 @@
+{
+  "brand": "LearWizAI",
+  "items": {
+    "dashboard": "Panel",
+    "tutor": "AI Özel Ders",
+    "learn": "Öğren",
+    "practice": "Alıştırma",
+    "quizzes": "Testler",
+    "documents": "Belgeler",
+    "progress": "Gelişim",
+    "settings": "Ayarlar"
+  },
+  "mobile": {
+    "home": "Ana Sayfa",
+    "more": "Diğer"
+  },
+  "placeholders": {
+    "dashboard": {
+      "title": "Panelin çok yakında",
+      "description": "Öğrenmeye devam, öneriler ve ilerleme bilgisi sonraki adımda geliyor."
+    },
+    "tutor": {
+      "title": "AI Özel Ders çok yakında",
+      "description": "AI öğretmeninle açıklat, sadeleştir, test çöz ve pratik yap — sonraki adımda."
+    },
+    "learn": {
+      "title": "Öğrenme Modu çok yakında",
+      "description": "Yapılandırılmış dersler: kavram, sezgi, örnek, yaygın hatalar, mini alıştırma."
+    },
+    "practice": {
+      "title": "Alıştırma Modu çok yakında",
+      "description": "Anında geri bildirimli ve açıklamalı konu soruları."
+    },
+    "quizzes": {
+      "title": "Test Oluşturucu çok yakında",
+      "description": "Konu, zorluk ve soru tipine göre testler üret."
+    },
+    "documents": {
+      "title": "Belgeler çok yakında",
+      "description": "PDF yükle, belgeyle sohbet et, özet ve test al."
+    },
+    "progress": {
+      "title": "Gelişim takibi çok yakında",
+      "description": "Konu hakimiyeti, zayıf alanlar ve önerilen tekrarlar."
+    },
+    "settings": {
+      "title": "Ayarlar çok yakında",
+      "description": "Hesap, dil, tema ve bildirim tercihleri."
+    }
+  },
+  "notFound": {
+    "title": "Sayfa bulunamadı",
+    "description": "Aradığın sayfa mevcut değil veya taşınmış olabilir."
+  }
+}

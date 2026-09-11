@@ -1,0 +1,55 @@
+{
+  "brand": "LearWizAI",
+  "items": {
+    "dashboard": "Dashboard",
+    "tutor": "AI Tutor",
+    "learn": "Learn",
+    "practice": "Practice",
+    "quizzes": "Quizzes",
+    "documents": "Documents",
+    "progress": "Progress",
+    "settings": "Settings"
+  },
+  "mobile": {
+    "home": "Home",
+    "more": "More"
+  },
+  "placeholders": {
+    "dashboard": {
+      "title": "Your dashboard is coming",
+      "description": "Continue-learning, recommendations and progress arrive in a later step."
+    },
+    "tutor": {
+      "title": "AI Tutor is coming",
+      "description": "Explain, simplify, quiz and practice with your AI teacher — available in a later step."
+    },
+    "learn": {
+      "title": "Learn Mode is coming",
+      "description": "Structured lessons: concept, intuition, example, common mistakes, mini exercise."
+    },
+    "practice": {
+      "title": "Practice Mode is coming",
+      "description": "Topic questions with instant feedback and explanations."
+    },
+    "quizzes": {
+      "title": "Quiz Generator is coming",
+      "description": "Generate quizzes by topic, difficulty and question type."
+    },
+    "documents": {
+      "title": "Documents are coming",
+      "description": "Upload PDFs, chat with them, get summaries and quizzes."
+    },
+    "progress": {
+      "title": "Progress tracking is coming",
+      "description": "Topic mastery, weak areas and recommended review."
+    },
+    "settings": {
+      "title": "Settings are coming",
+      "description": "Account, language, theme and notification preferences."
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has moved."
+  }
+}

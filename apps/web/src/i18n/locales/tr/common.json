@@ -1,0 +1,39 @@
+{
+  "actions": {
+    "retry": "Tekrar dene",
+    "back": "Geri dön",
+    "close": "Kapat",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "continue": "Devam et"
+  },
+  "states": {
+    "loading": "Yükleniyor…",
+    "error": "Bir şeyler ters gitti",
+    "empty": "Henüz burada bir şey yok"
+  },
+  "theme": {
+    "label": "Tema",
+    "system": "Sistem",
+    "light": "Açık",
+    "dark": "Koyu"
+  },
+  "language": {
+    "label": "Dil",
+    "switchAria": "Dili değiştir, şu an {{language}}"
+  },
+  "plan": {
+    "currentPlan": "Plan",
+    "free": "Ücretsiz",
+    "usageUnavailable": "Kullanım detayları hesabınızla birlikte gelir"
+  },
+  "errors": {
+    "unexpected": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+  },
+  "aria": {
+    "mainNavigation": "Ana gezinme",
+    "mobileNavigation": "Mobil gezinme",
+    "moreMenu": "Diğer seçenekler",
+    "skipToContent": "İçeriğe geç"
+  }
+}
