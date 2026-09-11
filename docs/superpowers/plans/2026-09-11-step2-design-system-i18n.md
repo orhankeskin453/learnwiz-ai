@@ -585,7 +585,7 @@ export function useTheme(): ThemeContextValue {
 ```tsx
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ThemeProvider, useTheme } from "@/theme/ThemeProvider";
 
 function Probe() {
@@ -650,8 +650,6 @@ describe("ThemeProvider", () => {
   });
 });
 ```
-
-Add the missing import at the top of the test file: `import { describe, expect, it, vi } from "vitest";` (use this four-name import instead of the three-name one shown in the first import line).
 
 - [ ] **Step 9: Run tests (RED not applicable — new infrastructure; verify GREEN)**
 
