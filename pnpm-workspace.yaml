@@ -3,6 +3,11 @@ packages:
   - "workers/*"
   - "packages/*"
 
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
