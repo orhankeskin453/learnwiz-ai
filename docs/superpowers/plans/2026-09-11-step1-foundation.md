@@ -1298,7 +1298,7 @@ Write down for Task 10: `DEV_URL`, `STAGING_URL`, `PROD_URL`, the workers.dev `<
 
 - [ ] **Step 1: Create `README.md`** (substitute the real `<SUBDOMAIN>` recorded in Task 9)
 
-```markdown
+````markdown
 # LearWizAI
 
 AI-powered personal learning platform — "Learn → Understand → Practice → Feedback → Mastery → Recommendation".
@@ -1359,11 +1359,11 @@ docs/           # architecture, deployment, runbooks
 - **staging:** automatic on push to `main` (after CI checks pass).
 - **production:** manual — Actions → CI → "Run workflow" with `deploy_production=true`, then approve the protected `production` environment gate.
 - Details + rollback: [docs/deployment.md](docs/deployment.md).
-```
+````
 
 - [ ] **Step 2: Create `docs/architecture.md`** (substitute `<SUBDOMAIN>`)
 
-```markdown
+````markdown
 # Architecture (Step 1 baseline)
 
 Target end-state architecture is defined in CLAUDE.md §12/§38. This document
@@ -1406,11 +1406,11 @@ pnpm workspaces; internal packages export TypeScript source (bundlers compile).
 - Email Service, Polar billing, Analytics Engine (later steps)
 
 Design decisions and rationale: `docs/superpowers/specs/2026-09-11-step1-foundation-design.md`.
-```
+````
 
 - [ ] **Step 3: Create `docs/deployment.md`** (substitute `<SUBDOMAIN>`)
 
-```markdown
+````markdown
 # Deployment
 
 ## Flow (CLAUDE.md §26-27, §39.6)
@@ -1457,7 +1457,7 @@ matching `environment` value on:
 - dev: https://learwizai-api-dev.<SUBDOMAIN>.workers.dev/api/health
 - staging: https://learwizai-api-staging.<SUBDOMAIN>.workers.dev/api/health
 - production: https://learwizai-api.<SUBDOMAIN>.workers.dev/api/health
-```
+````
 
 - [ ] **Step 4: Create the four runbook skeletons** — identical structure, content differs per incident. Each file:
 
