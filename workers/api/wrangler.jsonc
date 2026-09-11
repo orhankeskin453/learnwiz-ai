@@ -20,12 +20,11 @@
     {
       "binding": "DB",
       "database_name": "learwizai-db-prod",
-      // PLACEHOLDER — replaced with the real ID in Task 7 (provisioning)
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "70b040b9-a20d-4195-89a3-9d01e833dcfb",
       "migrations_dir": "../../db/migrations",
     },
   ],
-  "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+  "kv_namespaces": [{ "binding": "CACHE", "id": "2296c05f37e24600a1d977188530bb2c" }],
   "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-prod" }],
   "env": {
     "staging": {
@@ -35,11 +34,11 @@
         {
           "binding": "DB",
           "database_name": "learwizai-db-staging",
-          "database_id": "00000000-0000-0000-0000-000000000000",
+          "database_id": "4544579b-f7c2-4a29-b2b0-7f378a255679",
           "migrations_dir": "../../db/migrations",
         },
       ],
-      "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+      "kv_namespaces": [{ "binding": "CACHE", "id": "5baf0bd066b74046b962ca5c435ad02c" }],
       "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-staging" }],
     },
     "dev": {
@@ -49,11 +48,11 @@
         {
           "binding": "DB",
           "database_name": "learwizai-db-dev",
-          "database_id": "00000000-0000-0000-0000-000000000000",
+          "database_id": "61a8d3b6-5eb1-4fa2-8a82-9fa04974c414",
           "migrations_dir": "../../db/migrations",
         },
       ],
-      "kv_namespaces": [{ "binding": "CACHE", "id": "00000000-0000-0000-0000-000000000000" }],
+      "kv_namespaces": [{ "binding": "CACHE", "id": "76fd06d21a6e4d4aafae674cadf6c05a" }],
       "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-dev" }],
     },
   },
