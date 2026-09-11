@@ -65,3 +65,24 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Radix UI relies on DOM APIs jsdom does not implement.
+class ResizeObserverStub {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+}
+globalThis.ResizeObserver ??= ResizeObserverStub as unknown as typeof ResizeObserver;
+
+const htmlProto = window.HTMLElement.prototype as HTMLElement & {
+  scrollIntoView?: () => void;
+  hasPointerCapture?: (id: number) => boolean;
+  setPointerCapture?: (id: number) => void;
+  releasePointerCapture?: (id: number) => void;
+};
+htmlProto.scrollIntoView ??= function scrollIntoView() {};
+htmlProto.hasPointerCapture ??= function hasPointerCapture() {
+  return false;
+};
+htmlProto.setPointerCapture ??= function setPointerCapture() {};
+htmlProto.releasePointerCapture ??= function releasePointerCapture() {};
