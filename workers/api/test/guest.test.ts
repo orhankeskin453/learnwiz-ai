@@ -113,6 +113,29 @@ describe("GET /api/guest/session", () => {
     expect(body.error).toBe("guest_session_invalid");
   });
 
+  it("returns 401 once the session is marked migrated (§5.2)", async () => {
+    const { cookie } = await createGuestSession();
+    const cookieId = cookie.split(".")[0]!;
+    const { env } = await import("cloudflare:test");
+    await env.DB.prepare("UPDATE guest_sessions SET migration_status = 'migrated' WHERE id = ?")
+      .bind(cookieId)
+      .run();
+
+    const res = await SELF.fetch(BASE, {
+      headers: { ...IP_HEADERS, cookie: `learwiz_guest_session=${cookie}` },
+    });
+    expect(res.status).toBe(401);
+    const body = (await res.json()) as ApiErrorBody;
+    expect(body.error).toBe("guest_session_invalid");
+  });
+
+  it("echoes a correlation id (X-Request-Id) for log tracing (§22)", async () => {
+    const res = await SELF.fetch(BASE, { headers: IP_HEADERS });
+    expect(res.headers.get("x-request-id")).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
+  });
+
   it("returns the current status with the same budgets for a valid session", async () => {
     const { cookie, body: created } = await createGuestSession();
     const res = await SELF.fetch(BASE, {

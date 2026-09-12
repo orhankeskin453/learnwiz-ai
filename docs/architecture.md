@@ -49,6 +49,31 @@ Styling: Tailwind v4 + CSS-variable tokens (§8 palette, dark-mode-ready); compo
 vendored from shadcn/ui (Radix). i18n: react-i18next, en/tr JSON namespaces, typed keys,
 CI-enforced parity. Details: `docs/design-system.md`, `docs/localization.md`.
 
+## Backend: identity, guest sessions, entitlements (Step 3)
+
+```text
+request → requestId (X-Request-Id) → guestCreateThrottle (POST only, KV 20/h/IP)
+        → identityMiddleware (guest cookie → HMAC verify → D1 row)
+        → handler
+```
+
+- **Identity** (`workers/api/src/middleware/identity.ts`): every `/api` request is
+  classified `guest | anonymous` (authenticated joins at Step 4). The guest cookie
+  `learwiz_guest_session` carries `<256-bit id>.<HMAC-SHA256 signature>` — HttpOnly,
+  SameSite=Lax, 7-day Max-Age, `Secure` on staging/production. Secret:
+  `GUEST_SESSION_SECRET` Workers secret (fail-closed 500 `config_error` when unset).
+- **Guest lifecycle** (`POST`/`GET /api/guest/session`): idempotent create, machine
+  error codes (`guest_session_not_found` 404, `guest_session_invalid` 401,
+  `rate_limited` 429 + `Retry-After`). State lives in D1 `guest_sessions` +
+  per-feature `guest_usage` counters (migration 0001); expired/migrated sessions are
+  recoverable by creating a fresh one.
+- **Entitlements** (`services/entitlements.ts`): server-authoritative guest matrix
+  (§5.1: AI Tutor 3, Learn Mode 1, Practice 3, Quiz 1). Plans with period resets land
+  with billing; the service is the single gate feature routes call (§17).
+- **Throttle** (`middleware/guestThrottle.ts` + `services/rateLimit.ts`): KV
+  fixed-window counter keyed by peppered IP hash — fail-open, raw IPs never stored.
+  Strict AI budget controls arrive with the AI step.
+
 ## Planned additions (not yet deployed)
 
 - Vectorize index + Queues producer/consumer (Step 6 — RAG)

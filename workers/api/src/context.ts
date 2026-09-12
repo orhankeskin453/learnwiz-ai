@@ -6,6 +6,8 @@ import type { GuestResolution } from "./middleware/identity";
 export type AppEnv = {
   Bindings: Env;
   Variables: {
+    /** Correlation id for Workers Logs (set by requestIdMiddleware). */
+    requestId: string;
     identity: Identity;
     /** Raw guest-cookie resolution outcome — guest routes branch on it. */
     guestResolution: GuestResolution;
