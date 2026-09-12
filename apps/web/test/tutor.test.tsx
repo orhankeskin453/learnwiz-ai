@@ -34,6 +34,11 @@ function stubFetchByPath(handlers: Record<string, () => Response>): ReturnType<t
 }
 
 const EMPTY_MOUNT = {
+  "/api/guest/session": () =>
+    jsonResponse({
+      expiresAt: "2026-09-19T00:00:00.000Z",
+      usage: [{ feature: "ai_tutor", used: 0, limit: 3 }],
+    }),
   "/api/tutor/quota": () => jsonResponse({ used: 0, limit: 3 }),
   "/api/tutor/conversations": () => jsonResponse([]),
 };
@@ -57,7 +62,9 @@ describe("TutorPage", () => {
       "/api/tutor/quota": () => jsonResponse({ used: 2, limit: 3 }),
     });
     renderAt("/en/tutor");
-    expect(await screen.findByText("2 of 3 free messages used today")).toBeInTheDocument();
+    expect(
+      await screen.findByText("2 of 3 free messages used today", {}, { timeout: 3000 }),
+    ).toBeInTheDocument();
   });
 
   it("sends a turn, shows the user message and the assistant answer with the conversation id kept", async () => {
@@ -134,6 +141,49 @@ describe("TutorPage", () => {
     renderAt("/en/tutor");
     expect(await screen.findByText("Plants making food from light.")).toBeInTheDocument();
     expect(screen.getByText("What is photosynthesis?")).toBeInTheDocument();
+  });
+
+  it("creates a guest session on mount before the first chat", async () => {
+    const fetchMock = stubFetchByPath({ ...EMPTY_MOUNT });
+    renderAt("/en/tutor");
+    await screen.findByRole("heading", { name: "AI Tutor" });
+    await waitFor(() => {
+      expect(fetchMock.mock.calls.some(([p]) => p === "/api/guest/session")).toBe(true);
+    });
+  });
+
+  it("retries the chat once after creating a session when the first call 401s", async () => {
+    let chatCalls = 0;
+    const fetchMock = stubFetchByPath({
+      "/api/guest/session": () =>
+        jsonResponse({
+          expiresAt: "2026-09-19T00:00:00.000Z",
+          usage: [{ feature: "ai_tutor", used: 0, limit: 3 }],
+        }),
+      "/api/tutor/quota": () => jsonResponse({ used: 0, limit: 3 }),
+      "/api/tutor/conversations": () => jsonResponse([]),
+      "/api/tutor/chat": () => {
+        chatCalls += 1;
+        if (chatCalls === 1) return jsonResponse({ error: "unauthenticated" }, 401);
+        return jsonResponse({
+          conversationId: "c".repeat(32),
+          assistantMessage: "Answered after retry.",
+          usage: { inputTokens: 10, outputTokens: 20, fallback: false },
+        });
+      },
+    });
+
+    renderAt("/en/tutor");
+    await screen.findByRole("heading", { name: "AI Tutor" });
+    await waitFor(() => {
+      expect(fetchMock.mock.calls.some(([p]) => p === "/api/guest/session")).toBe(true);
+    });
+
+    await userEvent.type(screen.getByLabelText(/Your question/i), "Still there?");
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+
+    expect(await screen.findByText("Answered after retry.")).toBeInTheDocument();
+    expect(chatCalls).toBe(2);
   });
 
   it("shows the localized quota error when the limit is reached", async () => {

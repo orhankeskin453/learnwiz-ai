@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ApiError } from "@/services/apiClient";
+import { createGuestSession } from "@/services/guestSessions";
 import {
   getConversation,
   getTutorQuota,
@@ -12,7 +13,7 @@ import {
   type TutorTurn,
 } from "@/services/tutor";
 import { getActiveLocale } from "@/i18n";
-import type { QuotaState, TutorAction } from "@learwizai/types";
+import type { ChatResponse, QuotaState, TutorAction } from "@learwizai/types";
 
 /** Suggested learning actions (§10.3) — chat is the implicit default. */
 const SUGGESTED_ACTIONS = [
@@ -39,10 +40,23 @@ export function TutorPage() {
   const [error, setError] = useState<"limit" | "unavailable" | "generic" | null>(null);
   const [quota, setQuota] = useState<QuotaState | null>(null);
 
-  // Resume the latest conversation (§29) + quota hint (§10.3) — both best-effort.
+  // Guest session first (idempotent — reuses the existing cookie): the tutor is
+  // the first touchpoint for most visitors, and /api/tutor/* 401s without it.
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      try {
+        await createGuestSession();
+      } catch {
+        /* chat will surface a retry-able error if the session cannot be created */
+      }
+      if (cancelled) return;
+      // Quota hint — independent of whether a conversation could be resumed.
+      try {
+        if (!cancelled) setQuota(await getTutorQuota());
+      } catch {
+        /* hint only */
+      }
       try {
         const conversations = await listConversations();
         if (cancelled || conversations.length === 0) return;
@@ -60,13 +74,6 @@ export function TutorPage() {
         /* best-effort resume */
       }
     })();
-    void (async () => {
-      try {
-        setQuota(await getTutorQuota());
-      } catch {
-        /* hint only */
-      }
-    })();
     return () => {
       cancelled = true;
     };
@@ -77,6 +84,26 @@ export function TutorPage() {
       setQuota(await getTutorQuota());
     } catch {
       /* hint only */
+    }
+  }
+
+  /** Send one turn; on a 401 (missing/expired guest session) create the session
+   * and retry ONCE — first-time visitors hit /tutor without any cookie. */
+  async function sendChat(): Promise<ChatResponse> {
+    const payload = {
+      message: input.trim(),
+      action,
+      locale: getActiveLocale(),
+      conversationId,
+    };
+    try {
+      return await sendTutorMessage(payload);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        await createGuestSession();
+        return sendTutorMessage(payload);
+      }
+      throw err;
     }
   }
 
@@ -92,12 +119,7 @@ export function TutorPage() {
     setError(null);
 
     try {
-      const response = await sendTutorMessage({
-        message,
-        action,
-        locale: getActiveLocale(),
-        conversationId,
-      });
+      const response = await sendChat();
       setConversationId(response.conversationId);
       setTurns([...history, { role: "assistant", content: response.assistantMessage, action }]);
       void refreshQuota();
