@@ -39,6 +39,8 @@
     "increaseProgress": "İlerlemeyi artır",
     "emptyTitle": "Henüz burada bir şey yok",
     "emptyDescription": "Boş bir yüzey böyle görünür.",
-    "retryFired": "Tekrar dene tetiklendi"
+    "retryFired": "Tekrar dene tetiklendi",
+    "iconButtonLabel": "Simge düğmesi örneği",
+    "progressLabel": "Örnek ilerleme çubuğu"
   }
 }

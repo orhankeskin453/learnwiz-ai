@@ -39,6 +39,8 @@
     "increaseProgress": "Increase progress",
     "emptyTitle": "Nothing here yet",
     "emptyDescription": "This is how an empty surface looks.",
-    "retryFired": "Retry was fired"
+    "retryFired": "Retry was fired",
+    "iconButtonLabel": "Icon button example",
+    "progressLabel": "Demo progress"
   }
 }

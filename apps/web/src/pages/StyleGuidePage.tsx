@@ -149,7 +149,7 @@ export function StyleGuidePage() {
           <Button size="lg">
             <code>lg</code>
           </Button>
-          <Button size="icon" aria-label="Icon button example">
+          <Button size="icon" aria-label={t("demo.iconButtonLabel")}>
             <Settings className="size-4" aria-hidden="true" />
           </Button>
         </div>
@@ -279,7 +279,7 @@ export function StyleGuidePage() {
             Toast
           </Button>
           <div className="flex max-w-md items-center gap-3">
-            <Progress value={progress} aria-label="Demo progress" className="flex-1" />
+            <Progress value={progress} aria-label={t("demo.progressLabel")} className="flex-1" />
             <Button
               variant="outline"
               size="sm"
