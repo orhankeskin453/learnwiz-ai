@@ -34,6 +34,21 @@ pnpm workspaces; internal packages export TypeScript source (bundlers compile).
 bidirectional `LocaleLock` forcing function — cross-layer contract drift fails
 `pnpm typecheck` (CLAUDE.md §40.6).
 
+## Frontend architecture (Step 2)
+
+```text
+main.tsx → ThemeProvider → RouterProvider (createBrowserRouter, routes.tsx)
+  /            → LocaleRedirect (resolveLocale → /{locale})
+  /:locale     → LocaleGate (localeSchema validation, i18n + <html lang> + hreflang sync)
+      ├─ AppShell (sidebar / bottom nav / toaster) → placeholder pages (EmptyState)
+      └─ style-guide → StyleGuidePage (design-system showcase)
+  *            → localized 404
+```
+
+Styling: Tailwind v4 + CSS-variable tokens (§8 palette, dark-mode-ready); components
+vendored from shadcn/ui (Radix). i18n: react-i18next, en/tr JSON namespaces, typed keys,
+CI-enforced parity. Details: `docs/design-system.md`, `docs/localization.md`.
+
 ## Planned additions (not yet deployed)
 
 - Vectorize index + Queues producer/consumer (Step 6 — RAG)

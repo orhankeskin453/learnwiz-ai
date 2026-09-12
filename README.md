@@ -5,7 +5,8 @@ The single source of truth for product/architecture rules is [CLAUDE.md](CLAUDE.
 
 ## Stack
 
-React 19 + Vite 7 + Tailwind 4 (SPA) · Hono on Cloudflare Workers · D1 · KV · R2 ·
+React 19 + Vite 7 + Tailwind 4 (SPA) · react-i18next (en/tr) · shadcn/ui (Radix) ·
+React Router 7 · Hono on Cloudflare Workers · D1 · KV · R2 ·
 TypeScript strict · pnpm workspaces · Vitest · GitHub Actions.
 
 ## Prerequisites
@@ -36,7 +37,7 @@ pnpm dev        # web on :5173 (proxies /api) + worker on :8787
 ## Layout
 
 ```text
-apps/web        # SPA (placeholder status page until Step 2 design system)
+apps/web        # SPA — locale-routed shell + design system (see docs/design-system.md)
 workers/api     # Hono worker: /api/* + static assets (same-origin)
 packages/types  # shared domain contracts (frontend <-> backend)
 packages/validation  # zod schemas locked to shared types
@@ -52,6 +53,11 @@ docs/           # architecture, deployment, runbooks
 | dev        | `learwizai-api-dev`     | https://learwizai-api-dev.orhankeskinn1.workers.dev     |
 | staging    | `learwizai-api-staging` | https://learwizai-api-staging.orhankeskinn1.workers.dev |
 | production | `learwizai-api`         | https://learwizai-api.orhankeskinn1.workers.dev         |
+
+## Design system & i18n
+
+- Tokens/components: [docs/design-system.md](docs/design-system.md) — live showcase at `/{en|tr}/style-guide` on every environment.
+- Localization rules (en/tr, parity test, typed keys): [docs/localization.md](docs/localization.md).
 
 ## Deployment
 
