@@ -123,21 +123,7 @@ describe("PracticePage", () => {
 
     // Q1: correct answer → instant feedback.
     await screen.findByText("Main input of photosynthesis?");
-    try {
-      fireEvent.click(await screen.findByRole("radio", { name: "Light" }));
-    } catch {
-      /* dump below */
-    }
-    console.log(
-      "BTNS:",
-      JSON.stringify(
-        screen.queryAllByRole("button").map((b) => [b.textContent, b.getAttribute("aria-checked")]),
-      ),
-      JSON.stringify(
-        screen.queryAllByRole("radio").map((b) => [b.textContent, b.getAttribute("aria-checked")]),
-      ),
-    );
-    console.log("DOM-CHECK:", document.querySelector("main")?.innerHTML.slice(0, 700));
+    fireEvent.click(await screen.findByRole("radio", { name: "Light" }));
     await userEvent.click(await screen.findByRole("button", { name: "Check answer" }));
     expect(await screen.findByText("Correct!")).toBeInTheDocument();
 
@@ -183,23 +169,11 @@ describe("QuizPage", () => {
       const next = screen.queryByRole("button", { name: "Next question" });
       const button = submit ?? next;
       if (!button) break;
-      console.log(
-        "LOOP-STEP:",
-        JSON.stringify({
-          q: document.querySelector("main")?.textContent?.slice(0, 60),
-          radios: screen.queryAllByRole("radio").map((b) => b.getAttribute("aria-checked")),
-          btn: button.textContent,
-          disabled: (button as HTMLButtonElement).disabled,
-        }),
-      );
       const wasFinish = submit !== null;
       await userEvent.click(button);
       if (wasFinish) break;
     }
 
-    await screen.findByText(/You scored|Quiz complete/).catch(() => {});
-    console.log("QUIZ-CALLS:", JSON.stringify(fetchMock.mock.calls.map(([p]) => p)));
-    console.log("QUIZ-DOM:", document.querySelector("main")?.innerHTML.slice(0, 1100));
     const attemptCall = fetchMock.mock.calls.find(([p]) => String(p).endsWith("/attempts"));
     expect(attemptCall).toBeDefined();
   });

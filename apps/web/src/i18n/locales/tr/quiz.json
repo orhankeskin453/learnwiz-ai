@@ -18,7 +18,7 @@
     "score": "{{total}} sorudan {{score}} puan aldın."
   },
   "errors": {
-    "limit": "Bugünkü ücretsiz AI mesaj hakknı doldurdun. Daha fazlası için hesap oluştur.",
+    "limit": "Bugünkü ücretsiz AI mesaj hakkını doldurdun. Daha fazlası için hesap oluştur.",
     "quota": "Misafir test hakkın kullanıldı. Daha fazla test için hesap oluştur.",
     "unavailable": "Test üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."

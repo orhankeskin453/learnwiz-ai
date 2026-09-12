@@ -5,7 +5,12 @@ import type { QuizGenerationResponse } from "@learwizai/types";
 import { AiUnavailableError, generateStructured } from "../services/ai/generate";
 import { buildQuizMessages } from "../services/ai/prompts";
 import { recordAiUsage } from "../services/ai/usage";
-import { getOwnedQuizQuestions, saveQuiz, saveQuizAttempt } from "../services/learning";
+import {
+  getOwnedQuizQuestions,
+  listOwnedQuizzes,
+  saveQuiz,
+  saveQuizAttempt,
+} from "../services/learning";
 import { recordGuestUsage } from "../services/guestSessions";
 import { enforceAiBudget } from "../middleware/aiBudget";
 import { ownerOf } from "./learn";
@@ -95,7 +100,7 @@ quizRoute.post("/:id/attempts", async (c) => {
   }
   const owner = ownerOf(c);
   const quiz = await getOwnedQuizQuestions(c.env.DB, c.req.param("id"), owner);
-  if (!quiz) {
+  if (!quiz || quiz.kind !== "quiz") {
     return c.json({ error: "not_found" } satisfies { error: "not_found" }, 404);
   }
   const answers = parsed.data.answers;
@@ -103,6 +108,26 @@ quizRoute.post("/:id/attempts", async (c) => {
     (acc, question, index) => acc + (answers[index] === question.answer ? 1 : 0),
     0,
   );
-  await saveQuizAttempt(c.env.DB, c.req.param("id"), score, answers);
+  await saveQuizAttempt(c.env.DB, c.req.param("id"), score, quiz.questions.length, answers);
   return c.json({ score, total: quiz.questions.length });
+});
+
+quizRoute.get("/", async (c) => {
+  const identity = c.get("identity");
+  if (identity.kind === "anonymous") {
+    return c.json({ error: "unauthenticated" } satisfies { error: "unauthenticated" }, 401);
+  }
+  return c.json(await listOwnedQuizzes(c.env.DB, ownerOf(c)));
+});
+
+quizRoute.get("/:id", async (c) => {
+  const identity = c.get("identity");
+  if (identity.kind === "anonymous") {
+    return c.json({ error: "unauthenticated" } satisfies { error: "unauthenticated" }, 401);
+  }
+  const quiz = await getOwnedQuizQuestions(c.env.DB, c.req.param("id"), ownerOf(c));
+  if (!quiz) {
+    return c.json({ error: "not_found" } satisfies { error: "not_found" }, 404);
+  }
+  return c.json(quiz);
 });

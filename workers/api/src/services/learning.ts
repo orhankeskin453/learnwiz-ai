@@ -137,6 +137,8 @@ export async function getOwnedQuizQuestions(
   quizId: string,
   owner: Owner,
 ): Promise<{
+  id: string;
+  kind: "quiz" | "practice";
   topic: string;
   difficulty: QuizDifficulty;
   locale: Locale;
@@ -144,11 +146,12 @@ export async function getOwnedQuizQuestions(
 } | null> {
   const quiz = await db
     .prepare(
-      "SELECT id, topic, difficulty, locale, owner_user_id, owner_guest_session_id FROM quizzes WHERE id = ?",
+      "SELECT id, kind, topic, difficulty, locale, owner_user_id, owner_guest_session_id FROM quizzes WHERE id = ?",
     )
     .bind(quizId)
     .first<{
       id: string;
+      kind: "quiz" | "practice";
       topic: string;
       difficulty: QuizDifficulty;
       locale: Locale;
@@ -169,6 +172,8 @@ export async function getOwnedQuizQuestions(
     .bind(quizId)
     .all<{ question: string; options: string; answer: number; explanation: string }>();
   return {
+    id: quiz.id,
+    kind: quiz.kind,
     topic: quiz.topic,
     difficulty: quiz.difficulty,
     locale: quiz.locale,
@@ -185,12 +190,37 @@ export async function saveQuizAttempt(
   db: D1Database,
   quizId: string,
   score: number,
+  total: number,
   answers: number[],
 ): Promise<void> {
   await db
     .prepare(
       "INSERT INTO quiz_attempts (id, quiz_id, score, total, answers, created_at) VALUES (?, ?, ?, ?, ?, ?)",
     )
-    .bind(randomHex(16), quizId, score, answers.length, JSON.stringify(answers), nowIso())
+    .bind(randomHex(16), quizId, score, total, JSON.stringify(answers), nowIso())
     .run();
+}
+
+export async function listOwnedQuizzes(db: D1Database, owner: Owner) {
+  const { results } = await db
+    .prepare(
+      "SELECT id, kind, topic, difficulty, locale, created_at FROM quizzes WHERE owner_user_id IS ? AND owner_guest_session_id IS ? ORDER BY created_at DESC LIMIT 50",
+    )
+    .bind(owner.userId, owner.guestSessionId)
+    .all<{
+      id: string;
+      kind: string;
+      topic: string;
+      difficulty: QuizDifficulty;
+      locale: Locale;
+      created_at: string;
+    }>();
+  return results.map((r) => ({
+    id: r.id,
+    kind: r.kind,
+    topic: r.topic,
+    difficulty: r.difficulty,
+    locale: r.locale,
+    createdAt: r.created_at,
+  }));
 }

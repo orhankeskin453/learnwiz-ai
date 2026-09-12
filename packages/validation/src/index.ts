@@ -147,7 +147,10 @@ export const lessonContentSchema = z.object({
 
 export const questionSchema = z.object({
   question: z.string().min(1).max(500),
-  options: z.array(z.string().min(1).max(200)).length(4),
+  options: z
+    .array(z.string().min(1).max(200))
+    .length(4)
+    .refine((opts) => new Set(opts).size === 4, { message: "options must be unique" }),
   answer: z.number().int().min(0).max(3),
   explanation: z.string().min(1).max(1000),
 });

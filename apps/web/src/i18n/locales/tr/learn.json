@@ -19,7 +19,7 @@
   "previous": "Geri",
   "newLesson": "Yeni ders başlat",
   "errors": {
-    "limit": "Bugünkü ücretsiz AI mesaj hakknı doldurdun. Daha fazlası için hesap oluştur.",
+    "limit": "Bugünkü ücretsiz AI mesaj hakkını doldurdun. Daha fazlası için hesap oluştur.",
     "quota": "Misafir ders hakkın kullanıldı. Öğrenmeye devam etmek için hesap oluştur.",
     "unavailable": "Ders üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."

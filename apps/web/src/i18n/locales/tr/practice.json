@@ -19,7 +19,7 @@
     "score": "{{total}} sorudan {{score}} tanesini doğru cevapladın."
   },
   "errors": {
-    "limit": "Bugünkü ücretsiz AI mesaj hakknı doldurdun. Daha fazlası için hesap oluştur.",
+    "limit": "Bugünkü ücretsiz AI mesaj hakkını doldurdun. Daha fazlası için hesap oluştur.",
     "quota": "Misafir alıştırma soruların kullanıldı. Devam etmek için hesap oluştur.",
     "unavailable": "Soru üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
