@@ -13,4 +13,11 @@ export interface Env {
   DOCS: R2Bucket;
   /** SPA static assets (same-origin deployment, spec §5). */
   ASSETS: Fetcher;
+  /**
+   * HMAC secret for guest session cookies (§5 "signed" cookie). Provisioned via
+   * `wrangler secret put` (dev/staging/production), `.dev.vars` locally and
+   * miniflare bindings in tests — NEVER committed. Guest routes fail closed
+   * (500 config_error) when missing or shorter than 32 chars.
+   */
+  GUEST_SESSION_SECRET?: string;
 }

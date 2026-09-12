@@ -1,0 +1,4 @@
+# Local development secrets for `wrangler dev` (copy to `.dev.vars` — that file is
+# gitignored and NEVER committed). Generate a real value:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+GUEST_SESSION_SECRET=replace-with-64-hex-chars-per-env
