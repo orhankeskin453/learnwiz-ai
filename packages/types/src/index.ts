@@ -40,6 +40,7 @@ export type ApiErrorCode =
   | "internal_error"
   | "ai_limit_reached"
   | "ai_unavailable"
+  | "quota_exhausted"
   | "conversation_not_found";
 
 export interface ApiErrorBody {
@@ -122,4 +123,57 @@ export interface ConversationDetail extends ConversationSummary {
 export interface QuotaState {
   used: number;
   limit: number;
+}
+
+/** §10.4 structured lesson — the six blocks always in teaching order. */
+export type LessonBlockKind =
+  "concept" | "intuition" | "example" | "common_mistakes" | "mini_exercise" | "check_understanding";
+
+export interface LessonBlock {
+  kind: LessonBlockKind;
+  content: string;
+  /** Only on check_understanding. */
+  question?: string;
+  answer?: string;
+}
+
+export interface Lesson {
+  title: string;
+  blocks: LessonBlock[];
+}
+
+export interface LessonSummary {
+  id: string;
+  topic: string;
+  locale: Locale;
+  createdAt: string;
+}
+
+/** §10.5/§10.6 MCQ question (answers ship for instant client-side feedback). */
+export interface PracticeQuestion {
+  question: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+}
+
+export type QuizDifficulty = "easy" | "medium" | "hard";
+
+export interface GeneratedQuiz {
+  id: string;
+  topic: string;
+  difficulty: QuizDifficulty;
+  locale: Locale;
+  questions: PracticeQuestion[];
+}
+
+export interface QuizAttemptResult {
+  score: number;
+  total: number;
+}
+
+/** Body of POST /api/practice and POST /api/quiz (§10.5/§10.6). */
+export interface QuizGenerationResponse {
+  quizId: string;
+  questions: PracticeQuestion[];
 }

@@ -1,6 +1,14 @@
-import type { ChatResponse, ConversationDetail, TutorAction } from "@learwizai/types";
-import { apiClient } from "./apiClient";
+import type {
+  ChatResponse,
+  ConversationDetail,
+  Lesson,
+  QuotaState,
+  QuizAttemptResult,
+  QuizGenerationResponse,
+  TutorAction,
+} from "@learwizai/types";
 import type { Locale } from "@learwizai/types";
+import { apiClient } from "./apiClient";
 
 const CHAT_PATH = "/api/tutor/chat";
 
@@ -40,6 +48,51 @@ export async function listConversations(): Promise<
   );
 }
 
-export async function getTutorQuota(): Promise<import("@learwizai/types").QuotaState> {
-  return apiClient.get<import("@learwizai/types").QuotaState>("/api/tutor/quota");
+export async function getTutorQuota(): Promise<QuotaState> {
+  return apiClient.get<QuotaState>("/api/tutor/quota");
+}
+
+/** ---- Learning features (Step 6) ---- */
+
+export async function generateLesson(input: {
+  topic: string;
+  locale: Locale;
+}): Promise<{ lessonId: string; lesson: Lesson }> {
+  return apiClient.post<{ lessonId: string; lesson: Lesson }>("/api/learn/lessons", {
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function generatePractice(input: {
+  topic: string;
+  count: number;
+  locale: Locale;
+}): Promise<QuizGenerationResponse> {
+  return apiClient.post<QuizGenerationResponse>("/api/practice", {
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function generateQuiz(input: {
+  topic: string;
+  difficulty: "easy" | "medium" | "hard";
+  count: number;
+  locale: Locale;
+}): Promise<QuizGenerationResponse> {
+  return apiClient.post<QuizGenerationResponse>("/api/quiz", {
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function submitQuizAttempt(
+  quizId: string,
+  answers: number[],
+): Promise<QuizAttemptResult> {
+  return apiClient.post<QuizAttemptResult>(`/api/quiz/${quizId}/attempts`, {
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ answers }),
+  });
 }

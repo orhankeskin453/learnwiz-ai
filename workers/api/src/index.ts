@@ -7,6 +7,9 @@ import { requestIdMiddleware } from "./middleware/requestId";
 import { guestRoute } from "./routes/guest";
 import { authRoute } from "./routes/auth";
 import { tutorRoute } from "./routes/tutor";
+import { learnRoute } from "./routes/learn";
+import { practiceRoute } from "./routes/practice";
+import { quizRoute } from "./routes/quiz";
 import { healthRoute } from "./routes/health";
 import { ConfigError } from "./services/identity";
 
@@ -23,6 +26,9 @@ app.route("/health", healthRoute);
 app.route("/guest/session", guestRoute);
 app.route("/auth", authRoute);
 app.route("/tutor", tutorRoute);
+app.route("/learn", learnRoute);
+app.route("/practice", practiceRoute);
+app.route("/quiz", quizRoute);
 
 app.notFound((c) => c.json({ error: "not_found", path: c.req.path }, 404));
 

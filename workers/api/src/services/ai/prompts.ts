@@ -41,3 +41,70 @@ export function titleFromMessage(message: string): string {
   const trimmed = message.trim().replace(/\s+/g, " ");
   return trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}…`;
 }
+
+/** ---- Structured generation prompts (Step 6) ----
+ * System messages carry distinctive role markers ("lesson architect" etc.) that
+ * the test-only mock AI matches on (spec D10). */
+
+const JSON_RULE =
+  "Return ONLY the JSON object — no markdown fences, no commentary before or after it.";
+
+export function buildLessonMessages(
+  topic: string,
+  locale: Locale,
+): import("./client").ChatMessage[] {
+  const language = LANGUAGE_NAMES[locale];
+  return [
+    {
+      role: "system",
+      content: `${PERSONA(language)}
+
+Task: you are LearWizAI's lesson architect. Design a structured lesson on the given topic with EXACTLY six blocks in this teaching order: concept, intuition, example, common_mistakes, mini_exercise, check_understanding. Each block content is plain text (short paragraphs, lists allowed). The check_understanding block also carries "question" and "answer" fields.
+
+${JSON_RULE} Response shape:
+{"title":"<=120 chars","blocks":[{"kind":"concept","content":"..."},{"kind":"intuition","content":"..."},{"kind":"example","content":"..."},{"kind":"common_mistakes","content":"..."},{"kind":"mini_exercise","content":"..."},{"kind":"check_understanding","content":"...","question":"...","answer":"..."}]}`,
+    },
+    { role: "user", content: topic },
+  ];
+}
+
+export function buildPracticeMessages(
+  topic: string,
+  count: number,
+  locale: Locale,
+): import("./client").ChatMessage[] {
+  const language = LANGUAGE_NAMES[locale];
+  return [
+    {
+      role: "system",
+      content: `${PERSONA(language)}
+
+Task: you are LearWizAI's practice coach. Write exactly ${count} multiple-choice practice questions about the given topic at a learner-friendly level. Each question has exactly 4 options, one correct "answer" index (0-3), and a short explanation of why the answer is right.
+
+${JSON_RULE} Response shape:
+{"questions":[{"question":"...","options":["...","...","...","..."],"answer":0,"explanation":"..."}]}`,
+    },
+    { role: "user", content: topic },
+  ];
+}
+
+export function buildQuizMessages(
+  topic: string,
+  difficulty: "easy" | "medium" | "hard",
+  count: number,
+  locale: Locale,
+): import("./client").ChatMessage[] {
+  const language = LANGUAGE_NAMES[locale];
+  return [
+    {
+      role: "system",
+      content: `${PERSONA(language)}
+
+Task: you are LearWizAI's quiz generator. Write exactly ${count} multiple-choice quiz questions about the given topic at ${difficulty} difficulty. Each question has exactly 4 options, one correct "answer" index (0-3), and a short explanation.
+
+${JSON_RULE} Response shape:
+{"questions":[{"question":"...","options":["...","...","...","..."],"answer":0,"explanation":"..."}]}`,
+    },
+    { role: "user", content: topic },
+  ];
+}

@@ -58,13 +58,31 @@ function startOfUtcDay(): string {
   ).toISOString();
 }
 
-/** Free-plan daily AI count (§10.10: 10/day) — ledger-driven, resets at UTC midnight. */
+function startOfUtcMonth(): string {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+}
+
+/**
+ * Free-plan daily AI count (§10.10: 10/day) — SHARED pool across all AI features
+ * (tutor, learn, practice, quiz generations) per the Step 6 spec D4 reading.
+ * Ledger-driven, resets at UTC midnight.
+ */
 export async function countUserAiUsageToday(db: D1Database, userId: string): Promise<number> {
   const row = await db
-    .prepare(
-      "SELECT COUNT(*) AS n FROM ai_usage WHERE user_id = ? AND task_type = 'tutor' AND created_at >= ?",
-    )
+    .prepare("SELECT COUNT(*) AS n FROM ai_usage WHERE user_id = ? AND created_at >= ?")
     .bind(userId, startOfUtcDay())
+    .first<{ n: number }>();
+  return row?.n ?? 0;
+}
+
+/** Free-plan quiz count in the current UTC month (§32: 5 quizzes/month). */
+export async function countUserQuizUsageThisMonth(db: D1Database, userId: string): Promise<number> {
+  const row = await db
+    .prepare(
+      "SELECT COUNT(*) AS n FROM ai_usage WHERE user_id = ? AND task_type = 'quiz' AND created_at >= ?",
+    )
+    .bind(userId, startOfUtcMonth())
     .first<{ n: number }>();
   return row?.n ?? 0;
 }

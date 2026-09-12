@@ -1,0 +1,26 @@
+{
+  "title": "Test Oluşturucu",
+  "subtitle": "Her konuda test üret.",
+  "topicLabel": "Test konusu",
+  "topicPlaceholder": "örn. II. Dünya Savaşı",
+  "difficultyLabel": "Zorluk",
+  "difficulties": { "easy": "Kolay", "medium": "Orta", "hard": "Zor" },
+  "countLabel": "Soru sayısı",
+  "start": "Test üret",
+  "generating": "Testin üretiliyor…",
+  "runner": {
+    "questionOf": "Soru {{index}} / {{total}}",
+    "next": "Sonraki soru",
+    "finish": "Testi bitir"
+  },
+  "summary": {
+    "title": "Test tamamlandı",
+    "score": "{{total}} sorudan {{score}} puan aldın."
+  },
+  "errors": {
+    "limit": "Bugünkü ücretsiz AI mesaj hakknı doldurdun. Daha fazlası için hesap oluştur.",
+    "quota": "Misafir test hakkın kullanıldı. Daha fazla test için hesap oluştur.",
+    "unavailable": "Test üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  }
+}

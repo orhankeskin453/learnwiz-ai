@@ -1,0 +1,27 @@
+{
+  "title": "Öğrenme Modu",
+  "subtitle": "Her konuda yapılandırılmış ders — yazı dökümü değil, öğretme.",
+  "topicLabel": "Ne öğrenmek istersin?",
+  "topicPlaceholder": "örn. Fotokimya",
+  "generate": "Dersimi oluştur",
+  "generating": "Dersin hazırlanıyor…",
+  "blocks": {
+    "concept": "Kavram",
+    "intuition": "Sezgi",
+    "example": "Örnek",
+    "common_mistakes": "Yaygın hatalar",
+    "mini_exercise": "Mini alıştırma",
+    "check_understanding": "Anladını kontrol et"
+  },
+  "showAnswer": "Cevabı göster",
+  "hideAnswer": "Cevabı gizle",
+  "next": "İleri",
+  "previous": "Geri",
+  "newLesson": "Yeni ders başlat",
+  "errors": {
+    "limit": "Bugünkü ücretsiz AI mesaj hakknı doldurdun. Daha fazlası için hesap oluştur.",
+    "quota": "Misafir ders hakkın kullanıldı. Öğrenmeye devam etmek için hesap oluştur.",
+    "unavailable": "Ders üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  }
+}

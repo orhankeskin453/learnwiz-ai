@@ -1,0 +1,26 @@
+{
+  "title": "Quiz Generator",
+  "subtitle": "Generate a quiz on any topic.",
+  "topicLabel": "Quiz topic",
+  "topicPlaceholder": "e.g. World War II",
+  "difficultyLabel": "Difficulty",
+  "difficulties": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+  "countLabel": "Questions",
+  "start": "Generate quiz",
+  "generating": "Generating your quiz…",
+  "runner": {
+    "questionOf": "Question {{index}} of {{total}}",
+    "next": "Next question",
+    "finish": "Submit quiz"
+  },
+  "summary": {
+    "title": "Quiz complete",
+    "score": "You scored {{score}} of {{total}}."
+  },
+  "errors": {
+    "limit": "You have used all of your free AI messages for today. Create an account for more.",
+    "quota": "Your guest quiz has been used. Create an account to generate more quizzes.",
+    "unavailable": "Quiz generation is unavailable right now. Please try again in a moment.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

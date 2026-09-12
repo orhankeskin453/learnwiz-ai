@@ -1,0 +1,27 @@
+{
+  "title": "Learn Mode",
+  "subtitle": "A structured lesson on any topic — taught, not dumped.",
+  "topicLabel": "What do you want to learn?",
+  "topicPlaceholder": "e.g. Photosynthesis",
+  "generate": "Create my lesson",
+  "generating": "Preparing your lesson…",
+  "blocks": {
+    "concept": "Concept",
+    "intuition": "Intuition",
+    "example": "Example",
+    "common_mistakes": "Common mistakes",
+    "mini_exercise": "Mini exercise",
+    "check_understanding": "Check your understanding"
+  },
+  "showAnswer": "Show answer",
+  "hideAnswer": "Hide answer",
+  "next": "Next",
+  "previous": "Previous",
+  "newLesson": "Start a new lesson",
+  "errors": {
+    "limit": "You have used all of your free AI messages for today. Create an account for more.",
+    "quota": "Your guest lesson limit has been used. Create an account to keep learning.",
+    "unavailable": "Lesson generation is unavailable right now. Please try again in a moment.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

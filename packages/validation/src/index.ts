@@ -101,3 +101,60 @@ export const chatSchema = z.object({
   action: tutorActionSchema.optional(),
   locale: localeSchema,
 });
+
+export const topicSchema = z.string().trim().min(1).max(120);
+export const difficultySchema = z.enum(["easy", "medium", "hard"]);
+
+export const learnRequestSchema = z.object({ topic: topicSchema, locale: localeSchema });
+
+export const practiceRequestSchema = z.object({
+  topic: topicSchema,
+  count: z.number().int().min(3).max(10).default(3),
+  locale: localeSchema,
+});
+
+export const quizRequestSchema = z.object({
+  topic: topicSchema,
+  difficulty: difficultySchema,
+  count: z.union([z.literal(3), z.literal(5), z.literal(10)]),
+  locale: localeSchema,
+});
+
+export const attemptSchema = z.object({
+  answers: z.array(z.number().int().min(0).max(3)),
+});
+
+/** ---- AI output schemas (§10.6: validate BEFORE presenting) ---- */
+
+const blockText = z.string().min(1).max(4000);
+
+export const lessonContentSchema = z.object({
+  title: z.string().min(1).max(120),
+  blocks: z.tuple([
+    z.object({ kind: z.literal("concept"), content: blockText }),
+    z.object({ kind: z.literal("intuition"), content: blockText }),
+    z.object({ kind: z.literal("example"), content: blockText }),
+    z.object({ kind: z.literal("common_mistakes"), content: blockText }),
+    z.object({ kind: z.literal("mini_exercise"), content: blockText }),
+    z.object({
+      kind: z.literal("check_understanding"),
+      content: blockText,
+      question: z.string().min(1).max(500),
+      answer: z.string().min(1).max(1000),
+    }),
+  ]),
+});
+
+export const questionSchema = z.object({
+  question: z.string().min(1).max(500),
+  options: z.array(z.string().min(1).max(200)).length(4),
+  answer: z.number().int().min(0).max(3),
+  explanation: z.string().min(1).max(1000),
+});
+
+export const questionSetSchema = z.object({
+  questions: z.array(questionSchema).min(1).max(10),
+});
+
+export type LessonContent = z.infer<typeof lessonContentSchema>;
+export type QuestionSet = z.infer<typeof questionSetSchema>;

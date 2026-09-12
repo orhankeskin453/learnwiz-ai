@@ -1,13 +1,22 @@
 import type enCommon from "./locales/en/common.json";
 import type enNav from "./locales/en/nav.json";
+import type enLearn from "./locales/en/learn.json";
+import type enPractice from "./locales/en/practice.json";
+import type enQuiz from "./locales/en/quiz.json";
 import type enStyleguide from "./locales/en/styleguide.json";
 import type enTutor from "./locales/en/tutor.json";
 import enCommonJson from "./locales/en/common.json";
 import enNavJson from "./locales/en/nav.json";
+import enLearnJson from "./locales/en/learn.json";
+import enPracticeJson from "./locales/en/practice.json";
+import enQuizJson from "./locales/en/quiz.json";
 import enStyleguideJson from "./locales/en/styleguide.json";
 import enTutorJson from "./locales/en/tutor.json";
 import trCommonJson from "./locales/tr/common.json";
 import trNavJson from "./locales/tr/nav.json";
+import trLearnJson from "./locales/tr/learn.json";
+import trPracticeJson from "./locales/tr/practice.json";
+import trQuizJson from "./locales/tr/quiz.json";
 import trStyleguideJson from "./locales/tr/styleguide.json";
 import trTutorJson from "./locales/tr/tutor.json";
 
@@ -15,11 +24,35 @@ import trTutorJson from "./locales/tr/tutor.json";
 export const SUPPORTED_LOCALES = ["en", "tr"] as const;
 
 /** Namespace names shipped so far; later steps add their own (spec §6.1). */
-export const NAMESPACES = ["common", "nav", "styleguide", "tutor"] as const;
+export const NAMESPACES = [
+  "common",
+  "nav",
+  "styleguide",
+  "tutor",
+  "learn",
+  "practice",
+  "quiz",
+] as const;
 
 export const resources = {
-  en: { common: enCommonJson, nav: enNavJson, styleguide: enStyleguideJson, tutor: enTutorJson },
-  tr: { common: trCommonJson, nav: trNavJson, styleguide: trStyleguideJson, tutor: trTutorJson },
+  en: {
+    common: enCommonJson,
+    nav: enNavJson,
+    styleguide: enStyleguideJson,
+    tutor: enTutorJson,
+    learn: enLearnJson,
+    practice: enPracticeJson,
+    quiz: enQuizJson,
+  },
+  tr: {
+    common: trCommonJson,
+    nav: trNavJson,
+    styleguide: trStyleguideJson,
+    tutor: trTutorJson,
+    learn: trLearnJson,
+    practice: trPracticeJson,
+    quiz: trQuizJson,
+  },
 } as const;
 
 /** English resource shape — the source of truth for typed keys. */
@@ -28,4 +61,7 @@ export type EnResources = {
   nav: typeof enNav;
   styleguide: typeof enStyleguide;
   tutor: typeof enTutor;
+  learn: typeof enLearn;
+  practice: typeof enPractice;
+  quiz: typeof enQuiz;
 };

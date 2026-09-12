@@ -74,14 +74,15 @@ export async function recordGuestUsage(
   db: D1Database,
   sessionId: string,
   feature: Feature,
+  amount = 1,
 ): Promise<void> {
   await db
     .prepare(
       `INSERT INTO guest_usage (guest_session_id, feature, used, last_used_at)
-       VALUES (?, ?, 1, ?)
-       ON CONFLICT (guest_session_id, feature) DO UPDATE SET used = used + 1, last_used_at = excluded.last_used_at`,
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT (guest_session_id, feature) DO UPDATE SET used = used + excluded.used, last_used_at = excluded.last_used_at`,
     )
-    .bind(sessionId, feature, nowIso())
+    .bind(sessionId, feature, amount, nowIso())
     .run();
 }
 

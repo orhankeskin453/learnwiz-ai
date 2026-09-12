@@ -1,0 +1,27 @@
+{
+  "title": "Practice Mode",
+  "subtitle": "Quick questions, instant feedback.",
+  "topicLabel": "Topic to practice",
+  "topicPlaceholder": "e.g. Linear algebra",
+  "start": "Start practice",
+  "starting": "Preparing questions…",
+  "runner": {
+    "questionOf": "Question {{index}} of {{total}}",
+    "check": "Check answer",
+    "next": "Next question",
+    "finish": "See results",
+    "correct": "Correct!",
+    "incorrect": "Not quite.",
+    "explanation": "Why:"
+  },
+  "summary": {
+    "title": "Practice complete",
+    "score": "You answered {{score}} of {{total}} correctly."
+  },
+  "errors": {
+    "limit": "You have used all of your free AI messages for today. Create an account for more.",
+    "quota": "Your guest practice questions have been used. Create an account to keep practicing.",
+    "unavailable": "Question generation is unavailable right now. Please try again in a moment.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

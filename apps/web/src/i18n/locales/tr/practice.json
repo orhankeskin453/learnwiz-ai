@@ -1,0 +1,27 @@
+{
+  "title": "Alıştırma Modu",
+  "subtitle": "Hızlı sorular, anında geri bildirim.",
+  "topicLabel": "Alıştırma konusu",
+  "topicPlaceholder": "örn. Lineer cebir",
+  "start": "Alıştırmaya başla",
+  "starting": "Sorular hazırlanıyor…",
+  "runner": {
+    "questionOf": "Soru {{index}} / {{total}}",
+    "check": "Cevabı kontrol et",
+    "next": "Sonraki soru",
+    "finish": "Sonuçları gör",
+    "correct": "Doğru!",
+    "incorrect": "Tam olarak değil.",
+    "explanation": "Neden:"
+  },
+  "summary": {
+    "title": "Alıştırma tamamlandı",
+    "score": "{{total}} sorudan {{score}} tanesini doğru cevapladın."
+  },
+  "errors": {
+    "limit": "Bugünkü ücretsiz AI mesaj hakknı doldurdun. Daha fazlası için hesap oluştur.",
+    "quota": "Misafir alıştırma soruların kullanıldı. Devam etmek için hesap oluştur.",
+    "unavailable": "Soru üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  }
+}

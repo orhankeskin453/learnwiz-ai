@@ -27,10 +27,18 @@ export interface ChatCompletion {
   usageProvided: boolean;
 }
 
+interface MockMatcher {
+  ifSystemContains: string;
+  text: string;
+}
+
 interface MockSpec {
   behavior: "stream" | "fail";
   deltas?: string[];
   text?: string;
+  /** Structured-generation fixtures: pick output by a marker in the system prompt. */
+  match?: MockMatcher[];
+  defaultText?: string;
   usage?: { prompt_tokens: number; completion_tokens: number };
 }
 
@@ -62,7 +70,9 @@ export async function runChat(
     if (!spec || spec.behavior === "fail") {
       throw new Error(`mock AI failure for ${model}`);
     }
-    const text = spec.text ?? (spec.deltas ?? []).join("");
+    const system = messages.find((m) => m.role === "system")?.content ?? "";
+    const matcher = spec.match?.find((m) => system.includes(m.ifSystemContains));
+    const text = matcher?.text ?? spec.text ?? spec.defaultText ?? (spec.deltas ?? []).join("");
     if (!spec.usage) throw new Error("mock AI spec missing usage");
     return {
       text,
