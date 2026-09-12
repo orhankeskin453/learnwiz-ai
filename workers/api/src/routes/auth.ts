@@ -96,10 +96,10 @@ authRoute.post("/register", async (c) => {
   if (throttle) return throttle;
 
   const { email, password } = parsed.data;
+  // Single PBKDF2 evaluation BEFORE the existence branch — the expensive crypto
+  // work is identical for both paths so timing cannot enumerate emails (§40.9).
+  const passwordHash = await hashPassword(password, passwordIterations(c.env));
   const existing = await findUserByEmail(c.env.DB, email);
-  // Equalize work between branches so response timing cannot enumerate emails.
-  const iterations = passwordIterations(c.env);
-  await hashPassword(existing ? "timing-equalizer" : password, iterations);
   if (existing) {
     return c.json({ ok: true } satisfies GenericAuthResponse, 201);
   }
@@ -107,7 +107,7 @@ authRoute.post("/register", async (c) => {
   const user = await createUser(c.env.DB, {
     email,
     emailNormalized: email,
-    passwordHash: await hashPassword(password, iterations),
+    passwordHash,
   });
   const { token } = await createAuthToken(c.env.DB, user.id, "email_verification");
   await sendAuthEmail(c.env, c.env.DB, {
@@ -124,6 +124,11 @@ authRoute.post("/register", async (c) => {
     resourceId: user.id,
     requestId: c.get("requestId"),
     metadata: { locale: user.locale },
+  });
+  await writeAudit(c.env.DB, {
+    actorUserId: user.id,
+    action: "email_verification_sent",
+    requestId: c.get("requestId"),
   });
   return c.json({ ok: true } satisfies GenericAuthResponse, 201);
 });
@@ -164,6 +169,11 @@ authRoute.post("/verify-email", async (c) => {
   await writeAudit(c.env.DB, {
     actorUserId: user.id,
     action: "email_verified",
+    requestId: c.get("requestId"),
+  });
+  await writeAudit(c.env.DB, {
+    actorUserId: user.id,
+    action: "signup_completed",
     requestId: c.get("requestId"),
   });
 
@@ -270,6 +280,13 @@ authRoute.post("/logout", async (c) => {
   await revokeSession(c.env.DB, identity.sessionId);
   await writeAudit(c.env.DB, {
     actorUserId: identity.userId,
+    action: "session_revoked",
+    resourceType: "session",
+    resourceId: identity.sessionId,
+    requestId: c.get("requestId"),
+  });
+  await writeAudit(c.env.DB, {
+    actorUserId: identity.userId,
     action: "logout",
     requestId: c.get("requestId"),
   });
@@ -336,6 +353,10 @@ authRoute.post("/reset-password", async (c) => {
       400,
     );
   }
+  // CPU-cost guard: unthrottled PBKDF2 here would be a denial-of-wallet vector (§18).
+  const throttle = await limited(c, "reset-confirm", clientIp(c), 10, 3600);
+  if (throttle) return throttle;
+
   const consumed = await consumeAuthToken(c.env.DB, parsed.data.token, "password_reset");
   if (!consumed) {
     return c.json({ error: "invalid_token" } satisfies { error: "invalid_token" }, 400);
@@ -346,6 +367,13 @@ authRoute.post("/reset-password", async (c) => {
     await hashPassword(parsed.data.password, passwordIterations(c.env)),
   );
   await revokeAllSessions(c.env.DB, consumed.userId);
+  await writeAudit(c.env.DB, {
+    actorUserId: consumed.userId,
+    action: "session_revoked",
+    resourceType: "session",
+    requestId: c.get("requestId"),
+    metadata: { scope: "all", reason: "password_reset" },
+  });
   await writeAudit(c.env.DB, {
     actorUserId: consumed.userId,
     action: "password_reset_completed",

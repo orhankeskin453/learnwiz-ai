@@ -69,9 +69,12 @@ export async function consumeAuthToken(
     .first<{ id: string; user_id: string; expires_at: string; consumed_at: string | null }>();
   if (!row || row.consumed_at || Date.parse(row.expires_at) <= Date.now()) return null;
 
-  await db
+  // Race-safe single-use: the conditional UPDATE must win exactly once — a
+  // concurrent consumer's UPDATE matches 0 rows and is rejected here.
+  const result = await db
     .prepare("UPDATE auth_tokens SET consumed_at = ? WHERE id = ? AND consumed_at IS NULL")
     .bind(new Date().toISOString(), row.id)
     .run();
+  if ((result.meta.changes ?? 0) !== 1) return null;
   return { userId: row.user_id };
 }

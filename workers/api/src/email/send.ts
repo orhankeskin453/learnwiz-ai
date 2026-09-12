@@ -40,13 +40,13 @@ export async function sendAuthEmail(
     eventType: input.eventType,
     templateKey: input.templateKey,
     userId: input.userId,
+    from: emailFrom(env),
     to: input.to,
     locale: input.locale,
     subject: content.subject,
     html: content.html,
     text: content.text,
   };
-  void emailFrom(env); // from-address is provider wiring (runbook); kept out of log provider
   const provider = getEmailProvider(env);
   const eventId = await queueEmail(db, message, provider.name);
   await deliverEmail(db, provider, eventId, message);

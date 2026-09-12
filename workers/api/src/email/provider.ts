@@ -14,6 +14,8 @@ export interface EmailMessage {
   eventType: EmailEventType;
   templateKey: string;
   userId: string | null;
+  /** Configured sender identity (EMAIL_FROM_ADDRESS) — null until wired. */
+  from: string | null;
   to: string;
   locale: Locale;
   subject: string;

@@ -70,10 +70,12 @@ describe("POST /api/auth/register", () => {
     ).first<{ event_type: string; status: string; locale: string }>();
     expect(emailEvent).toMatchObject({ event_type: "verification", status: "sent", locale: "en" });
 
-    const audit = await env.DB.prepare(
-      "SELECT action FROM audit_events ORDER BY created_at DESC LIMIT 1",
-    ).first<{ action: string }>();
-    expect(audit?.action).toBe("signup_started");
+    const audits = await env.DB.prepare("SELECT action FROM audit_events").all<{
+      action: string;
+    }>();
+    const auditActions = audits.results.map((r) => r.action);
+    expect(auditActions).toContain("signup_started");
+    expect(auditActions).toContain("email_verification_sent");
   });
 
   it("responds identically for duplicate emails WITHOUT side effects", async () => {
@@ -414,5 +416,112 @@ describe("guest usage of auth endpoints", () => {
     expect(me.status).toBe(401);
     const logout = await SELF.fetch(`${BASE}/logout`, { method: "POST", headers: IP });
     expect(logout.status).toBe(401);
+  });
+});
+
+describe("token purpose separation + resend (§40.9)", () => {
+  beforeEach(async () => {
+    const { env } = await import("cloudflare:test");
+    await env.DB.prepare("DELETE FROM users").run();
+  });
+
+  it("rejects a password_reset token submitted as email verification (purpose mismatch)", async () => {
+    const email = "purpose@example.com";
+    const { userId } = await registerAndMintToken(email);
+    const { env } = await import("cloudflare:test");
+    const { token: resetToken } = await createAuthToken(env.DB, userId, "password_reset");
+
+    const res = await SELF.fetch(`${BASE}/verify-email`, {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ token: resetToken }),
+    });
+    expect(res.status).toBe(400);
+    expect((await jsonBody<ApiErrorBody>(res)).error).toBe("invalid_token");
+  });
+
+  it("resend-verification responds generically and invalidates the earlier token", async () => {
+    const email = "resend@example.com";
+    const { token: firstToken } = await registerAndMintToken(email);
+
+    const resend = await SELF.fetch(`${BASE}/resend-verification`, {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    expect(resend.status).toBe(200);
+    expect(await jsonBody<GenericAuthResponse>(resend)).toEqual({ ok: true });
+
+    // Unknown email: identical generic response (§40.9).
+    const unknown = await SELF.fetch(`${BASE}/resend-verification`, {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ email: "ghost@example.com" }),
+    });
+    expect(await unknown.json()).toEqual({ ok: true });
+
+    // Re-issue consumed the earlier outstanding token — firstToken must fail now.
+    const verifyOld = await SELF.fetch(`${BASE}/verify-email`, {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ token: firstToken }),
+    });
+    expect(verifyOld.status).toBe(400);
+    expect((await jsonBody<ApiErrorBody>(verifyOld)).error).toBe("invalid_token");
+  });
+
+  it("audits signup_completed, email_verified and guest_migration_completed on verification", async () => {
+    const guestRes = await SELF.fetch("http://local/api/guest/session", {
+      method: "POST",
+      headers: IP,
+    });
+    const guestCookie = cookieFrom(guestRes, "learwiz_guest_session")!;
+    const { token } = await registerAndMintToken("audits@example.com");
+
+    await SELF.fetch(`${BASE}/verify-email`, {
+      method: "POST",
+      headers: {
+        ...IP,
+        "content-type": "application/json",
+        cookie: `learwiz_guest_session=${guestCookie}`,
+      },
+      body: JSON.stringify({ token }),
+    });
+
+    const { env } = await import("cloudflare:test");
+    const actions = await env.DB.prepare("SELECT action FROM audit_events").all<{
+      action: string;
+    }>();
+    const written = actions.results.map((r) => r.action);
+    expect(written).toContain("email_verified");
+    expect(written).toContain("signup_completed");
+    expect(written).toContain("guest_migration_completed");
+    expect(written).toContain("email_verification_sent");
+  });
+
+  it("throttles the 11th login attempt for one IP+email", async () => {
+    const email = "throttle@example.com";
+    const { token } = await registerAndMintToken(email);
+    await SELF.fetch(`${BASE}/verify-email`, {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+
+    let last: Response | undefined;
+    for (let i = 0; i < 10; i++) {
+      last = await SELF.fetch(`${BASE}/login`, {
+        method: "POST",
+        headers: { ...IP, "content-type": "application/json" },
+        body: JSON.stringify({ email, password: PASSWORD }),
+      });
+      expect(last.status).toBe(200);
+    }
+    const eleventh = await SELF.fetch(`${BASE}/login`, {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ email, password: PASSWORD }),
+    });
+    expect(eleventh.status).toBe(429);
   });
 });
