@@ -2,7 +2,6 @@ import { SELF } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { ApiErrorBody, AuthSessionResponse, GenericAuthResponse } from "@learwizai/types";
 import { createAuthToken } from "../src/services/tokens";
-import { createUser } from "../src/services/users";
 
 const BASE = "http://local/api/auth";
 const IP = { "CF-Connecting-IP": "192.0.2.50" };

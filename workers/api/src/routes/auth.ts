@@ -13,6 +13,7 @@ import { buildSessionSetCookie, clearSessionCookie } from "../services/cookies";
 import { hashPassword, passwordIterations, verifyPassword } from "../services/passwords";
 import { enforceWindow } from "../services/rateLimit";
 import { revokeAllSessions, revokeSession, createSession } from "../services/sessions";
+// requireSecret intentionally unused here — guest routes enforce it; auth throttles self-contain
 import { createAuthToken, consumeAuthToken } from "../services/tokens";
 import {
   createUser,
@@ -24,7 +25,6 @@ import {
 } from "../services/users";
 import { setMigrationStatus } from "../services/guestSessions";
 import { writeAudit } from "../services/audit";
-import { requireSecret } from "../middleware/identity";
 
 /**
  * Auth endpoints (CLAUDE.md §47.2, §40.2). Anti-enumeration: register and
