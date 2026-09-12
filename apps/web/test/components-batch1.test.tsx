@@ -106,6 +106,6 @@ describe("State components", () => {
         <ErrorState />
       </main>,
     );
-    expect(await axe(container)).toHaveNoViolations();
+    await expect(await axe(container)).toHaveNoViolations();
   });
 });

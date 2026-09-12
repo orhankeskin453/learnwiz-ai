@@ -88,6 +88,6 @@ describe("AppShell", () => {
   it("shell has no axe violations", async () => {
     const { baseElement } = renderAt("/en");
     await screen.findByRole("complementary");
-    expect(await axe(baseElement)).toHaveNoViolations();
+    await expect(await axe(baseElement)).toHaveNoViolations();
   });
 });

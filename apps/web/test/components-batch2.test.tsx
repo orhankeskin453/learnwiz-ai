@@ -159,6 +159,6 @@ describe("Overlay a11y", () => {
     );
     await user.click(screen.getByRole("button", { name: "Open" }));
     await screen.findByRole("dialog");
-    expect(await axe(baseElement)).toHaveNoViolations();
+    await expect(await axe(baseElement)).toHaveNoViolations();
   });
 });
