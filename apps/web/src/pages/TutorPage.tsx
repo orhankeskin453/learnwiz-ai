@@ -100,6 +100,7 @@ export function TutorPage() {
       });
       setConversationId(response.conversationId);
       setTurns([...history, { role: "assistant", content: response.assistantMessage, action }]);
+      void refreshQuota();
     } catch (err) {
       // Keep the user's message visible; drop the placeholder and explain (§29).
       setTurns(history);
