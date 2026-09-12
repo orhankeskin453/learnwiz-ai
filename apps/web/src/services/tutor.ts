@@ -31,3 +31,15 @@ export async function sendTutorMessage(input: {
 export async function getConversation(id: string): Promise<ConversationDetail> {
   return apiClient.get<ConversationDetail>(`/api/tutor/conversations/${id}`);
 }
+
+export async function listConversations(): Promise<
+  import("@learwizai/types").ConversationSummary[]
+> {
+  return apiClient.get<import("@learwizai/types").ConversationSummary[]>(
+    "/api/tutor/conversations",
+  );
+}
+
+export async function getTutorQuota(): Promise<import("@learwizai/types").QuotaState> {
+  return apiClient.get<import("@learwizai/types").QuotaState>("/api/tutor/quota");
+}

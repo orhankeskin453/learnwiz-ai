@@ -57,3 +57,22 @@ POST /api/tutor/chat
    localized; placeholder route replaced.
 5. Docs: architecture.md AI section; ai_usage fields recorded per §14.
 6. Gates green; comprehensive review dispatched; ledger closed with dispositions.
+
+---
+
+## Amendment A (2026-09-12, post-review closure)
+
+- **D4/D8 superseded**: v1 ships NON-STREAMING chat. Two workerd stream-deadlock
+  findings during testing (unhandled TransformStream cancellations stalling the
+  runtime) made SSE pass-through the riskiest component; non-streaming also
+  strengthens §13.6 (exact synchronous token accounting, no estimation path).
+  SSE streaming is deferred to a 5b enhancement. (JSON) replaces
+  the SSE frame contract.
+- **D9 additions shipped**: (used/limit per identity) backs
+  the UI quota hint; the latest conversation resumes on page load.
+- **§3 order note**: body validation runs before the entitlement gate (cheaper:
+  garbage requests skip D1 reads); the quota is still enforced strictly pre-AI.
+- **Accepted (reviewed)**: small check-then-act quota races under burst
+  (documented; strict budget hardening lands with the AI-budget step); throttle
+  pepper falls back to a constant when GUEST_SESSION_SECRET is unset
+  (authenticated-user path only, KV keys are not attacker-readable).

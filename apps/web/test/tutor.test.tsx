@@ -15,17 +15,28 @@ function renderAt(path: string) {
   );
 }
 
-function mockFetchOnce(body: unknown, status = 200): void {
-  vi.stubGlobal(
-    "fetch",
-    vi.fn().mockResolvedValue(
-      new Response(JSON.stringify(body), {
-        status,
-        headers: { "content-type": "application/json" },
-      }),
-    ),
-  );
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
 }
+
+/** URL-dispatching fetch mock — mount effects (quota/conversations) answer separately from chat. */
+function stubFetchByPath(handlers: Record<string, () => Response>): ReturnType<typeof vi.fn> {
+  const fetchMock = vi.fn((input: RequestInfo | URL) => {
+    const path = typeof input === "string" ? input : String(input);
+    const handler = handlers[path] ?? (() => jsonResponse({}, 404));
+    return Promise.resolve(handler());
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+const EMPTY_MOUNT = {
+  "/api/tutor/quota": () => jsonResponse({ used: 0, limit: 3 }),
+  "/api/tutor/conversations": () => jsonResponse([]),
+};
 
 describe("TutorPage", () => {
   beforeEach(() => {
@@ -33,24 +44,32 @@ describe("TutorPage", () => {
   });
 
   it("renders the tutor shell with suggested actions and empty state", async () => {
+    stubFetchByPath({ ...EMPTY_MOUNT });
     renderAt("/en/tutor");
     expect(await screen.findByRole("heading", { name: "AI Tutor" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Explain a concept" })).toBeInTheDocument();
     expect(screen.getByText("Meet your AI teacher")).toBeInTheDocument();
   });
 
+  it("shows the remaining quota hint from the guest session", async () => {
+    stubFetchByPath({
+      ...EMPTY_MOUNT,
+      "/api/tutor/quota": () => jsonResponse({ used: 2, limit: 3 }),
+    });
+    renderAt("/en/tutor");
+    expect(await screen.findByText("2 of 3 free messages used today")).toBeInTheDocument();
+  });
+
   it("sends a turn, shows the user message and the assistant answer with the conversation id kept", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(
-        JSON.stringify({
+    const fetchMock = stubFetchByPath({
+      ...EMPTY_MOUNT,
+      "/api/tutor/chat": () =>
+        jsonResponse({
           conversationId: "a".repeat(32),
           assistantMessage: "Photosynthesis is how plants make food.",
           usage: { inputTokens: 12, outputTokens: 30, fallback: false },
         }),
-        { status: 200, headers: { "content-type": "application/json" } },
-      ),
-    );
-    vi.stubGlobal("fetch", fetchMock);
+    });
 
     renderAt("/en/tutor");
     await screen.findByRole("heading", { name: "AI Tutor" });
@@ -63,8 +82,8 @@ describe("TutorPage", () => {
     });
     expect(screen.getByText("What is photosynthesis?")).toBeInTheDocument();
 
-    const [path, init] = fetchMock.mock.calls[0]! as [string, RequestInit];
-    expect(path).toBe("/api/tutor/chat");
+    const chatCall = fetchMock.mock.calls.find(([p]) => p === "/api/tutor/chat")!;
+    const init = chatCall[1] as RequestInit;
     expect(init.method).toBe("POST");
     const body = JSON.parse(String(init.body)) as {
       message: string;
@@ -76,8 +95,52 @@ describe("TutorPage", () => {
     expect(body.locale).toBe("en");
   });
 
+  it("resumes the latest conversation on mount (§29 context continuity)", async () => {
+    stubFetchByPath({
+      "/api/tutor/quota": () => jsonResponse({ used: 1, limit: 3 }),
+      "/api/tutor/conversations": () =>
+        jsonResponse([
+          {
+            id: "b".repeat(32),
+            title: "Photosynthesis",
+            locale: "en",
+            updatedAt: "2026-09-12T00:00:00.000Z",
+          },
+        ]),
+      [`/api/tutor/conversations/${"b".repeat(32)}`]: () =>
+        jsonResponse({
+          id: "b".repeat(32),
+          title: "Photosynthesis",
+          locale: "en",
+          updatedAt: "2026-09-12T00:00:00.000Z",
+          messages: [
+            {
+              id: "m1",
+              role: "user",
+              action: "chat",
+              content: "What is photosynthesis?",
+              createdAt: "2026-09-12T00:00:00.000Z",
+            },
+            {
+              id: "m2",
+              role: "assistant",
+              action: "chat",
+              content: "Plants making food from light.",
+              createdAt: "2026-09-12T00:00:01.000Z",
+            },
+          ],
+        }),
+    });
+    renderAt("/en/tutor");
+    expect(await screen.findByText("Plants making food from light.")).toBeInTheDocument();
+    expect(screen.getByText("What is photosynthesis?")).toBeInTheDocument();
+  });
+
   it("shows the localized quota error when the limit is reached", async () => {
-    mockFetchOnce({ error: "ai_limit_reached" }, 403);
+    stubFetchByPath({
+      ...EMPTY_MOUNT,
+      "/api/tutor/chat": () => jsonResponse({ error: "ai_limit_reached" }, 403),
+    });
     renderAt("/en/tutor");
     await screen.findByRole("heading", { name: "AI Tutor" });
 

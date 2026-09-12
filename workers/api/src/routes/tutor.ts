@@ -1,5 +1,5 @@
 import { Hono, type Context } from "hono";
-import type { ChatResponse, ConversationDetail } from "@learwizai/types";
+import type { ChatResponse, ConversationDetail, QuotaState } from "@learwizai/types";
 import { chatSchema } from "@learwizai/validation";
 import type { AppEnv } from "../context";
 import { enforceWindow } from "../services/rateLimit";
@@ -139,7 +139,7 @@ tutorRoute.post("/chat", async (c) => {
     plan: identity.kind === "guest" ? "guest" : "free",
     locale,
     routedFallback: completion.fallback,
-    usageEstimated: false,
+    usageEstimated: !completion.usageProvided,
     requestId: c.get("requestId"),
   });
   if (identity.kind === "guest") {
@@ -154,6 +154,23 @@ tutorRoute.post("/chat", async (c) => {
       outputTokens: completion.usage.completionTokens,
       fallback: completion.fallback,
     },
+  };
+  return c.json(body);
+});
+
+tutorRoute.get("/quota", async (c) => {
+  const identity = c.get("identity");
+  if (identity.kind === "anonymous") {
+    return c.json({ error: "unauthenticated" } satisfies { error: "unauthenticated" }, 401);
+  }
+  if (identity.kind === "guest") {
+    const used = (await getGuestUsage(c.env.DB, identity.sessionId)).ai_tutor;
+    const body: QuotaState = { used, limit: GUEST_AI_LIMIT };
+    return c.json(body);
+  }
+  const body: QuotaState = {
+    used: await countUserAiUsageToday(c.env.DB, identity.userId),
+    limit: FREE_DAILY_AI_LIMIT,
   };
   return c.json(body);
 });

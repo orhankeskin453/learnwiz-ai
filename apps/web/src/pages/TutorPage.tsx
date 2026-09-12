@@ -1,12 +1,18 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ApiError } from "@/services/apiClient";
-import { sendTutorMessage, type TutorTurn } from "@/services/tutor";
+import {
+  getConversation,
+  getTutorQuota,
+  listConversations,
+  sendTutorMessage,
+  type TutorTurn,
+} from "@/services/tutor";
 import { getActiveLocale } from "@/i18n";
-import type { TutorAction } from "@learwizai/types";
+import type { QuotaState, TutorAction } from "@learwizai/types";
 
 /** Suggested learning actions (§10.3) — chat is the implicit default. */
 const SUGGESTED_ACTIONS = [
@@ -31,6 +37,48 @@ export function TutorPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<"limit" | "unavailable" | "generic" | null>(null);
+  const [quota, setQuota] = useState<QuotaState | null>(null);
+
+  // Resume the latest conversation (§29) + quota hint (§10.3) — both best-effort.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const conversations = await listConversations();
+        if (cancelled || conversations.length === 0) return;
+        const detail = await getConversation(conversations[0]!.id);
+        if (cancelled) return;
+        setConversationId(detail.id);
+        setTurns(
+          detail.messages.map((m) => ({
+            role: m.role,
+            content: m.content,
+            action: m.action ?? "chat",
+          })),
+        );
+      } catch {
+        /* best-effort resume */
+      }
+    })();
+    void (async () => {
+      try {
+        setQuota(await getTutorQuota());
+      } catch {
+        /* hint only */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function refreshQuota(): Promise<void> {
+    try {
+      setQuota(await getTutorQuota());
+    } catch {
+      /* hint only */
+    }
+  }
 
   async function submit(event?: React.FormEvent) {
     event?.preventDefault();
@@ -144,6 +192,11 @@ export function TutorPage() {
             maxLength={2000}
             disabled={sending}
           />
+          {quota && (
+            <p className="text-xs text-muted-foreground">
+              {t("quota.remaining", { used: quota.used, limit: quota.limit })}
+            </p>
+          )}
         </div>
         <Button type="submit" disabled={sending || input.trim().length === 0}>
           {sending ? t("input.sending") : t("input.send")}

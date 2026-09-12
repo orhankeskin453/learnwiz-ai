@@ -117,3 +117,9 @@ export interface ConversationSummary {
 export interface ConversationDetail extends ConversationSummary {
   messages: TutorMessage[];
 }
+
+/** Remaining AI quota for the resolved identity (§10.3 usage indicator). */
+export interface QuotaState {
+  used: number;
+  limit: number;
+}

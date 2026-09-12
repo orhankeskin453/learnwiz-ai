@@ -1,6 +1,6 @@
 {
   "title": "AI Özel Ders",
-  "subtitle": "Kişisel öğrenme asistanın — hiçbir şeyi sor, yapılandırılmış öğren.",
+  "subtitle": "Kişisel öğrenme asistanın — her şeyi sor, yapılandırılmış öğren.",
   "suggested": {
     "label": "Önerilen işlemler",
     "explain": "Bir kavramı açıklat",
@@ -21,8 +21,11 @@
     "emptyDescription": "Bir soru sor, yukarıdan bir işlem seç; yapılandırılmış açıklamalar, örnekler, testler ve alıştırmalarla öğren."
   },
   "errors": {
-    "limitReached": "Ücretsiz AI mesaj hakknı doldurdun. Öğrenmeye devam etmek için hesap oluştur.",
+    "limitReached": "Ücretsiz AI mesaj hakkını doldurdun. Öğrenmeye devam etmek için hesap oluştur.",
     "unavailable": "AI öğretmenin şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  },
+  "quota": {
+    "remaining": "Bugün {{limit}} ücretsiz mesajın {{used}} tanesi kullanıldı"
   }
 }

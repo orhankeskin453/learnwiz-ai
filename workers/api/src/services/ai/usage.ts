@@ -51,23 +51,6 @@ export async function recordAiUsage(db: D1Database, entry: AiUsageEntry): Promis
   return id;
 }
 
-/** Fill in the actual token counts once the stream has drained (§13.6). */
-export async function updateAiUsageTokens(
-  db: D1Database,
-  id: string,
-  inputTokens: number | null,
-  outputTokens: number | null,
-  usageEstimated: boolean,
-  latencyMs: number | null,
-): Promise<void> {
-  await db
-    .prepare(
-      "UPDATE ai_usage SET input_tokens = ?, output_tokens = ?, usage_estimated = ?, latency_ms = ? WHERE id = ?",
-    )
-    .bind(inputTokens, outputTokens, usageEstimated ? 1 : 0, latencyMs, id)
-    .run();
-}
-
 function startOfUtcDay(): string {
   const now = new Date();
   return new Date(

@@ -23,6 +23,8 @@ export interface AiUsage {
 export interface ChatCompletion {
   text: string;
   usage: AiUsage;
+  /** False when the provider omitted usage — the ledger flags the row estimated (§13.6). */
+  usageProvided: boolean;
 }
 
 interface MockSpec {
@@ -64,6 +66,7 @@ export async function runChat(
     if (!spec.usage) throw new Error("mock AI spec missing usage");
     return {
       text,
+      usageProvided: true,
       usage: {
         promptTokens: spec.usage.prompt_tokens,
         completionTokens: spec.usage.completion_tokens,
@@ -81,15 +84,18 @@ export async function runChat(
   // Model families differ in response shape — support both (§20 logs anomalies).
   const openAiContent = result.choices?.[0]?.message?.content ?? result.choices?.[0]?.text;
   const text = result.response ?? openAiContent ?? "";
+  // An empty answer is a provider failure, not a success (§18: fall back).
   if (!text) {
     console.error("ai_empty_response", {
       model,
       keys: Object.keys(result ?? {}).join(","),
       usage: JSON.stringify(result.usage ?? {}),
     });
+    throw new Error(`model ${model} returned an empty response`);
   }
   return {
     text,
+    usageProvided: Boolean(result.usage),
     usage: {
       promptTokens: result.usage?.prompt_tokens ?? 0,
       completionTokens: result.usage?.completion_tokens ?? 0,

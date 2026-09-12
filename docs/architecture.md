@@ -106,10 +106,32 @@ POST /api/auth/resend-verification → generic 200, 3/h/email
 - **Audit** (`services/audit.ts` → `audit_events`): signup, verification, login
   success/failure, logout, password reset, guest migration. No credentials logged.
 
+## Backend: AI Tutor, AI Router, usage accounting (Step 5)
+
+```text
+POST /api/tutor/chat                → guest 3 total / free 10-per-UTC-day (§10.10)
+GET  /api/tutor/conversations       → owner-scoped list
+GET  /api/tutor/conversations/:id   → owner-scoped detail with messages
+GET  /api/tutor/quota               → used/limit for the resolved identity
+```
+
+- **AI Router** (`services/ai/router.ts`): primary `@cf/zai-org/glm-4.7-flash` with
+  exactly ONE env-tunable fallback attempt (`AI_FALLBACK_MODEL`, §18); model
+  failures logged (§20); both OpenAI-compatible and legacy response shapes parsed.
+- **Prompts** (`services/ai/prompts.ts`): persona + six §10.3 learning actions;
+  response language forced by request locale (§6.4); user content is untrusted
+  material, never instructions (§19).
+- **Usage ledger** (`ai_usage`, §14): exact tokens + actual `neurons` per call,
+  plan, locale, `routed_fallback`, `usage_estimated`, latency. Free-plan daily
+  window counts ledger rows per UTC day. v1 is non-streaming (exact synchronous
+  accounting); SSE streaming is a deferred 5b enhancement.
+- **Persistence**: `conversations` + `messages` with single-owner CHECK and
+  owner-scoped reads (§40.7). Tutor UI at `/{locale}/tutor`: action chips,
+  conversation resume, quota hint, localized errors (model names never shown, §29).
+
 ## Planned additions (not yet deployed)
 
 - Vectorize index + Queues producer/consumer (Step 6 — RAG)
-- Workers AI binding + AI Router (Step 6-7 per §48)
 - Email Service, Polar billing, Analytics Engine (later steps)
 
 Design decisions and rationale: `docs/superpowers/specs/2026-09-11-step1-foundation-design.md`.
