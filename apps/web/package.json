@@ -44,7 +44,6 @@
     "typescript": "^5.9.2",
     "vite": "^7.0.0",
     "vitest": "^3.2.7",
-    "vitest-axe": "^0.1.0",
-    "whatwg-fetch": "^3.6.20"
+    "vitest-axe": "^0.1.0"
   }
 }

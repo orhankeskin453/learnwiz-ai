@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-/** Design-system showcase (-30.7 QA surface). Expanded in Task 8. */
+/** Design-system showcase (§40.7 QA surface). Expanded in Task 8. */
 export function StyleGuidePage() {
   const { t } = useTranslation("styleguide");
   return (

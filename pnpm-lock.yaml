@@ -129,9 +129,6 @@ importers:
       vitest-axe:
         specifier: ^0.1.0
         version: 0.1.0(vitest@3.2.7(@types/node@22.20.2)(jiti@2.7.0)(jsdom@30.0.1)(lightningcss@1.32.0)(supports-color@10.2.2))
-      whatwg-fetch:
-        specifier: ^3.6.20
-        version: 3.6.20
 
   packages/config: {}
 
@@ -3523,9 +3520,6 @@ packages:
     resolution: {integrity: sha512-BMhLD/Sw+GbJC21C/UgyaZX41nPt8bUTg+jWyDeg7e7YN4xOM05YPSIXceACnXVtqyEw/LMClUQMtMZ+PGGpqQ==}
     engines: {node: '>=20'}
 
-  whatwg-fetch@3.6.20:
-    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
-
   whatwg-mimetype@5.0.0:
     resolution: {integrity: sha512-sXcNcHOC51uPGF0P/D4NVtrkjSU2fNsm9iog4ZvZJsL3rjoDAzXZhkm2MWt1y+PUdggKAYVoMAIYcs78wJ51Cw==}
     engines: {node: '>=20'}
@@ -6702,8 +6696,6 @@ snapshots:
       xml-name-validator: 5.0.0
 
   webidl-conversions@8.0.1: {}
-
-  whatwg-fetch@3.6.20: {}
 
   whatwg-mimetype@5.0.0: {}
 

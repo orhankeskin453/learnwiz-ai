@@ -6,7 +6,7 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 import { StyleGuidePage } from "@/pages/StyleGuidePage";
 
-/** Locale-prefixed route tree (CLAUDE.md -31). */
+/** Locale-prefixed route tree (CLAUDE.md §31). */
 export const routes: RouteObject[] = [
   { path: "/", element: <LocaleRedirect /> },
   {

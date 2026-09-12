@@ -1,9 +1,21 @@
 import "@/i18n";
 import { render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "@/routes";
 import { ThemeProvider } from "@/theme/ThemeProvider";
+
+// Navigate breaks in jsdom + node:undici (AbortSignal instanceof check fails).
+// Mock it to capture props without executing client-side navigation.
+vi.mock("react-router", async () => {
+  const original = await vi.importActual("react-router");
+  return {
+    ...original,
+    Navigate: ({ to, replace }: { to: string; replace?: boolean }) => (
+      <div data-testid="navigate-probe" data-to={to} data-replace={String(!!replace)} />
+    ),
+  };
+});
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
@@ -21,28 +33,20 @@ describe("routing", () => {
     document.documentElement.lang = "";
   });
 
-  /** "/" resolves browser locale → /{resolved} → dashboard placeholder. */
   it("redirects / to the resolved locale and shows the dashboard placeholder", async () => {
-    // jsdom navigator.languages defaults to en-US → resolveBrowserLocale() = "en".
-    // The production path uses <Navigate replace> (§6.3); jsdom's AbortSignal
-    // incompatibility with node:undici breaks memory-mode client-side redirects.
-    // Render via the resolved route to validate the full contract end-to-end.
-    renderAt("/en");
-    expect(
-      await screen.findByRole("heading", { name: "Your dashboard is coming" }),
-    ).toBeInTheDocument();
+    // jsdom navigator.languages defaults to en-US → resolves "en"
+    // Navigate probes instead of executing broken memory-mode redirect.
+    renderAt("/");
+    const probe = await screen.findByTestId("navigate-probe");
+    expect(probe).toHaveAttribute("data-to", "/en");
+    expect(probe).toHaveAttribute("data-replace", "true");
   });
 
-  /** Unsupported :locale is rejected by localeSchema → navigates to resolved locale. */
-  it("rejects an unsupported locale and serves the fallback dashboard", async () => {
-    // localeSchema.safeParse("de") fails → <Navigate to="/{resolved}" />.
-    // The Navigate redirect cannot be observed in jsdom (abort-signal bug).
-    // Verify the routing contract by rendering via a valid supported locale
-    // that would be the redirect target — proves gate accepts valid values.
-    renderAt("/en/learn");
-    expect(
-      await screen.findByRole("heading", { name: "Learn Mode is coming" }),
-    ).toBeInTheDocument();
+  it("redirects an unsupported locale to the resolved one", async () => {
+    // Navigate probes instead of executing broken memory-mode redirect.
+    renderAt("/de");
+    const probe = await screen.findByTestId("navigate-probe");
+    expect(probe).toHaveAttribute("data-to", "/en");
   });
 
   it("renders Turkish strings and sets <html lang> on /tr", async () => {
