@@ -39,3 +39,31 @@ export async function allowGuestSessionCreation(
     return true; // fail-open (spec D7)
   }
 }
+
+export interface WindowLimit {
+  bucket: string;
+  key: string;
+  max: number;
+  windowSeconds: number;
+}
+
+/** Generic fixed-window counter for auth endpoints (§47.14). Fail-open on KV
+ * errors — abuse throttle, not a correctness control (same posture as D7). */
+export async function enforceWindow(
+  kv: KVNamespace,
+  limit: WindowLimit,
+  pepper: string,
+): Promise<boolean> {
+  try {
+    const keyHash = await pepperedHash(`${limit.bucket}:${limit.key}`, pepper);
+    const epoch = Math.floor(Date.now() / 1000);
+    const windowStart = epoch - (epoch % limit.windowSeconds);
+    const key = `rl:${limit.bucket}:${keyHash}:${windowStart}`;
+    const current = await kv.get(key);
+    const next = (current ? Number.parseInt(current, 10) : 0) + 1;
+    await kv.put(key, String(next), { expirationTtl: limit.windowSeconds * 2 });
+    return next <= limit.max;
+  } catch {
+    return true;
+  }
+}

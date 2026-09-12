@@ -43,3 +43,32 @@ export interface ApiErrorBody {
   error: ApiErrorCode;
   message?: string;
 }
+
+/** User profile exposed by GET /api/auth/me — never includes credentials. */
+export interface UserProfile {
+  id: string;
+  email: string;
+  locale: Locale;
+  status: "pending" | "active" | "suspended" | "deleted";
+  emailVerified: boolean;
+  createdAt: string;
+}
+
+/** Body of POST /api/auth/login|verify-email (session created). */
+export interface AuthSessionResponse {
+  user: UserProfile;
+}
+
+/** Generic anti-enumeration body for register / password-reset requests (§40.9). */
+export interface GenericAuthResponse {
+  ok: true;
+}
+
+/** Additional machine-readable auth error codes (envelope: `{ error, message? }`). */
+export type AuthErrorCode =
+  | "invalid_credentials"
+  | "email_not_verified"
+  | "account_suspended"
+  | "validation_error"
+  | "unauthenticated"
+  | "invalid_token";

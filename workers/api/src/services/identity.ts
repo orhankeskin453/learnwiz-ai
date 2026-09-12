@@ -1,12 +1,14 @@
 /**
- * Request identity for API routes (CLAUDE.md §22 middleware order, §33).
+ * Request identity for API routes (CLAUDE.md §22 middleware order, §33/§40.2).
  *
- * `guest` carries a verified, server-side session id. `anonymous` means the
- * request has no usable identity yet — guest-feature routes treat it as
- * "session must be created first". The `user` variant arrives with the auth
- * step (§48 item 6) and plugs into the same union.
+ * Precedence: authenticated session > guest session > anonymous. The
+ * authenticated variant resolves only ACTIVE accounts — suspended/deleted
+ * users fall back to anonymous even with a valid session (§40.8).
  */
-export type Identity = { kind: "guest"; sessionId: string } | { kind: "anonymous" };
+export type Identity =
+  | { kind: "guest"; sessionId: string }
+  | { kind: "user"; userId: string; sessionId: string }
+  | { kind: "anonymous" };
 
 /** Thrown when a route requires a usable identity but none is present. */
 export class IdentityError extends Error {

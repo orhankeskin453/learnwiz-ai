@@ -5,6 +5,7 @@ import { guestCreateThrottle } from "./middleware/guestThrottle";
 import { identityMiddleware } from "./middleware/identity";
 import { requestIdMiddleware } from "./middleware/requestId";
 import { guestRoute } from "./routes/guest";
+import { authRoute } from "./routes/auth";
 import { healthRoute } from "./routes/health";
 import { ConfigError } from "./services/identity";
 
@@ -19,6 +20,7 @@ app.use("*", identityMiddleware);
 
 app.route("/health", healthRoute);
 app.route("/guest/session", guestRoute);
+app.route("/auth", authRoute);
 
 app.notFound((c) => c.json({ error: "not_found", path: c.req.path }, 404));
 

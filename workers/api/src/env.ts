@@ -20,4 +20,12 @@ export interface Env {
    * (500 config_error) when missing or shorter than 32 chars.
    */
   GUEST_SESSION_SECRET?: string;
+  /** Email provider selection: "log" (default, outbox-only) | "cloudflare" (dormant until domain verified — §47.4). */
+  EMAIL_PROVIDER?: string;
+  /** Transactional sender identity, e.g. noreply@learwizai.com (§47.12 — configuration, never hardcoded). */
+  EMAIL_FROM_ADDRESS?: string;
+  /** Base origin for email links (overrides per-environment defaults). */
+  APP_ORIGIN?: string;
+  /** PBKDF2 iteration count for password hashing (default 100000 — see spec D1 CPU note). */
+  PASSWORD_HASH_ITERATIONS?: string;
 }

@@ -74,6 +74,38 @@ request → requestId (X-Request-Id) → guestCreateThrottle (POST only, KV 20/h
   fixed-window counter keyed by peppered IP hash — fail-open, raw IPs never stored.
   Strict AI budget controls arrive with the AI step.
 
+## Backend: authentication + transactional email (Step 4)
+
+```text
+POST /api/auth/register      → pending user + verification email (generic 201)
+POST /api/auth/verify-email  → activate + session cookie + guest migration + welcome
+POST /api/auth/login         → active accounts only; generic 401 on any failure
+POST /api/auth/logout        → server-side session revocation (204)
+GET  /api/auth/me            → profile from the resolved identity
+POST /api/auth/request-password-reset → generic 200 (anti-enumeration)
+POST /api/auth/reset-password → rehash + revoke ALL sessions
+POST /api/auth/resend-verification → generic 200, 3/h/email
+```
+
+- **Sessions** (`services/sessions.ts`): `learwiz_session` HttpOnly cookie carries a
+  256-bit token; D1 stores only its SHA-256 hash. 30-day expiry, per-session and
+  revoke-all support (password resets). Identity middleware precedence:
+  active user session > guest session > anonymous; suspended accounts fall back to
+  anonymous even with a valid session (§40.8).
+- **Passwords** (`services/passwords.ts`): PBKDF2-HMAC-SHA256 (WebCrypto), 100k
+  iterations (env-tunable, self-describing storage format).
+- **Tokens** (`services/tokens.ts`): verification (24h) and password-reset (1h)
+  tokens — 256-bit random, SHA-256 stored, single-use, purpose-typed; re-issue
+  invalidates outstanding same-purpose tokens.
+- **Email** (`src/email/`): provider abstraction + outbox. `LogEmailProvider`
+  (default) records sends to `email_events` without network delivery;
+  `CloudflareEmailProvider` is dormant until the operator verifies a sending domain
+  (`EMAIL_PROVIDER=cloudflare` + runbook: docs/runbooks/email-delivery.md).
+  Templates localized en/tr. Anti-enumeration: register/reset/login failure
+  responses identical whether or not the email exists.
+- **Audit** (`services/audit.ts` → `audit_events`): signup, verification, login
+  success/failure, logout, password reset, guest migration. No credentials logged.
+
 ## Planned additions (not yet deployed)
 
 - Vectorize index + Queues producer/consumer (Step 6 — RAG)

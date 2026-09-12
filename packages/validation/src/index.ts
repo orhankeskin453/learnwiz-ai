@@ -52,3 +52,31 @@ type FeatureLock = [SchemaFeature] extends [Feature]
 
 /** Compile-time assertion; exported so no-unused-vars lint stays quiet. */
 export const featureLock: FeatureLock = true;
+
+/** Email identity — normalized (trimmed, lowercased) before persistence (§40.3). */
+export const emailSchema = z.string().trim().toLowerCase().pipe(z.email());
+
+/** Password policy (§40.10): strong-but-usable — length bound, no composition rules. */
+export const passwordSchema = z.string().min(10).max(128);
+
+/** 64-char hex auth token (256-bit random, delivered via email links). */
+export const authTokenSchema = z.string().regex(/^[0-9a-f]{64}$/);
+
+export const registerSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
+
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(1).max(128),
+});
+
+export const verifyEmailSchema = z.object({ token: authTokenSchema });
+
+export const resetRequestSchema = z.object({ email: emailSchema });
+
+export const resetConfirmSchema = z.object({ token: authTokenSchema, password: passwordSchema });
+
+export type RegisterInput = z.infer<typeof registerSchema>;
+export type LoginInput = z.infer<typeof loginSchema>;

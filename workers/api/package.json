@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "@learwizai/types": "workspace:*",
-    "hono": "^4.8.0"
+    "hono": "^4.8.0",
+    "@learwizai/validation": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.8.0",

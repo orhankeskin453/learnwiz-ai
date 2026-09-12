@@ -22,9 +22,17 @@ async function hmacHex(value: string, secret: string): Promise<string> {
 
 /** Opaque, unguessable guest session id (§5: "random unguessable identifier"). */
 export function generateGuestSessionId(): string {
-  const bytes = new Uint8Array(ID_BYTES);
-  crypto.getRandomValues(bytes);
-  return toHex(bytes);
+  return randomHex(ID_BYTES);
+}
+
+/** Cryptographically random hex string of `bytes` random bytes. */
+export function randomHex(bytes: number): string {
+  return toHex(crypto.getRandomValues(new Uint8Array(bytes)));
+}
+
+/** Unpeppered SHA-256 — used to hash session/auth tokens before storage. */
+export async function sha256Hex(value: string): Promise<string> {
+  return toHex(await crypto.subtle.digest("SHA-256", ENCODER.encode(value)));
 }
 
 /** Build the signed cookie value for a session id. */

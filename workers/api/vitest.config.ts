@@ -21,6 +21,8 @@ export default defineWorkersConfig(async () => {
               ENVIRONMENT: "test",
               // Local-only test secret (≥32 chars); production uses `wrangler secret put`.
               GUEST_SESSION_SECRET: "test-secret-0123456789abcdef0123456789abcdef",
+              // Keep PBKDF2 fast in tests (min 10k enforced by passwordIterations).
+              PASSWORD_HASH_ITERATIONS: "10000",
             },
           },
         },

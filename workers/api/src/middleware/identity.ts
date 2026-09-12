@@ -8,6 +8,8 @@ import {
   type GuestSessionRow,
 } from "../services/guestSessions";
 import { verifyGuestCookie } from "../services/sessionCrypto";
+import { findUserById } from "../services/users";
+import { resolveSession, SESSION_COOKIE_NAME } from "../services/sessions";
 import { ConfigError, type Identity } from "../services/identity";
 
 export type GuestResolution =
@@ -39,10 +41,10 @@ export function clientIp(c: Context<AppEnv>): string {
 }
 
 /**
- * Identity resolution (CLAUDE.md §22/§33): classifies every /api request.
- * Absent/invalid cookies never throw here — guest routes branch on the stored
- * resolution; everything else just sees `anonymous`. Authenticated resolution
- * (users/sessions tables) plugs in at the auth step (§48 item 6).
+ * Identity resolution (CLAUDE.md §22/§33/§40.2): classifies every /api request.
+ * Precedence: active user session > guest session > anonymous. Suspended or
+ * deleted accounts fall back to anonymous even with a valid session (§40.8).
+ * Absent/invalid cookies never throw — guest routes branch on the resolution.
  * /api/health is skipped: probes carry no identity and must stay dependency-free.
  */
 export async function identityMiddleware(c: Context<AppEnv>, next: Next): Promise<void> {
@@ -51,6 +53,22 @@ export async function identityMiddleware(c: Context<AppEnv>, next: Next): Promis
     return;
   }
 
+  // 1. Authenticated session (Step 4).
+  const sessionCookie = getCookie(c, SESSION_COOKIE_NAME);
+  if (sessionCookie) {
+    const resolved = await resolveSession(c.env.DB, sessionCookie);
+    if (resolved) {
+      const user = await findUserById(c.env.DB, resolved.userId);
+      if (user && user.status === "active") {
+        c.set("identity", { kind: "user", userId: resolved.userId, sessionId: resolved.sessionId });
+        c.set("guestResolution", { status: "absent" });
+        await next();
+        return;
+      }
+    }
+  }
+
+  // 2. Guest session (Step 3).
   let resolution: GuestResolution = { status: "absent" };
   const secret = c.env.GUEST_SESSION_SECRET;
   if (isUsableSecret(secret)) {
