@@ -28,4 +28,12 @@ export interface Env {
   APP_ORIGIN?: string;
   /** PBKDF2 iteration count for password hashing (default 100000 — see spec D1 CPU note). */
   PASSWORD_HASH_ITERATIONS?: string;
+  /** Workers AI inference binding (§13). */
+  AI: Ai;
+  /** §13.2 primary model — default @cf/zai-org/glm-4.7-flash. */
+  AI_PRIMARY_MODEL?: string;
+  /** §18 failover model — default @cf/meta/llama-3.1-8b-instruct-fast. */
+  AI_FALLBACK_MODEL?: string;
+  /** Test-only: canned per-model AI responses (deterministic CI, spec D10) — never set in deployed envs. */
+  AI_MOCK_RESPONSES?: string;
 }

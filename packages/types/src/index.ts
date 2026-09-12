@@ -37,7 +37,10 @@ export type ApiErrorCode =
   | "guest_session_invalid"
   | "rate_limited"
   | "config_error"
-  | "internal_error";
+  | "internal_error"
+  | "ai_limit_reached"
+  | "ai_unavailable"
+  | "conversation_not_found";
 
 export interface ApiErrorBody {
   error: ApiErrorCode;
@@ -72,3 +75,45 @@ export type AuthErrorCode =
   | "validation_error"
   | "unauthenticated"
   | "invalid_token";
+
+/** §10.3 AI Tutor learning actions + free chat. */
+export type TutorAction =
+  "chat" | "explain" | "simplify" | "give_example" | "quiz_me" | "give_exercise" | "summarize";
+
+/** Body of POST /api/tutor/chat (§33). Locale drives the AI response language (§6.4). */
+export interface ChatRequest {
+  conversationId?: string;
+  message: string;
+  action?: TutorAction;
+  locale: Locale;
+}
+
+/** Body of POST /api/tutor/chat (spec D8, v1 non-streaming — exact §13.6 usage). */
+export interface ChatResponse {
+  conversationId: string;
+  assistantMessage: string;
+  usage: {
+    inputTokens: number;
+    outputTokens: number;
+    fallback: boolean;
+  };
+}
+
+export interface TutorMessage {
+  id: string;
+  role: "user" | "assistant";
+  action: TutorAction | null;
+  content: string;
+  createdAt: string;
+}
+
+export interface ConversationSummary {
+  id: string;
+  title: string;
+  locale: Locale;
+  updatedAt: string;
+}
+
+export interface ConversationDetail extends ConversationSummary {
+  messages: TutorMessage[];
+}

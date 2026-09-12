@@ -1,0 +1,28 @@
+{
+  "title": "AI Özel Ders",
+  "subtitle": "Kişisel öğrenme asistanın — hiçbir şeyi sor, yapılandırılmış öğren.",
+  "suggested": {
+    "label": "Önerilen işlemler",
+    "explain": "Bir kavramı açıklat",
+    "simplify": "Sadeleştir",
+    "give_example": "Örnek ver",
+    "quiz_me": "Bana test hazırla",
+    "give_exercise": "Bana alıştırma ver",
+    "summarize": "Özetle"
+  },
+  "input": {
+    "label": "Sorun",
+    "placeholder": "AI öğretmenine her şeyi sor…",
+    "send": "Gönder",
+    "sending": "Düşünüyor…"
+  },
+  "chat": {
+    "emptyTitle": "AI öğretmeninle tanış",
+    "emptyDescription": "Bir soru sor, yukarıdan bir işlem seç; yapılandırılmış açıklamalar, örnekler, testler ve alıştırmalarla öğren."
+  },
+  "errors": {
+    "limitReached": "Ücretsiz AI mesaj hakknı doldurdun. Öğrenmeye devam etmek için hesap oluştur.",
+    "unavailable": "AI öğretmenin şu anda ulaşılabilir değil. Birazdan tekrar dene.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  }
+}

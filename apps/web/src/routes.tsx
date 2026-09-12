@@ -5,6 +5,7 @@ import { AppShell } from "@/components/shell/AppShell";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 import { StyleGuidePage } from "@/pages/StyleGuidePage";
+import { TutorPage } from "@/pages/TutorPage";
 
 /** Locale-prefixed route tree (CLAUDE.md §31). */
 export const routes: RouteObject[] = [
@@ -17,7 +18,7 @@ export const routes: RouteObject[] = [
         element: <AppShell />,
         children: [
           { index: true, element: <PlaceholderPage section="dashboard" /> },
-          { path: "tutor", element: <PlaceholderPage section="tutor" /> },
+          { path: "tutor", element: <TutorPage /> },
           { path: "learn", element: <PlaceholderPage section="learn" /> },
           { path: "practice", element: <PlaceholderPage section="practice" /> },
           { path: "quizzes", element: <PlaceholderPage section="quizzes" /> },

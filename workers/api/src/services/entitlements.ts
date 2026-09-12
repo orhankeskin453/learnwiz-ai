@@ -58,3 +58,6 @@ export function buildGuestSessionResponse(
 ): GuestSessionResponse {
   return { expiresAt, usage: buildUsage(limits, used) };
 }
+
+/** Free-plan daily AI limit (§10.10) — user-side counterpart of the guest matrix. */
+export const FREE_DAILY_AI_LIMIT = 10;

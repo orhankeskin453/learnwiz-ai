@@ -80,3 +80,24 @@ export const resetConfirmSchema = z.object({ token: authTokenSchema, password: p
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
+/** §10.3 tutor actions — contract-locked to the shared `TutorAction` type. */
+export const tutorActionSchema = z.enum([
+  "chat",
+  "explain",
+  "simplify",
+  "give_example",
+  "quiz_me",
+  "give_exercise",
+  "summarize",
+]) satisfies z.ZodType<import("@learwizai/types").TutorAction>;
+
+export const chatSchema = z.object({
+  conversationId: z
+    .string()
+    .regex(/^[0-9a-f]{32}$/)
+    .optional(),
+  message: z.string().trim().min(1).max(2000),
+  action: tutorActionSchema.optional(),
+  locale: localeSchema,
+});

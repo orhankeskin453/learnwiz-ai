@@ -23,6 +23,19 @@ export default defineWorkersConfig(async () => {
               GUEST_SESSION_SECRET: "test-secret-0123456789abcdef0123456789abcdef",
               // Keep PBKDF2 fast in tests (min 10k enforced by passwordIterations).
               PASSWORD_HASH_ITERATIONS: "10000",
+              // Deterministic AI (spec D10): keyed by model name — primary fails
+              // once in this default so the router's fallback path is exercised.
+              AI_MOCK_RESPONSES: JSON.stringify({
+                // primary fails → router's single fallback attempt is exercised (§18)
+                "mock-primary": { behavior: "fail" },
+                "mock-fallback": {
+                  behavior: "stream",
+                  text: "Merhaba! Öğrenmeye başlayalım.",
+                  usage: { prompt_tokens: 21, completion_tokens: 9 },
+                },
+              }),
+              AI_PRIMARY_MODEL: "mock-primary",
+              AI_FALLBACK_MODEL: "mock-fallback",
             },
           },
         },

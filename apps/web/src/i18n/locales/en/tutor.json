@@ -1,0 +1,28 @@
+{
+  "title": "AI Tutor",
+  "subtitle": "Your personal learning assistant — ask anything, learn with structure.",
+  "suggested": {
+    "label": "Suggested actions",
+    "explain": "Explain a concept",
+    "simplify": "Simplify it",
+    "give_example": "Give me an example",
+    "quiz_me": "Quiz me",
+    "give_exercise": "Give me an exercise",
+    "summarize": "Summarize"
+  },
+  "input": {
+    "label": "Your question",
+    "placeholder": "Ask your AI teacher anything…",
+    "send": "Send",
+    "sending": "Thinking…"
+  },
+  "chat": {
+    "emptyTitle": "Meet your AI teacher",
+    "emptyDescription": "Ask a question, pick an action above, and learn with structured explanations, examples, quizzes and exercises."
+  },
+  "errors": {
+    "limitReached": "You have used all of your free AI messages. Create an account to keep learning.",
+    "unavailable": "Your AI teacher is unavailable right now. Please try again in a moment.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

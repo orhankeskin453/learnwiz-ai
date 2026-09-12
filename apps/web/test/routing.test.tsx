@@ -51,9 +51,8 @@ describe("routing", () => {
 
   it("renders Turkish strings and sets <html lang> on /tr", async () => {
     renderAt("/tr/tutor");
-    expect(
-      await screen.findByRole("heading", { name: "AI Özel Ders çok yakında" }),
-    ).toBeInTheDocument();
+    // /tr/tutor is the real TutorPage since Step 5 (localized via tutor namespace).
+    expect(await screen.findByRole("heading", { name: "AI Özel Ders" })).toBeInTheDocument();
     expect(document.documentElement.lang).toBe("tr");
   });
 
