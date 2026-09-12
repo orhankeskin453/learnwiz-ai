@@ -16,6 +16,8 @@ export interface ChatMessage {
 export interface AiUsage {
   promptTokens: number;
   completionTokens: number;
+  /** Actual neuron cost when the provider reports it (§14). */
+  neurons?: number;
 }
 
 export interface ChatCompletion {
@@ -70,13 +72,16 @@ export async function runChat(
   }
 
   const result = (await env.AI.run(model, { messages })) as unknown as {
+    // Legacy Workers AI shape: { response }
     response?: string;
-    usage?: { prompt_tokens?: number; completion_tokens?: number };
+    // OpenAI-compatible shape (e.g. @cf/zai-org/glm-4.7-flash): { choices, usage }
+    choices?: Array<{ message?: { content?: string }; text?: string }>;
+    usage?: { prompt_tokens?: number; completion_tokens?: number; neurons?: number };
   };
-  // §20: chat-model response shapes vary across models (reasoning models may
-  // return the answer under another field) — log the shape on anomalies so the
-  // mapping can be repaired without guessing.
-  if (!result.response) {
+  // Model families differ in response shape — support both (§20 logs anomalies).
+  const openAiContent = result.choices?.[0]?.message?.content ?? result.choices?.[0]?.text;
+  const text = result.response ?? openAiContent ?? "";
+  if (!text) {
     console.error("ai_empty_response", {
       model,
       keys: Object.keys(result ?? {}).join(","),
@@ -84,10 +89,11 @@ export async function runChat(
     });
   }
   return {
-    text: result.response ?? "",
+    text,
     usage: {
       promptTokens: result.usage?.prompt_tokens ?? 0,
       completionTokens: result.usage?.completion_tokens ?? 0,
+      neurons: result.usage?.neurons,
     },
   };
 }

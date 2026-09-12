@@ -13,6 +13,7 @@ export interface AiUsageEntry {
   inputTokens: number | null;
   outputTokens: number | null;
   latencyMs: number | null;
+  neurons: number | null;
   plan: "guest" | "free" | "learner" | "pro";
   locale: Locale;
   routedFallback: boolean;
@@ -26,8 +27,8 @@ export async function recordAiUsage(db: D1Database, entry: AiUsageEntry): Promis
     .prepare(
       `INSERT INTO ai_usage
         (id, user_id, guest_session_id, model, task_type, input_tokens, output_tokens,
-         latency_ms, plan, locale, routed_fallback, usage_estimated, request_id, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         neurons, latency_ms, plan, locale, routed_fallback, usage_estimated, request_id, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       id,
@@ -37,6 +38,7 @@ export async function recordAiUsage(db: D1Database, entry: AiUsageEntry): Promis
       entry.taskType,
       entry.inputTokens,
       entry.outputTokens,
+      entry.neurons,
       entry.latencyMs,
       entry.plan,
       entry.locale,

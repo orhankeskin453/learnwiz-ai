@@ -134,6 +134,7 @@ tutorRoute.post("/chat", async (c) => {
     taskType: "tutor",
     inputTokens: completion.usage.promptTokens,
     outputTokens: completion.usage.completionTokens,
+    neurons: completion.usage.neurons ?? null,
     latencyMs: Date.now() - startedAt,
     plan: identity.kind === "guest" ? "guest" : "free",
     locale,
