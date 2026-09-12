@@ -31,6 +31,7 @@
     "staging": {
       "name": "learwizai-api-staging",
       "vars": { "ENVIRONMENT": "staging" },
+      "ai": { "binding": "AI" },
       "d1_databases": [
         {
           "binding": "DB",
@@ -45,6 +46,7 @@
     "dev": {
       "name": "learwizai-api-dev",
       "vars": { "ENVIRONMENT": "dev" },
+      "ai": { "binding": "AI" },
       "d1_databases": [
         {
           "binding": "DB",

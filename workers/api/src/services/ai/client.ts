@@ -73,6 +73,16 @@ export async function runChat(
     response?: string;
     usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
+  // §20: chat-model response shapes vary across models (reasoning models may
+  // return the answer under another field) — log the shape on anomalies so the
+  // mapping can be repaired without guessing.
+  if (!result.response) {
+    console.error("ai_empty_response", {
+      model,
+      keys: Object.keys(result ?? {}).join(","),
+      usage: JSON.stringify(result.usage ?? {}),
+    });
+  }
   return {
     text: result.response ?? "",
     usage: {
