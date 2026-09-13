@@ -56,11 +56,7 @@ export function VerifyEmailPage() {
         {state === "success" && (
           <>
             <p>{t("verify.successBody")}</p>
-            <Button
-              type="button"
-              className="w-full"
-              onClick={() => window.location.assign(`/${locale}`)}
-            >
+            <Button type="button" className="w-full" onClick={() => navigate(`/${locale}`)}>
               {t("verify.continue")}
             </Button>
           </>
