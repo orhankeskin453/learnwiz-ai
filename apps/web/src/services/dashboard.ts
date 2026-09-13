@@ -10,8 +10,8 @@ export interface ProgressTopic {
   correctQuestions: number;
 }
 
-export async function getDashboard(locale: Locale): Promise<DashboardData> {
-  return apiClient.get<DashboardData>(`/api/dashboard?locale=${locale}`);
+export async function getDashboard(): Promise<DashboardData> {
+  return apiClient.get<DashboardData>("/api/dashboard");
 }
 
 export async function getProgress(): Promise<{ topics: ProgressTopic[] }> {

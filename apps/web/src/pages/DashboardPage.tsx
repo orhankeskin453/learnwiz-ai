@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDashboard } from "@/services/dashboard";
-import { getActiveLocale } from "@/i18n";
 import type { DashboardData } from "@learwizai/types";
 
 function greetingKey(date: Date): "morning" | "afternoon" | "evening" {
@@ -25,7 +24,7 @@ export function DashboardPage() {
     let cancelled = false;
     void (async () => {
       try {
-        const d = await getDashboard(getActiveLocale());
+        const d = await getDashboard();
         if (!cancelled) setData(d);
       } catch {
         if (!cancelled) setFailed(true);
