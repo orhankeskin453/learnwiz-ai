@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { QuestionRunner } from "@/components/learning/QuestionRunner";
@@ -12,7 +13,8 @@ import type { PracticeQuestion } from "@learwizai/types";
 /** Practice Mode (CLAUDE.md §10.5): Question X of Y with instant feedback. */
 export function PracticePage() {
   const { t } = useTranslation("practice");
-  const [topic, setTopic] = useState("");
+  const [searchParams] = useSearchParams();
+  const [topic, setTopic] = useState(searchParams.get("topic") ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<LearningErrorKind | null>(null);
   const [questions, setQuestions] = useState<PracticeQuestion[] | null>(null);

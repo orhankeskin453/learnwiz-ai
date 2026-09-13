@@ -10,6 +10,7 @@ import { tutorRoute } from "./routes/tutor";
 import { learnRoute } from "./routes/learn";
 import { practiceRoute } from "./routes/practice";
 import { quizRoute } from "./routes/quiz";
+import { dashboardRoute } from "./routes/dashboard";
 import { healthRoute } from "./routes/health";
 import { ConfigError } from "./services/identity";
 
@@ -29,6 +30,7 @@ app.route("/tutor", tutorRoute);
 app.route("/learn", learnRoute);
 app.route("/practice", practiceRoute);
 app.route("/quiz", quizRoute);
+app.route("/dashboard", dashboardRoute);
 
 app.notFound((c) => c.json({ error: "not_found", path: c.req.path }, 404));
 

@@ -1,0 +1,9 @@
+{
+  "title": "Your progress",
+  "subtitle": "Mastery grows as you practice and take quizzes.",
+  "empty": "Take a quiz to start tracking mastery per topic.",
+  "mastery": "{{percent}}% mastery",
+  "questions": "{{correct}} of {{total}} questions correct",
+  "weakAreas": "Needs practice",
+  "practiceCta": "Practice {{topic}}"
+}

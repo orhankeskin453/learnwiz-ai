@@ -24,6 +24,7 @@ import {
   updatePasswordHash,
 } from "../services/users";
 import { setMigrationStatus } from "../services/guestSessions";
+import { migrateGuestContent } from "../services/migration";
 import { writeAudit } from "../services/audit";
 
 /**
@@ -157,6 +158,11 @@ authRoute.post("/verify-email", async (c) => {
   }
   await markEmailVerified(c.env.DB, user.id);
   const { token: sessionToken } = await createSession(c.env.DB, user.id);
+  // §5.2 full content migration (conversations/lessons/quizzes), then the audit hook.
+  const resolution = c.get("guestResolution");
+  if (resolution.status === "active") {
+    await migrateGuestContent(c.env.DB, resolution.session.id, user.id);
+  }
   await migrateGuestSession(c, user.id);
   await sendAuthEmail(c.env, c.env.DB, {
     eventType: "welcome",
@@ -262,6 +268,27 @@ authRoute.post("/login", async (c) => {
   }
 
   const { token } = await createSession(c.env.DB, user.id);
+  // §5.2: login with a guest cookie migrates the guest's content to the account.
+  const loginOwner: { userId: string | null; guestSessionId: string | null } = {
+    userId: user.id,
+    guestSessionId: null,
+  };
+  const guestCookieValue = (c.req.header("cookie") ?? "").match(
+    /learwiz_guest_session=([^;]+)/,
+  )?.[1];
+  if (guestCookieValue) {
+    const { verifyGuestCookie } = await import("../services/sessionCrypto");
+    const { getGuestSession, isActive } = await import("../services/guestSessions");
+    const secret = c.env.GUEST_SESSION_SECRET;
+    if (secret && secret.length >= 32) {
+      const guestId = await verifyGuestCookie(guestCookieValue, secret);
+      const row = guestId ? await getGuestSession(c.env.DB, guestId) : null;
+      if (row && isActive(row)) {
+        await migrateGuestContent(c.env.DB, row.id, user.id);
+        loginOwner.guestSessionId = row.id;
+      }
+    }
+  }
   await writeAudit(c.env.DB, {
     actorUserId: user.id,
     action: "login_success",

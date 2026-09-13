@@ -1,3 +1,5 @@
+import type enDashboard from "./locales/en/dashboard.json";
+import type enProgress from "./locales/en/progress.json";
 import type enAuth from "./locales/en/auth.json";
 import type enCommon from "./locales/en/common.json";
 import type enNav from "./locales/en/nav.json";
@@ -6,6 +8,8 @@ import type enPractice from "./locales/en/practice.json";
 import type enQuiz from "./locales/en/quiz.json";
 import type enStyleguide from "./locales/en/styleguide.json";
 import type enTutor from "./locales/en/tutor.json";
+import enDashboardJson from "./locales/en/dashboard.json";
+import enProgressJson from "./locales/en/progress.json";
 import enAuthJson from "./locales/en/auth.json";
 import enCommonJson from "./locales/en/common.json";
 import enNavJson from "./locales/en/nav.json";
@@ -14,6 +18,8 @@ import enPracticeJson from "./locales/en/practice.json";
 import enQuizJson from "./locales/en/quiz.json";
 import enStyleguideJson from "./locales/en/styleguide.json";
 import enTutorJson from "./locales/en/tutor.json";
+import trDashboardJson from "./locales/tr/dashboard.json";
+import trProgressJson from "./locales/tr/progress.json";
 import trAuthJson from "./locales/tr/auth.json";
 import trCommonJson from "./locales/tr/common.json";
 import trNavJson from "./locales/tr/nav.json";
@@ -30,7 +36,9 @@ export const SUPPORTED_LOCALES = ["en", "tr"] as const;
 export const NAMESPACES = [
   "auth",
   "common",
+  "dashboard",
   "nav",
+  "progress",
   "styleguide",
   "tutor",
   "learn",
@@ -42,7 +50,9 @@ export const resources = {
   en: {
     auth: enAuthJson,
     common: enCommonJson,
+    dashboard: enDashboardJson,
     nav: enNavJson,
+    progress: enProgressJson,
     styleguide: enStyleguideJson,
     tutor: enTutorJson,
     learn: enLearnJson,
@@ -52,7 +62,9 @@ export const resources = {
   tr: {
     auth: trAuthJson,
     common: trCommonJson,
+    dashboard: trDashboardJson,
     nav: trNavJson,
+    progress: trProgressJson,
     styleguide: trStyleguideJson,
     tutor: trTutorJson,
     learn: trLearnJson,
@@ -64,6 +76,8 @@ export const resources = {
 /** English resource shape — the source of truth for typed keys. */
 export type EnResources = {
   auth: typeof enAuth;
+  dashboard: typeof enDashboard;
+  progress: typeof enProgress;
   common: typeof enCommon;
   nav: typeof enNav;
   styleguide: typeof enStyleguide;

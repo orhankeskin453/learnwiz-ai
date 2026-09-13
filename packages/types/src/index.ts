@@ -177,3 +177,12 @@ export interface QuizGenerationResponse {
   quizId: string;
   questions: PracticeQuestion[];
 }
+
+/** Aggregated dashboard payload (§10.2). */
+export interface DashboardData {
+  continueLearning: { id: string; title: string; updatedAt: string } | null;
+  recentLessons: Array<{ id: string; topic: string; createdAt: string }>;
+  quiz: { attempts: number; avgMastery: number } | null;
+  topics: Array<{ topic: string; mastery: number }>;
+  aiUsage: QuotaState;
+}

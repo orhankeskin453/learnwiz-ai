@@ -1,0 +1,9 @@
+{
+  "title": "Gelişimin",
+  "subtitle": "Pratik yaptıkça ve test çözdükçe hakimiyetin artar.",
+  "empty": "Konu bazında hakimiyet takibi için bir test çöz.",
+  "mastery": "%{{percent}} hakimiyet",
+  "questions": "{{total}} sorunun {{correct}} tanesi doğru",
+  "weakAreas": "Alıştırma gerekenler",
+  "practiceCta": "{{topic}} alıştırması yap"
+}

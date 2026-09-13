@@ -14,6 +14,8 @@ import { LoginPage } from "@/pages/auth/LoginPage";
 import { VerifyEmailPage } from "@/pages/auth/VerifyEmailPage";
 import { ForgotPasswordPage } from "@/pages/auth/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/pages/auth/ResetPasswordPage";
+import { DashboardPage } from "@/pages/DashboardPage";
+import { ProgressPage } from "@/pages/ProgressPage";
 
 /** Locale-prefixed route tree (CLAUDE.md §31). */
 export const routes: RouteObject[] = [
@@ -36,13 +38,13 @@ export const routes: RouteObject[] = [
       {
         element: <AppShell />,
         children: [
-          { index: true, element: <PlaceholderPage section="dashboard" /> },
+          { index: true, element: <DashboardPage /> },
           { path: "tutor", element: <TutorPage /> },
           { path: "learn", element: <LearnPage /> },
           { path: "practice", element: <PracticePage /> },
           { path: "quizzes", element: <QuizPage /> },
           { path: "documents", element: <PlaceholderPage section="documents" /> },
-          { path: "progress", element: <PlaceholderPage section="progress" /> },
+          { path: "progress", element: <ProgressPage /> },
           { path: "settings", element: <PlaceholderPage section="settings" /> },
         ],
       },

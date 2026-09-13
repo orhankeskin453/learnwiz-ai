@@ -1,0 +1,24 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
+  },
+  "continueLearning": {
+    "title": "Continue learning",
+    "resume": "Resume conversation",
+    "empty": "Start a conversation with your AI teacher."
+  },
+  "recentLessons": {
+    "title": "Recent lessons",
+    "empty": "No lessons yet — create your first one in Learn Mode."
+  },
+  "quizStats": {
+    "title": "Quiz performance",
+    "attempts": "{{count}} quiz attempts",
+    "avg": "Average score {{percent}}%"
+  },
+  "topics": { "title": "Your topics" },
+  "usage": { "label": "AI messages today: {{used}} of {{limit}}" },
+  "progressCta": "See your progress"
+}

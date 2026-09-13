@@ -5,6 +5,7 @@ import type { QuizGenerationResponse } from "@learwizai/types";
 import { AiUnavailableError, generateStructured } from "../services/ai/generate";
 import { buildQuizMessages } from "../services/ai/prompts";
 import { recordAiUsage } from "../services/ai/usage";
+import { recordMastery } from "../services/dashboard";
 import {
   getOwnedQuizQuestions,
   listOwnedQuizzes,
@@ -109,6 +110,12 @@ quizRoute.post("/:id/attempts", async (c) => {
     0,
   );
   await saveQuizAttempt(c.env.DB, c.req.param("id"), score, quiz.questions.length, answers);
+  // §10.8: per-topic mastery accumulates server-side on every scored attempt.
+  await recordMastery(c.env.DB, owner, {
+    topic: quiz.topic,
+    correct: score,
+    total: quiz.questions.length,
+  });
   return c.json({ score, total: quiz.questions.length });
 });
 
