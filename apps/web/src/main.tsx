@@ -6,6 +6,7 @@ import "./index.css";
 import "./i18n";
 import { routes } from "./routes";
 import { ThemeProvider } from "./theme/ThemeProvider";
+import { AuthProvider } from "./auth/AuthProvider";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -17,7 +18,9 @@ const router = createBrowserRouter(routes);
 createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </ThemeProvider>
   </StrictMode>,
 );

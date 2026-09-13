@@ -25,7 +25,11 @@
   "plan": {
     "currentPlan": "Plan",
     "free": "Free",
-    "usageUnavailable": "Usage details arrive with your account"
+    "usageUnavailable": "Usage details arrive with your account",
+    "signedInAs": "Signed in as",
+    "logout": "Log out",
+    "createAccount": "Create free account",
+    "login": "Log in"
   },
   "errors": {
     "unexpected": "An unexpected error occurred. Please try again."

@@ -25,7 +25,11 @@
   "plan": {
     "currentPlan": "Plan",
     "free": "Ücretsiz",
-    "usageUnavailable": "Kullanım detayları hesabınızla birlikte gelir"
+    "usageUnavailable": "Kullanım detayları hesabınızla birlikte gelir",
+    "signedInAs": "Giriş yapılan hesap",
+    "logout": "Çıkış yap",
+    "createAccount": "Ücretsiz hesap oluştur",
+    "login": "Giriş yap"
   },
   "errors": {
     "unexpected": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."

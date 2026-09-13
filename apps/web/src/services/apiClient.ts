@@ -1,9 +1,9 @@
-import type { ApiErrorBody, ApiErrorCode } from "@learwizai/types";
+import type { ApiErrorCode, ApiErrorBody, AuthErrorCode } from "@learwizai/types";
 
 /** Typed fetch error carrying the machine-readable API error code (§23). */
 export class ApiError extends Error {
   readonly status: number;
-  readonly code: ApiErrorCode | "network_error" | "unknown_error";
+  readonly code: ApiErrorCode | AuthErrorCode | "network_error" | "unknown_error";
 
   constructor(status: number, code: ApiError["code"], message?: string) {
     super(message ?? code);
