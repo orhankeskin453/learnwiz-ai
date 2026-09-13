@@ -1,6 +1,6 @@
 import { env, SELF } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { ApiErrorBody, ChatResponse, QuizGenerationResponse } from "@learwizai/types";
+import type { ChatResponse, QuizGenerationResponse } from "@learwizai/types";
 import { createAuthToken } from "../src/services/tokens";
 
 const IP = { "CF-Connecting-IP": "198.51.100.70" };
