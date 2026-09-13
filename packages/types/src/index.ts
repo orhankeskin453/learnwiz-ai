@@ -41,7 +41,11 @@ export type ApiErrorCode =
   | "ai_limit_reached"
   | "ai_unavailable"
   | "quota_exhausted"
-  | "conversation_not_found";
+  | "conversation_not_found"
+  | "document_not_found"
+  | "document_not_ready"
+  | "payload_too_large"
+  | "unsupported_media_type";
 
 export interface ApiErrorBody {
   error: ApiErrorCode;
@@ -185,4 +189,24 @@ export interface DashboardData {
   quiz: { attempts: number; avgMastery: number } | null;
   topics: Array<{ topic: string; mastery: number }>;
   aiUsage: QuotaState;
+}
+
+/** §10.1 document lifecycle + RAG chat contracts (Step 10). */
+export type DocumentStatus = "queued" | "processing" | "processed" | "failed";
+
+export interface DocumentSummary {
+  id: string;
+  title: string;
+  status: DocumentStatus;
+  createdAt: string;
+}
+
+export interface RagSource {
+  position: number;
+  excerpt: string;
+}
+
+export interface DocumentChatResponse {
+  answer: string;
+  sources: RagSource[];
 }

@@ -11,6 +11,9 @@ import { learnRoute } from "./routes/learn";
 import { practiceRoute } from "./routes/practice";
 import { quizRoute } from "./routes/quiz";
 import { dashboardRoute } from "./routes/dashboard";
+import { documentsRoute } from "./routes/documents";
+import { processDocument } from "./services/documents";
+import type { Env } from "./env";
 import { healthRoute } from "./routes/health";
 import { ConfigError } from "./services/identity";
 
@@ -30,6 +33,7 @@ app.route("/tutor", tutorRoute);
 app.route("/learn", learnRoute);
 app.route("/practice", practiceRoute);
 app.route("/quiz", quizRoute);
+app.route("/documents", documentsRoute);
 app.route("/dashboard", dashboardRoute);
 
 app.notFound((c) => c.json({ error: "not_found", path: c.req.path }, 404));
@@ -50,4 +54,20 @@ app.onError((err, c) => {
   return c.json(body, 500);
 });
 
-export default app;
+// Queue consumer (§15): thin wrapper — all logic lives in processDocument so
+// tests exercise it directly without queue semantics.
+export default {
+  fetch: app.fetch,
+  async queue(batch: MessageBatch<{ documentId: string }>, env: Env): Promise<void> {
+    for (const message of batch.messages) {
+      try {
+        await processDocument(env, message.body.documentId);
+      } catch (error) {
+        console.error("document_process_failed", {
+          documentId: message.body.documentId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+  },
+};

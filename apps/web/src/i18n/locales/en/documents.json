@@ -1,0 +1,29 @@
+{
+  "title": "Documents",
+  "subtitle": "Upload a PDF, then chat with it.",
+  "uploadLabel": "Upload a PDF (max 10 MB)",
+  "uploadButton": "Upload",
+  "uploading": "Uploading…",
+  "listTitle": "Your documents",
+  "empty": "No documents yet — upload your first PDF above.",
+  "status": {
+    "queued": "Queued",
+    "processing": "Processing",
+    "processed": "Ready",
+    "failed": "Failed"
+  },
+  "failedReason": "Processing failed: {{reason}}",
+  "chatTitle": "Chat with {{title}}",
+  "chatPlaceholder": "Ask about this document…",
+  "send": "Ask",
+  "sources": "From your document:",
+  "delete": "Delete",
+  "deleteConfirm": "Delete this document? This cannot be undone.",
+  "errors": {
+    "limit": "You have reached your document limit. Create an account for more.",
+    "tooLarge": "That file is larger than 10 MB.",
+    "unsupported": "Only PDF files are supported.",
+    "unavailable": "The document service is unavailable right now. Please try again in a moment.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

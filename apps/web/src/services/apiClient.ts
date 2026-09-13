@@ -40,6 +40,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 /** Typed same-origin API client (CLAUDE.md §7 "typed API clients"). */
 export const apiClient = {
   get: <T>(path: string): Promise<T> => request<T>(path),
+  delete: <T>(path: string): Promise<T> => request<T>(path, { method: "DELETE" }),
   post: <T>(path: string, init?: RequestInit): Promise<T> =>
     request<T>(path, { method: "POST", ...init }),
 };

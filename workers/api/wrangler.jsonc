@@ -11,6 +11,18 @@
   "vars": { "ENVIRONMENT": "production" },
   "observability": { "enabled": true },
   "ai": { "binding": "AI" },
+  "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-prod" }],
+  "queues": {
+    "producers": [{ "binding": "DOCS_QUEUE", "queue": "learwizai-docs-queue" }],
+    "consumers": [
+      {
+        "queue": "learwizai-docs-queue",
+        "max_batch_size": 5,
+        "max_retries": 3,
+        "dead_letter_queue": "learwizai-docs-dlq",
+      },
+    ],
+  },
   "assets": {
     "directory": "../../apps/web/dist",
     "binding": "ASSETS",
@@ -32,6 +44,13 @@
       "name": "learwizai-api-staging",
       "vars": { "ENVIRONMENT": "staging" },
       "ai": { "binding": "AI" },
+      "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-staging" }],
+      "queues": {
+        "producers": [{ "binding": "DOCS_QUEUE", "queue": "learwizai-docs-queue-staging" }],
+        "consumers": [
+          { "queue": "learwizai-docs-queue-staging", "max_batch_size": 5, "max_retries": 3 },
+        ],
+      },
       "d1_databases": [
         {
           "binding": "DB",
@@ -47,6 +66,13 @@
       "name": "learwizai-api-dev",
       "vars": { "ENVIRONMENT": "dev" },
       "ai": { "binding": "AI" },
+      "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-dev" }],
+      "queues": {
+        "producers": [{ "binding": "DOCS_QUEUE", "queue": "learwizai-docs-queue-dev" }],
+        "consumers": [
+          { "queue": "learwizai-docs-queue-dev", "max_batch_size": 5, "max_retries": 3 },
+        ],
+      },
       "d1_databases": [
         {
           "binding": "DB",

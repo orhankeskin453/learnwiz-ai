@@ -97,13 +97,20 @@ export default defineWorkersConfig(async () => {
                     { ifSystemContains: "quiz generator", text: QUIZ_JSON },
                   ],
                 },
+                "mock-embedding": {
+                  behavior: "embed",
+                  vector: [0.1, 0.2, 0.3],
+                },
                 "mock-ok": {
                   behavior: "stream",
                   text: "Hello! Let's learn.",
                   usage: { prompt_tokens: 20, completion_tokens: 8 },
                 },
               }),
-              AI_PRIMARY_MODEL: "mock-primary",
+              AI_EMBEDDING_MODEL: "mock-embedding",
+              // Vectorize test seam (spec D7): answerDocumentQuestion serves the
+              // first chunks in document order instead of querying Vectorize.
+              VEC_MOCK_MATCHES: "test-seam",
               AI_FALLBACK_MODEL: "mock-fallback",
             },
           },

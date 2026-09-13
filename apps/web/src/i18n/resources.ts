@@ -1,5 +1,6 @@
 import type enDashboard from "./locales/en/dashboard.json";
 import type enProgress from "./locales/en/progress.json";
+import type enDocuments from "./locales/en/documents.json";
 import type enAuth from "./locales/en/auth.json";
 import type enCommon from "./locales/en/common.json";
 import type enNav from "./locales/en/nav.json";
@@ -10,6 +11,7 @@ import type enStyleguide from "./locales/en/styleguide.json";
 import type enTutor from "./locales/en/tutor.json";
 import enDashboardJson from "./locales/en/dashboard.json";
 import enProgressJson from "./locales/en/progress.json";
+import enDocumentsJson from "./locales/en/documents.json";
 import enAuthJson from "./locales/en/auth.json";
 import enCommonJson from "./locales/en/common.json";
 import enNavJson from "./locales/en/nav.json";
@@ -20,6 +22,7 @@ import enStyleguideJson from "./locales/en/styleguide.json";
 import enTutorJson from "./locales/en/tutor.json";
 import trDashboardJson from "./locales/tr/dashboard.json";
 import trProgressJson from "./locales/tr/progress.json";
+import trDocumentsJson from "./locales/tr/documents.json";
 import trAuthJson from "./locales/tr/auth.json";
 import trCommonJson from "./locales/tr/common.json";
 import trNavJson from "./locales/tr/nav.json";
@@ -76,6 +79,7 @@ export const resources = {
 /** English resource shape — the source of truth for typed keys. */
 export type EnResources = {
   auth: typeof enAuth;
+  documents: typeof enDocuments;
   dashboard: typeof enDashboard;
   progress: typeof enProgress;
   common: typeof enCommon;

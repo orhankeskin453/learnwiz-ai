@@ -34,6 +34,14 @@ export interface Env {
   AI_PRIMARY_MODEL?: string;
   /** §18 failover model — default @cf/meta/llama-3.1-8b-instruct-fast. */
   AI_FALLBACK_MODEL?: string;
+  /** §13.5 embedding model — default @cf/qwen/qwen3-embedding-0.6b (1024 dims). */
+  AI_EMBEDDING_MODEL?: string;
+  /** Test-only: canned vectorize query matches. */
+  VEC_MOCK_MATCHES?: string;
+  /** Queue producer for document processing jobs (§15). */
+  DOCS_QUEUE: Queue<unknown>;
+  /** Workers AI embeddings + Vectorize binding (§12.1, §13.5, §15). */
+  VECTORIZE: Vectorize;
   /** Test-only: canned per-model AI responses (deterministic CI, spec D10) — never set in deployed envs. */
   AI_MOCK_RESPONSES?: string;
 }

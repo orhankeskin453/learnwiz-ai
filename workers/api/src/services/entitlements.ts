@@ -61,3 +61,15 @@ export function buildGuestSessionResponse(
 
 /** Free-plan daily AI limit (§10.10) — user-side counterpart of the guest matrix. */
 export const FREE_DAILY_AI_LIMIT = 10;
+
+/**
+ * Document upload limits per plan (§32). NOTE: the free=2 pilot allowance is a
+ * DISCLOSED deviation — §32 says Free=No PDF; it flips to 0 at the billing step
+ * (one-line change here). Kept so Step 10 is demonstrable before Polar lands.
+ */
+export const DOCUMENTS_LIMITS: Record<"guest" | "free" | "learner" | "pro", number> = {
+  guest: 0,
+  free: 2,
+  learner: 25,
+  pro: 100,
+};

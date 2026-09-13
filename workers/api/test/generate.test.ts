@@ -19,7 +19,13 @@ const base = {
 
 /** Override the mock fixture per test (env is a plain object binding). */
 function withMock(spec: unknown): typeof env {
-  return { ...env, AI_MOCK_RESPONSES: JSON.stringify(spec) };
+  return {
+    ...env,
+    AI_MOCK_RESPONSES: JSON.stringify(spec),
+    // Spread may not carry string bindings reliably — pin the mock models.
+    AI_PRIMARY_MODEL: "mock-primary",
+    AI_FALLBACK_MODEL: "mock-fallback",
+  };
 }
 
 const VALID = JSON.stringify({ answer: 42 });

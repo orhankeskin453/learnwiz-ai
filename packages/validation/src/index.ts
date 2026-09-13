@@ -161,3 +161,8 @@ export const questionSetSchema = z.object({
 
 export type LessonContent = z.infer<typeof lessonContentSchema>;
 export type QuestionSet = z.infer<typeof questionSetSchema>;
+
+export const documentChatSchema = z.object({
+  message: z.string().trim().min(1).max(1000),
+  locale: localeSchema,
+});

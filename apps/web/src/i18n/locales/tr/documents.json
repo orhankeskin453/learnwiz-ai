@@ -1,0 +1,29 @@
+{
+  "title": "Belgeler",
+  "subtitle": "PDF yükle, ardından belgeyle sohbet et.",
+  "uploadLabel": "PDF yükle (en fazla 10 MB)",
+  "uploadButton": "Yükle",
+  "uploading": "Yükleniyor…",
+  "listTitle": "Belgelerin",
+  "empty": "Henüz belge yok — yukarıdan ilk PDF'ini yükle.",
+  "status": {
+    "queued": "Sırada",
+    "processing": "İşleniyor",
+    "processed": "Hazır",
+    "failed": "Hata"
+  },
+  "failedReason": "İşleme başarısız: {{reason}}",
+  "chatTitle": "{{title}} ile sohbet",
+  "chatPlaceholder": "Bu belge hakkında sor…",
+  "send": "Sor",
+  "sources": "Belgenden:",
+  "delete": "Sil",
+  "deleteConfirm": "Bu belge silinsin mi? Bu işlem geri alınamaz.",
+  "errors": {
+    "limit": "Belge limitine ulaştın. Daha fazlası için hesap oluştur.",
+    "tooLarge": "Dosya 10 MB'tan büyük.",
+    "unsupported": "Yalnızca PDF dosyaları desteklenir.",
+    "unavailable": "Belge servisi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  }
+}
