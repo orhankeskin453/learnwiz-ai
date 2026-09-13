@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { learningErrorKind, type LearningErrorKind } from "@/components/learning/errors";
+import { ApiError } from "@/services/apiClient";
+import { type LearningErrorKind } from "@/components/learning/errors";
 
 function uploadErrorKind(err: unknown): LearningErrorKind {
   if (err instanceof ApiError) {
@@ -15,7 +16,6 @@ function uploadErrorKind(err: unknown): LearningErrorKind {
   }
   return "generic";
 }
-import { ApiError } from "@/services/apiClient";
 import {
   chatWithDocument,
   deleteDocument,

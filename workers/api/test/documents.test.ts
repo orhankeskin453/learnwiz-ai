@@ -5,7 +5,6 @@ import type {
   AuthSessionResponse,
   ChatResponse,
   DocumentChatResponse,
-  DocumentSummary,
   GeneratedQuiz,
 } from "@learwizai/types";
 import { createAuthToken } from "../src/services/tokens";
@@ -74,9 +73,8 @@ describe("POST /api/documents (upload)", () => {
       method: "POST",
       headers: IP,
     });
-    const guestCookie = guestRes.headers
-      .get("set-cookie")
-      ?.match(/learwiz_guest_session=([^;]+)/)?.[1]!;
+    const guestCookie =
+      guestRes.headers.get("set-cookie")?.match(/learwiz_guest_session=([^;]+)/)?.[1] ?? "";
     const guest = await SELF.fetch("http://local/api/documents", {
       method: "POST",
       headers: {
@@ -235,7 +233,9 @@ describe("DELETE /api/documents/:id", () => {
 
     const doc = await env.DB.prepare("SELECT r2_key FROM documents WHERE id = ?")
       .bind(documentId)
-      .first<{ r2_key: string }>();
+      .first<{ r2_key: string | null }>();
+    const r2Key = doc?.r2_key;
+    expect(r2Key).toBeDefined();
 
     const del = await SELF.fetch(`http://local/api/documents/${documentId}`, {
       method: "DELETE",
