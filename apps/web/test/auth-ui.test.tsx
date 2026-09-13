@@ -7,6 +7,15 @@ import { routes } from "@/routes";
 import { ThemeProvider } from "@/theme/ThemeProvider";
 import { AuthProvider } from "@/auth/AuthProvider";
 
+// Programmatic navigate() crashes in jsdom + node:undici (AbortSignal realm
+// mismatch — same sanctioned pattern as the routing/tutor suites). Capture the
+// navigation target instead of executing it.
+const { navigateSpy } = vi.hoisted(() => ({ navigateSpy: vi.fn() }));
+vi.mock("react-router", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react-router")>();
+  return { ...actual, useNavigate: () => navigateSpy };
+});
+
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
