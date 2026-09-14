@@ -1,9 +1,9 @@
 {
-  // LearWizAI API Worker — single worker serving /api/* and the SPA assets.
+  // LearnWiz AI API Worker — single worker serving /api/* and the SPA assets.
   // Top-level config = production. env.staging / env.dev = other environments.
   // See docs/superpowers/specs/2026-09-11-step1-foundation-design.md §5-§6.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "learwizai-api",
+  "name": "learnwizai-api",
   "main": "src/index.ts",
   // Pinned to the max date supported by the installed workerd/minifare to keep local test output pristine.
   // Remote edge accepts any past date; bump together with wrangler upgrades.
@@ -41,7 +41,7 @@
   "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-prod" }],
   "env": {
     "staging": {
-      "name": "learwizai-api-staging",
+      "name": "learnwizai-api-staging",
       "vars": { "ENVIRONMENT": "staging" },
       "ai": { "binding": "AI" },
       "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-staging" }],
@@ -63,7 +63,7 @@
       "r2_buckets": [{ "binding": "DOCS", "bucket_name": "learwizai-docs-staging" }],
     },
     "dev": {
-      "name": "learwizai-api-dev",
+      "name": "learnwizai-api-dev",
       "vars": { "ENVIRONMENT": "dev" },
       "ai": { "binding": "AI" },
       "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-dev" }],

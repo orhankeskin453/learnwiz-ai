@@ -6,7 +6,7 @@ delivery is a deliberate operator switch, gated on the steps below.
 
 ## Why dormant
 
-workers.dev subdomains cannot send authenticated transactional email. LearWizAI
+workers.dev subdomains cannot send authenticated transactional email. LearnWiz AI
 needs a verified sending domain with SPF/DKIM/DMARC before
 `CloudflareEmailProvider` can deliver (CLAUDE.md §47.12, §40.15).
 

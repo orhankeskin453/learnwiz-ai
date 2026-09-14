@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .wrangler/
+.zcode/
 coverage/
 *.local
 .dev.vars

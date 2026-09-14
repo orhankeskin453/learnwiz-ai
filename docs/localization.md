@@ -35,7 +35,7 @@ apps/web/src/i18n/locales/{en,tr}/<namespace>.json
   (`apps/web/test/parity.test.ts`) fails CI on key drift or empty values.
 - Typed keys: `t()` is compile-time-checked against the en JSONs
   (`src/i18n/types.d.ts` augmentation); unknown keys fail `pnpm typecheck`.
-- Documented exceptions to no-hardcoded-strings: brand name "LearWizAI" and native
+- Documented exceptions to no-hardcoded-strings: brand name "LearnWiz AI" and native
   language names ("English", "Türkçe") are locale-invariant proper nouns.
 - Formatting: use `formatDate/formatTime/formatNumber/formatRelativeTime` from
   `@/i18n/format` (Intl wrappers, active-locale aware) — never hand-rolled patterns.

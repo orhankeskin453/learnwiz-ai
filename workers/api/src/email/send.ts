@@ -13,8 +13,8 @@ export function emailFrom(env: Env): string | null {
 export function emailOrigin(env: Env): string {
   if (env.APP_ORIGIN) return env.APP_ORIGIN.replace(/\/$/, "");
   if (env.ENVIRONMENT === "staging")
-    return "https://learwizai-api-staging.orhankeskinn1.workers.dev";
-  return "https://learwizai-api.orhankeskinn1.workers.dev";
+    return "https://learnwizai-api-staging.orhankeskinn1.workers.dev";
+  return "https://learnwizai-api.orhankeskinn1.workers.dev";
 }
 
 export interface AuthEmailInput {

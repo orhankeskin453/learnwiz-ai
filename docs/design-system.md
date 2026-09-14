@@ -2,7 +2,7 @@
 
 Foundation per CLAUDE.md §8; vendored shadcn/ui (Radix) + Tailwind v4 tokens.
 Live showcase: `/{locale}/style-guide` on every environment
-(e.g. https://learwizai-api-staging.orhankeskinn1.workers.dev/en/style-guide).
+(e.g. https://learnwizai-api-staging.orhankeskinn1.workers.dev/en/style-guide).
 
 ## Tokens
 

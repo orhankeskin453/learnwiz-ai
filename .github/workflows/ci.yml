@@ -61,7 +61,7 @@ jobs:
       - name: Smoke test staging
         run: |
           sleep 5
-          BODY=$(curl -fsS --retry 3 --retry-delay 5 https://learwizai-api-staging.orhankeskinn1.workers.dev/api/health)
+          BODY=$(curl -fsS --retry 3 --retry-delay 5 https://learnwizai-api-staging.orhankeskinn1.workers.dev/api/health)
           echo "$BODY"
           echo "$BODY" | jq -e '.status == "ok" and .environment == "staging" and .checks.db == "ok"' >/dev/null
 
@@ -70,7 +70,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.deploy_production
     needs: checks
     runs-on: ubuntu-latest
-    environment: production # manual dispatch IS the gate — required reviewers unavailable on GitHub Free for private repos (see docs/deployment.md)
+    environment: production # configure required reviewers on the public repository (see docs/deployment.md)
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
@@ -88,6 +88,6 @@ jobs:
       - name: Smoke test production
         run: |
           sleep 5
-          BODY=$(curl -fsS --retry 3 --retry-delay 5 https://learwizai-api.orhankeskinn1.workers.dev/api/health)
+          BODY=$(curl -fsS --retry 3 --retry-delay 5 https://learnwizai-api.orhankeskinn1.workers.dev/api/health)
           echo "$BODY"
           echo "$BODY" | jq -e '.status == "ok" and .environment == "production" and .checks.db == "ok"' >/dev/null

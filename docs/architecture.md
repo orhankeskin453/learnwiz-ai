@@ -6,7 +6,7 @@ describes what is ACTUALLY deployed today and grows with each step.
 ## Topology
 
 ```text
-Browser ──► Cloudflare edge ──► Worker "learwizai-api" (single worker, same-origin)
+Browser ──► Cloudflare edge ──► Worker "learnwizai-api" (single worker, same-origin)
                                   ├── /api/*  → Hono app (run_worker_first)
                                   └── /*      → Workers Static Assets (SPA, not_found → index.html)
 Bindings: DB (D1) · CACHE (KV) · DOCS (R2) · ASSETS
@@ -18,13 +18,16 @@ changes (spec §5).
 
 ## Environments & resources
 
-| Env        | Worker                | D1 (weur)            | KV                   | R2                     |
-| ---------- | --------------------- | -------------------- | -------------------- | ---------------------- |
-| dev        | learwizai-api-dev     | learwizai-db-dev     | learwizai-kv-dev     | learwizai-docs-dev     |
-| staging    | learwizai-api-staging | learwizai-db-staging | learwizai-kv-staging | learwizai-docs-staging |
-| production | learwizai-api         | learwizai-db-prod    | learwizai-kv-prod    | learwizai-docs-prod    |
+| Env        | Worker                 | D1 (weur)            | KV                   | R2                     |
+| ---------- | ---------------------- | -------------------- | -------------------- | ---------------------- |
+| dev        | learnwizai-api-dev     | learwizai-db-dev     | learwizai-kv-dev     | learwizai-docs-dev     |
+| staging    | learnwizai-api-staging | learwizai-db-staging | learwizai-kv-staging | learwizai-docs-staging |
+| production | learnwizai-api         | learwizai-db-prod    | learwizai-kv-prod    | learwizai-docs-prod    |
 
 Resource IDs live in `workers/api/wrangler.jsonc` (committed source of truth).
+The existing D1/KV/R2/Vectorize/Queue resource names retain the historical
+`learwizai-*` identifier for data continuity; the public Worker names and URLs
+use the corrected `learnwizai-*` spelling.
 URLs: `https://<worker>.orhankeskinn1.workers.dev`.
 
 ## Monorepo

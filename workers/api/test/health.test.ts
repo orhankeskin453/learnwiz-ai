@@ -9,7 +9,7 @@ describe("GET /api/health", () => {
 
     const body = (await response.json()) as HealthResponse;
     expect(body.status).toBe("ok");
-    expect(body.service).toBe("learwizai-api");
+    expect(body.service).toBe("learnwizai-api");
     expect(body.checks.db).toBe("ok");
     expect(typeof body.environment).toBe("string");
     expect(typeof body.timestamp).toBe("string");

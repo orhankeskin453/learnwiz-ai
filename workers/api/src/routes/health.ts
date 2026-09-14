@@ -15,7 +15,7 @@ healthRoute.get("/", async (c) => {
 
   const body: HealthResponse = {
     status: "ok",
-    service: "learwizai-api",
+    service: "learnwizai-api",
     environment: c.env.ENVIRONMENT,
     timestamp: new Date().toISOString(),
     checks: { db },

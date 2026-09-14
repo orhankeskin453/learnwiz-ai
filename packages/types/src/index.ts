@@ -4,7 +4,7 @@ export type Locale = "en" | "tr";
 /** Response body of GET /api/health (CLAUDE.md Step 1 foundation). */
 export interface HealthResponse {
   status: "ok";
-  service: "learwizai-api";
+  service: "learnwizai-api";
   environment: string;
   timestamp: string;
   checks: {

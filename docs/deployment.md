@@ -8,7 +8,11 @@ merge to main → CI checks → automatic staging deploy
 production → manual: Actions → CI → Run workflow (deploy_production=true) → deploy
 ```
 
-**Production gate note:** the `production` GitHub environment exists (deployment history is recorded), but required-reviewer protection is unavailable on the GitHub Free plan for private repositories. The manual dispatch itself is therefore the production gate. Upgrade path: GitHub Team plan (or a public repo) → Settings → Environments → production → add required reviewers.
+The repository is intended to be public. Keep Cloudflare credentials only in
+GitHub Actions secrets and Worker secrets; never commit them to the repository.
+After making the repository public, configure at least one required reviewer on
+the `production` environment so the manual production workflow remains an
+explicit approval gate.
 
 ## Local deploys (exceptional use only)
 
@@ -42,13 +46,13 @@ Production is NOT deployed locally — always through the protected CI path.
 `GET /api/health` must return `{"status":"ok",...,"checks":{"db":"ok"}}` with the
 matching `environment` value on:
 
-- dev: https://learwizai-api-dev.orhankeskinn1.workers.dev/api/health
-- staging: https://learwizai-api-staging.orhankeskinn1.workers.dev/api/health
-- production: https://learwizai-api.orhankeskinn1.workers.dev/api/health
+- dev: https://learnwizai-api-dev.orhankeskinn1.workers.dev/api/health
+- staging: https://learnwizai-api-staging.orhankeskinn1.workers.dev/api/health
+- production: https://learnwizai-api.orhankeskinn1.workers.dev/api/health
 
 If your network blackholes the `*.workers.dev` edge IP range (some ISP routes drop TCP to 188.114.96.0/24 while the `workers.dev` apex on other Cloudflare ranges works), verify via SNI forcing:
 
 ```powershell
 $apexIp = curl.exe -s -o NUL -w "%{remote_ip}" --max-time 10 https://workers.dev
-curl.exe -s --max-time 15 --resolve "learwizai-api.orhankeskinn1.workers.dev:443:$apexIp" https://learwizai-api.orhankeskinn1.workers.dev/api/health
+curl.exe -s --max-time 15 --resolve "learnwizai-api.orhankeskinn1.workers.dev:443:$apexIp" https://learnwizai-api.orhankeskinn1.workers.dev/api/health
 ```
