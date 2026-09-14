@@ -22,7 +22,7 @@ export function AuthLayout({
         <header className="text-center">
           {/* Brand name is a proper noun — not translated (documented exception). */}
           <Link to="/" className="text-xl font-semibold text-foreground">
-            LearWizAI
+            LearnWiz AI
           </Link>
           <h1 className="mt-4 text-2xl font-semibold text-foreground">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}

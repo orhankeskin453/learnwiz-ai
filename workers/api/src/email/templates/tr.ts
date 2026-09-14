@@ -1,10 +1,10 @@
 import { htmlShell, type TemplateContent, type TemplateParams } from "./shell";
 
 export function verificationTr({ url, email }: TemplateParams): TemplateContent {
-  const subject = "LearWizAI e-posta adresinizi doğrulayın";
+  const subject = "LearnWiz AI e-posta adresinizi doğrulayın";
   const heading = "E-postanızı doğrulayın";
   const paragraphs = [
-    email ? `LearWizAI'e hoş geldiniz, ${email}!` : "LearWizAI'e hoş geldiniz!",
+    email ? `LearnWiz AI'e hoş geldiniz, ${email}!` : "LearnWiz AI'e hoş geldiniz!",
     "Hesabınızı etkinleştirmek ve öğrenmeye başlamak için bu e-posta adresini doğrulayın.",
     "Bu bağlantı 24 saat geçerlidir ve yalnızca bir kez kullanılabilir.",
   ];
@@ -15,14 +15,14 @@ export function verificationTr({ url, email }: TemplateParams): TemplateContent 
       paragraphs,
       "E-postamı doğrula",
       url,
-      "Bu e-postayı LearWizAI üzerinde bir hesap oluşturulduğu için aldınız.",
+      "Bu e-postayı LearnWiz AI üzerinde bir hesap oluşturulduğu için aldınız.",
     ),
     text: `${paragraphs.join("\n\n")}\n\n${url}`,
   };
 }
 
 export function welcomeTr({ url }: TemplateParams): TemplateContent {
-  const subject = "LearWizAI'e hoş geldiniz";
+  const subject = "LearnWiz AI'e hoş geldiniz";
   const heading = "Hesabınız hazır";
   const paragraphs = [
     "E-postanız doğrulandı ve hesabınız etkin.",
@@ -35,14 +35,14 @@ export function welcomeTr({ url }: TemplateParams): TemplateContent {
       paragraphs,
       "Öğrenmeye başla",
       url,
-      "LearWizAI — Learn anything. With your AI teacher.",
+      "LearnWiz AI — Learn anything. With your AI teacher.",
     ),
     text: `${paragraphs.join("\n\n")}\n\n${url}`,
   };
 }
 
 export function passwordResetTr({ url }: TemplateParams): TemplateContent {
-  const subject = "LearWizAI şifrenizi sıfırlayın";
+  const subject = "LearnWiz AI şifrenizi sıfırlayın";
   const heading = "Şifre sıfırlama talebi";
   const paragraphs = [
     "Şifrenizi sıfırlama talebiniz alındı.",
@@ -55,7 +55,7 @@ export function passwordResetTr({ url }: TemplateParams): TemplateContent {
       paragraphs,
       "Yeni şifre belirle",
       url,
-      "LearWizAI — güvenlik bildirimi.",
+      "LearnWiz AI — güvenlik bildirimi.",
     ),
     text: `${paragraphs.join("\n\n")}\n\n${url}`,
   };

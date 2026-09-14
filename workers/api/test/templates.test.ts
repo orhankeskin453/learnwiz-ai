@@ -20,7 +20,7 @@ describe("email templates (§47.11)", () => {
     const en = renderTemplate("verification", "en", PARAMS);
     const tr = renderTemplate("verification", "tr", PARAMS);
     expect(en.subject).not.toBe(tr.subject);
-    expect(tr.subject).toContain("LearWizAI");
+    expect(tr.subject).toContain("LearnWiz AI");
   });
 
   it("falls back to English for unknown locales", () => {

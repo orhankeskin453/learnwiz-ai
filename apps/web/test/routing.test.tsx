@@ -59,7 +59,7 @@ describe("routing", () => {
   it("serves the style-guide route outside the app shell", async () => {
     renderAt("/en/style-guide");
     expect(
-      await screen.findByRole("heading", { name: "LearWizAI Style Guide" }),
+      await screen.findByRole("heading", { name: "LearnWiz AI Style Guide" }),
     ).toBeInTheDocument();
   });
 
