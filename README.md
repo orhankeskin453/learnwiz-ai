@@ -1,4 +1,4 @@
-# LearWizAI
+# LearnWizAI
 
 AI-powered personal learning platform — "Learn → Understand → Practice → Feedback → Mastery → Recommendation".
 The single source of truth for product/architecture rules is [CLAUDE.md](CLAUDE.md).
