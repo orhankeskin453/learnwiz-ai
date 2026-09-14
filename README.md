@@ -5,6 +5,14 @@ personal teacher rather than a generic chatbot. It helps learners understand a
 topic, practice it, receive feedback, measure progress, and decide what to do
 next.
 
+## Live demo
+
+Try the deployed application: <https://learnwizai-api.orhankeskinn1.workers.dev>
+
+The production Worker serves both the React application and its API from the
+same origin, so visitors can open the project directly without a separate
+frontend hosting URL.
+
 ## What the application does
 
 LearnWiz AI turns an open-ended learning goal into a guided learning workflow:
@@ -88,7 +96,7 @@ and smoke testing. Neither environment is required for a portfolio reviewer.
 | Staging     | CI deployment and pre-production smoke tests |
 | Production  | Public application and API                   |
 
-Production API health check:
+Technical API health check:
 <https://learnwizai-api.orhankeskinn1.workers.dev/api/health>
 
 ## Quick start
