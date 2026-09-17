@@ -49,11 +49,22 @@ export function PlanCard() {
               <Badge>{t("plan.free")}</Badge>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{t("plan.usageUnavailable")}</p>
-            <div className="mt-2 flex items-center gap-2">
-              <Button type="button" size="sm" className="flex-1" asChild>
+            <div className="mt-2 flex flex-col gap-2">
+              <Button
+                type="button"
+                size="sm"
+                className="h-auto min-h-8 w-full whitespace-normal py-1 text-center"
+                asChild
+              >
                 <Link to={`/${locale}/auth/register`}>{t("plan.createAccount")}</Link>
               </Button>
-              <Button type="button" variant="outline" size="sm" asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-auto min-h-8 w-full whitespace-normal py-1 text-center"
+                asChild
+              >
                 <Link to={`/${locale}/auth/login`}>{t("plan.login")}</Link>
               </Button>
             </div>
