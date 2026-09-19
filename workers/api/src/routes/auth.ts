@@ -113,6 +113,13 @@ authRoute.post("/register", async (c) => {
   });
   // Bootstrap admin allowlist (§40.6): ADMIN_EMAILS secret → role=admin.
   user.role = await maybePromoteAdmin(c.env.DB, c.env.ADMIN_EMAILS, user);
+  if (user.role === "admin") {
+    // Trusted bootstrap account: skip the email-verification round trip
+    // (transactional email is not live yet; see docs/runbooks/email-delivery.md).
+    await markEmailVerified(c.env.DB, user.id);
+    user.status = "active";
+    user.emailVerifiedAt = new Date().toISOString();
+  }
   const { token } = await createAuthToken(c.env.DB, user.id, "email_verification");
   await sendAuthEmail(c.env, c.env.DB, {
     eventType: "verification",

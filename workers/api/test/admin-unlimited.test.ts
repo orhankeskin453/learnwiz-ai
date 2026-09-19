@@ -153,3 +153,45 @@ describe("ADMIN_EMAILS bootstrap allowlist (§40.6)", () => {
     expect(row?.role).toBe("user");
   });
 });
+
+describe("bootstrap admins skip email verification (§40.6 testing access)", () => {
+  it("a listed email is active + admin immediately after registration", async () => {
+    const res = await SELF.fetch("http://local/api/auth/register", {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ email: "boot-admin@example.com", password: "correct-horse-battery" }),
+    });
+    expect(res.status).toBe(201);
+    const row = await env.DB.prepare(
+      "SELECT role, status, email_verified_at FROM users WHERE email_normalized = 'boot-admin@example.com'",
+    ).first<{ role: string; status: string; email_verified_at: string | null }>();
+    expect(row?.role).toBe("admin");
+    expect(row?.status).toBe("active");
+    expect(row?.email_verified_at).not.toBeNull();
+
+    // And login works right away — no verification email needed.
+    const login = await SELF.fetch("http://local/api/auth/login", {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ email: "boot-admin@example.com", password: "correct-horse-battery" }),
+    });
+    expect(login.status).toBe(200);
+    const cookie = login.headers.get("set-cookie")?.match(/learwiz_session=([^;]+)/)?.[1] ?? "";
+    const quota = await SELF.fetch("http://local/api/tutor/quota", {
+      headers: { ...IP, cookie: `learwiz_session=${cookie}` },
+    });
+    expect(((await quota.json()) as QuotaState).unlimited).toBe(true);
+  });
+
+  it("regular users still need verification", async () => {
+    await SELF.fetch("http://local/api/auth/register", {
+      method: "POST",
+      headers: { ...IP, "content-type": "application/json" },
+      body: JSON.stringify({ email: "normal@example.com", password: "correct-horse-battery" }),
+    });
+    const row = await env.DB.prepare(
+      "SELECT role, status FROM users WHERE email_normalized = 'normal@example.com'",
+    ).first<{ role: string; status: string }>();
+    expect(row).toEqual({ role: "user", status: "pending" });
+  });
+});
