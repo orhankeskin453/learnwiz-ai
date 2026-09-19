@@ -129,3 +129,27 @@ describe("admin accounts are unlimited (testing access)", () => {
 
 // Keep ChatResponse referenced for type-level contract checks in this file.
 export type { ChatResponse };
+
+describe("ADMIN_EMAILS bootstrap allowlist (§40.6)", () => {
+  it("promotes a listed email to admin at registration (unlimited immediately)", async () => {
+    const cookie = await createUserSession("boot-admin@example.com", false);
+    const row = await env.DB.prepare(
+      "SELECT role FROM users WHERE email_normalized = 'boot-admin@example.com'",
+    ).first<{ role: string }>();
+    expect(row?.role).toBe("admin");
+
+    const quota = await SELF.fetch("http://local/api/tutor/quota", {
+      headers: sessionHeaders(cookie),
+    });
+    const body = (await quota.json()) as QuotaState;
+    expect(body.unlimited).toBe(true);
+  });
+
+  it("leaves unlisted emails as regular users", async () => {
+    await createUserSession("not-listed@example.com", false);
+    const row = await env.DB.prepare(
+      "SELECT role FROM users WHERE email_normalized = 'not-listed@example.com'",
+    ).first<{ role: string }>();
+    expect(row?.role).toBe("user");
+  });
+});

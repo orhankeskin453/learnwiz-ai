@@ -128,3 +128,26 @@ export async function getPasswordHashById(db: D1Database, id: string): Promise<s
     .first<{ password_hash: string | null }>();
   return row?.password_hash ?? null;
 }
+
+/**
+ * Bootstrap admin allowlist (§40.6): emails listed in the ADMIN_EMAILS env secret
+ * are promoted to role=admin. Applied at register and login so an account created
+ * before the secret was set still gets caught on next login.
+ */
+export async function maybePromoteAdmin(
+  db: D1Database,
+  adminEmails: string | undefined,
+  user: Pick<UserRow, "id" | "email" | "role">,
+): Promise<"user" | "admin"> {
+  if (!adminEmails || user.role === "admin") return user.role;
+  const allowed = adminEmails
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+  if (!allowed.includes(user.email.toLowerCase())) return user.role;
+  await db
+    .prepare("UPDATE users SET role = 'admin', updated_at = ? WHERE id = ?")
+    .bind(nowIso(), user.id)
+    .run();
+  return "admin";
+}

@@ -112,6 +112,8 @@ export default defineWorkersConfig(async () => {
               // first chunks in document order instead of querying Vectorize.
               VEC_MOCK_MATCHES: "test-seam",
               AI_FALLBACK_MODEL: "mock-fallback",
+              // Bootstrap admin allowlist (§40.6) — promoted at register/login.
+              ADMIN_EMAILS: "boot-admin@example.com",
             },
           },
         },

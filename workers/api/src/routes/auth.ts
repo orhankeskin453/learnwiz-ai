@@ -21,6 +21,7 @@ import {
   findUserById,
   getPasswordHashById,
   markEmailVerified,
+  maybePromoteAdmin,
   updatePasswordHash,
 } from "../services/users";
 import { setMigrationStatus } from "../services/guestSessions";
@@ -110,6 +111,8 @@ authRoute.post("/register", async (c) => {
     emailNormalized: email,
     passwordHash,
   });
+  // Bootstrap admin allowlist (§40.6): ADMIN_EMAILS secret → role=admin.
+  user.role = await maybePromoteAdmin(c.env.DB, c.env.ADMIN_EMAILS, user);
   const { token } = await createAuthToken(c.env.DB, user.id, "email_verification");
   await sendAuthEmail(c.env, c.env.DB, {
     eventType: "verification",
@@ -267,6 +270,8 @@ authRoute.post("/login", async (c) => {
     return c.json({ error: "account_suspended" } satisfies { error: "account_suspended" }, 403);
   }
 
+  // Bootstrap admin allowlist (§40.6) — catches accounts created before the secret.
+  user.role = await maybePromoteAdmin(c.env.DB, c.env.ADMIN_EMAILS, user);
   const { token } = await createSession(c.env.DB, user.id);
   // §5.2: login with a guest cookie migrates the guest's content to the account.
   const loginOwner: { userId: string | null; guestSessionId: string | null } = {

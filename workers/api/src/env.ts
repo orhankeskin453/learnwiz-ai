@@ -40,6 +40,11 @@ export interface Env {
   VEC_MOCK_MATCHES?: string;
   /** Queue producer for document processing jobs (§15). */
   DOCS_QUEUE: Queue<unknown>;
+  /**
+   * Comma-separated emails that are auto-promoted to role=admin on register/login
+   * (bootstrap/testing access, §40.6 roles). Kept as an env SECRET, not source.
+   */
+  ADMIN_EMAILS?: string;
   /** Workers AI embeddings + Vectorize binding (§12.1, §13.5, §15). */
   VECTORIZE: Vectorize;
   /** Test-only: canned per-model AI responses (deterministic CI, spec D10) — never set in deployed envs. */
