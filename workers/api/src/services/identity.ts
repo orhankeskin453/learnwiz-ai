@@ -7,7 +7,7 @@
  */
 export type Identity =
   | { kind: "guest"; sessionId: string }
-  | { kind: "user"; userId: string; sessionId: string }
+  | { kind: "user"; userId: string; sessionId: string; role: "user" | "admin" }
   | { kind: "anonymous" };
 
 /** Thrown when a route requires a usable identity but none is present. */

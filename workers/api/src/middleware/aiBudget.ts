@@ -5,7 +5,7 @@ import { clientIp } from "./identity";
 import { enforceWindow } from "../services/rateLimit";
 import { countUserAiUsageToday, countUserQuizUsageThisMonth } from "../services/ai/usage";
 import { getGuestUsage } from "../services/guestSessions";
-import { FREE_DAILY_AI_LIMIT, GUEST_ENTITLEMENTS } from "../services/entitlements";
+import { FREE_DAILY_AI_LIMIT, GUEST_ENTITLEMENTS, isUnlimited } from "../services/entitlements";
 
 export type AiTaskType = "tutor" | "learn" | "practice" | "quiz";
 
@@ -27,6 +27,13 @@ export async function enforceAiBudget(
   taskType: Exclude<AiTaskType, "tutor">,
   units: number,
 ): Promise<Response | null> {
+  const identity = c.get("identity");
+  // Admin accounts bypass every quota AND the coarse IP throttle
+  // (unlimited testing access; the throttle targets anonymous abuse).
+  if (isUnlimited(identity)) {
+    return null;
+  }
+
   const throttle = await enforceWindow(
     c.env.CACHE,
     { bucket: "ai-gen", key: clientIp(c), max: 20, windowSeconds: 3600 },
@@ -35,8 +42,6 @@ export async function enforceAiBudget(
   if (!throttle) {
     return c.json({ error: "rate_limited" } satisfies { error: "rate_limited" }, 429);
   }
-
-  const identity = c.get("identity");
   if (identity.kind === "guest") {
     const feature = FEATURE_BY_TASK[taskType];
     const used = (await getGuestUsage(c.env.DB, identity.sessionId))[feature];

@@ -14,7 +14,12 @@ import {
 import { buildSystemPrompt, titleFromMessage } from "../services/ai/prompts";
 import { runTutorCompletion } from "../services/ai/router";
 import { countUserAiUsageToday, recordAiUsage } from "../services/ai/usage";
-import { FREE_DAILY_AI_LIMIT, GUEST_ENTITLEMENTS } from "../services/entitlements";
+import {
+  FREE_DAILY_AI_LIMIT,
+  GUEST_ENTITLEMENTS,
+  isUnlimited,
+  ledgerPlan,
+} from "../services/entitlements";
 import { getGuestUsage, recordGuestUsage } from "../services/guestSessions";
 import { clientIp } from "../middleware/identity";
 import type { ChatMessage } from "../services/ai/client";
@@ -41,13 +46,16 @@ tutorRoute.post("/chat", async (c) => {
     return c.json({ error: "unauthenticated" } satisfies { error: "unauthenticated" }, 401);
   }
 
-  const throttle = await enforceWindow(
-    c.env.CACHE,
-    { bucket: "tutor-chat", key: clientIp(c), max: 20, windowSeconds: 3600 },
-    c.env.GUEST_SESSION_SECRET ?? "tutor-throttle-pepper",
-  );
-  if (!throttle) {
-    return c.json({ error: "rate_limited" } satisfies { error: "rate_limited" }, 429);
+  // Admin accounts bypass the coarse IP throttle (unlimited testing access).
+  if (!isUnlimited(c.get("identity"))) {
+    const throttle = await enforceWindow(
+      c.env.CACHE,
+      { bucket: "tutor-chat", key: clientIp(c), max: 20, windowSeconds: 3600 },
+      c.env.GUEST_SESSION_SECRET ?? "tutor-throttle-pepper",
+    );
+    if (!throttle) {
+      return c.json({ error: "rate_limited" } satisfies { error: "rate_limited" }, 429);
+    }
   }
 
   const parsed = chatSchema.safeParse(await c.req.json().catch(() => null));
@@ -62,8 +70,8 @@ tutorRoute.post("/chat", async (c) => {
   }
   const { conversationId, message, action = "chat", locale } = parsed.data;
 
-  // §33 ordering: entitlement gate BEFORE any AI work.
-  if (identity.kind === "guest") {
+  // §33 ordering: entitlement gate BEFORE any AI work. Admins are unlimited.
+  if (!isUnlimited(identity) && identity.kind === "guest") {
     const usage = await getGuestUsage(c.env.DB, identity.sessionId);
     if (usage.ai_tutor >= GUEST_AI_LIMIT) {
       return c.json(
@@ -74,7 +82,7 @@ tutorRoute.post("/chat", async (c) => {
         403,
       );
     }
-  } else {
+  } else if (identity.kind === "user" && !isUnlimited(identity)) {
     const usedToday = await countUserAiUsageToday(c.env.DB, identity.userId);
     if (usedToday >= FREE_DAILY_AI_LIMIT) {
       return c.json(
@@ -136,7 +144,7 @@ tutorRoute.post("/chat", async (c) => {
     outputTokens: completion.usage.completionTokens,
     neurons: completion.usage.neurons ?? null,
     latencyMs: Date.now() - startedAt,
-    plan: identity.kind === "guest" ? "guest" : "free",
+    plan: ledgerPlan(identity),
     locale,
     routedFallback: completion.fallback,
     usageEstimated: !completion.usageProvided,
@@ -166,6 +174,10 @@ tutorRoute.get("/quota", async (c) => {
   if (identity.kind === "guest") {
     const used = (await getGuestUsage(c.env.DB, identity.sessionId)).ai_tutor;
     const body: QuotaState = { used, limit: GUEST_AI_LIMIT };
+    return c.json(body);
+  }
+  if (isUnlimited(identity)) {
+    const body: QuotaState = { used: 0, limit: 0, unlimited: true };
     return c.json(body);
   }
   const body: QuotaState = {

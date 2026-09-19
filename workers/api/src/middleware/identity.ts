@@ -60,7 +60,12 @@ export async function identityMiddleware(c: Context<AppEnv>, next: Next): Promis
     if (resolved) {
       const user = await findUserById(c.env.DB, resolved.userId);
       if (user && user.status === "active") {
-        c.set("identity", { kind: "user", userId: resolved.userId, sessionId: resolved.sessionId });
+        c.set("identity", {
+          kind: "user",
+          userId: resolved.userId,
+          sessionId: resolved.sessionId,
+          role: user.role,
+        });
         c.set("guestResolution", { status: "absent" });
         await next();
         return;

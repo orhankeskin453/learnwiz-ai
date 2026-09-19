@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { quizRequestSchema, questionSetSchema } from "@learwizai/validation";
 import type { AppEnv } from "../context";
+import { ledgerPlan } from "../services/entitlements";
 import type { QuizGenerationResponse } from "@learwizai/types";
 import { AiUnavailableError, generateStructured } from "../services/ai/generate";
 import { buildQuizMessages } from "../services/ai/prompts";
@@ -68,7 +69,7 @@ quizRoute.post("/", async (c) => {
     outputTokens: generated.usage.completionTokens,
     neurons: generated.usage.neurons ?? null,
     latencyMs: null,
-    plan: identity.kind === "guest" ? "guest" : "free",
+    plan: ledgerPlan(identity),
     locale,
     routedFallback: generated.fallback,
     usageEstimated: false,

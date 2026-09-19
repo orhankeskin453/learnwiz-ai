@@ -10,6 +10,7 @@ export interface UserRow {
   email: string;
   locale: "en" | "tr";
   status: "pending" | "active" | "suspended" | "deleted";
+  role: "user" | "admin";
   emailVerifiedAt: string | null;
   createdAt: string;
 }
@@ -24,7 +25,7 @@ export async function findUserByEmail(
 ): Promise<UserRow | null> {
   const row = await db
     .prepare(
-      "SELECT id, email, locale, status, email_verified_at, created_at FROM users WHERE email_normalized = ?",
+      "SELECT id, email, locale, status, role, email_verified_at, created_at FROM users WHERE email_normalized = ?",
     )
     .bind(emailNormalized)
     .first<{
@@ -32,6 +33,7 @@ export async function findUserByEmail(
       email: string;
       locale: UserRow["locale"];
       status: UserRow["status"];
+      role: UserRow["role"];
       email_verified_at: string | null;
       created_at: string;
     }>();
@@ -41,6 +43,7 @@ export async function findUserByEmail(
     email: row.email,
     locale: row.locale,
     status: row.status,
+    role: row.role,
     emailVerifiedAt: row.email_verified_at,
     createdAt: row.created_at,
   };
@@ -49,7 +52,7 @@ export async function findUserByEmail(
 export async function findUserById(db: D1Database, id: string): Promise<UserRow | null> {
   const row = await db
     .prepare(
-      "SELECT id, email, locale, status, email_verified_at, created_at FROM users WHERE id = ?",
+      "SELECT id, email, locale, status, role, email_verified_at, created_at FROM users WHERE id = ?",
     )
     .bind(id)
     .first<{
@@ -57,6 +60,7 @@ export async function findUserById(db: D1Database, id: string): Promise<UserRow 
       email: string;
       locale: UserRow["locale"];
       status: UserRow["status"];
+      role: UserRow["role"];
       email_verified_at: string | null;
       created_at: string;
     }>();
@@ -66,6 +70,7 @@ export async function findUserById(db: D1Database, id: string): Promise<UserRow 
     email: row.email,
     locale: row.locale,
     status: row.status,
+    role: row.role,
     emailVerifiedAt: row.email_verified_at,
     createdAt: row.created_at,
   };
@@ -88,6 +93,7 @@ export async function createUser(
     email: input.email,
     locale: "en",
     status: "pending",
+    role: "user",
     emailVerifiedAt: null,
     createdAt,
   };

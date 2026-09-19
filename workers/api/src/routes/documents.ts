@@ -4,7 +4,7 @@ import type { DocumentChatResponse, DocumentSummary } from "@learwizai/types";
 import type { AppEnv } from "../context";
 import { clientIp } from "../middleware/identity";
 import { enforceWindow } from "../services/rateLimit";
-import { DOCUMENTS_LIMITS } from "../services/entitlements";
+import { DOCUMENTS_LIMITS, isUnlimited } from "../services/entitlements";
 import {
   countOwnedDocuments,
   deleteDocument,
@@ -33,8 +33,10 @@ documentsRoute.post("/", async (c) => {
   if (identity.kind === "anonymous") {
     return c.json({ error: "unauthenticated" } satisfies { error: "unauthenticated" }, 401);
   }
-  const plan = identity.kind === "guest" ? "guest" : "free";
-  const limit = DOCUMENTS_LIMITS[plan];
+  // Admin accounts bypass the document limit (unlimited testing access).
+  const limit = isUnlimited(identity)
+    ? Number.MAX_SAFE_INTEGER
+    : DOCUMENTS_LIMITS[identity.kind === "guest" ? "guest" : "free"];
   if (limit === 0) {
     return c.json(
       { error: "quota_exhausted", message: "document upload requires an upgrade" } satisfies {
@@ -45,13 +47,16 @@ documentsRoute.post("/", async (c) => {
     );
   }
 
-  const throttle = await enforceWindow(
-    c.env.CACHE,
-    { bucket: "doc-upload", key: clientIp(c), max: 10, windowSeconds: 3600 },
-    c.env.GUEST_SESSION_SECRET ?? "tutor-throttle-pepper",
-  );
-  if (!throttle) {
-    return c.json({ error: "rate_limited" } satisfies { error: "rate_limited" }, 429);
+  // Admin accounts bypass the coarse IP throttle (unlimited testing access).
+  if (!isUnlimited(c.get("identity"))) {
+    const throttle = await enforceWindow(
+      c.env.CACHE,
+      { bucket: "doc-upload", key: clientIp(c), max: 10, windowSeconds: 3600 },
+      c.env.GUEST_SESSION_SECRET ?? "tutor-throttle-pepper",
+    );
+    if (!throttle) {
+      return c.json({ error: "rate_limited" } satisfies { error: "rate_limited" }, 429);
+    }
   }
 
   const filename = c.req.query("filename") ?? "document.pdf";

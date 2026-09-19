@@ -73,3 +73,18 @@ export const DOCUMENTS_LIMITS: Record<"guest" | "free" | "learner" | "pro", numb
   learner: 25,
   pro: 100,
 };
+
+/**
+ * Unlimited testing access: admin accounts skip every quota (AI, quiz-monthly,
+ * documents). This is the ONLY bypass — guests and regular users are always
+ * capped server-side, and the limits stay configuration (§17).
+ */
+export function isUnlimited(identity: Identity): boolean {
+  return identity.kind === "user" && identity.role === "admin";
+}
+
+/** Ledger tier for the §14 usage record (admins are recorded at the top tier). */
+export function ledgerPlan(identity: Identity): "guest" | "free" | "learner" | "pro" {
+  if (identity.kind === "guest") return "guest";
+  return isUnlimited(identity) ? "pro" : "free";
+}

@@ -215,7 +215,7 @@ export function TutorPage() {
             maxLength={2000}
             disabled={sending}
           />
-          {quota && (
+          {quota && !quota.unlimited && (
             <p className="text-xs text-muted-foreground">
               {t("quota.remaining", { used: quota.used, limit: quota.limit })}
             </p>

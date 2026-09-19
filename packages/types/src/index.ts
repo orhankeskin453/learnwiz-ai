@@ -127,6 +127,8 @@ export interface ConversationDetail extends ConversationSummary {
 export interface QuotaState {
   used: number;
   limit: number;
+  /** Admin/testing accounts bypass quotas (limit display hidden client-side). */
+  unlimited?: boolean;
 }
 
 /** §10.4 structured lesson — the six blocks always in teaching order. */

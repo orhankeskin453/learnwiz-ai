@@ -1,6 +1,7 @@
 import { Hono, type Context } from "hono";
 import { learnRequestSchema, lessonContentSchema } from "@learwizai/validation";
 import type { AppEnv } from "../context";
+import { ledgerPlan } from "../services/entitlements";
 import { AiUnavailableError, generateStructured } from "../services/ai/generate";
 import { buildLessonMessages } from "../services/ai/prompts";
 import { recordAiUsage } from "../services/ai/usage";
@@ -61,7 +62,7 @@ learnRoute.post("/lessons", async (c) => {
     outputTokens: generated.usage.completionTokens,
     neurons: generated.usage.neurons ?? null,
     latencyMs: null,
-    plan: identity.kind === "guest" ? "guest" : "free",
+    plan: ledgerPlan(identity),
     locale,
     routedFallback: generated.fallback,
     usageEstimated: false,
