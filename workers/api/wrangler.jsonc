@@ -12,7 +12,7 @@
     "ENVIRONMENT": "production",
     // Model routing (Step 5 D1 env-tunable). Measured 2026-09-22: qwen3-30b-a3b
     // ~3-8x faster than glm-4.7-flash here and returns complete, valid JSON.
-    "AI_PRIMARY_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "AI_PRIMARY_MODEL": "@cf/meta/llama-4-scout-17b-16e-instruct",
     "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     "AI_EMBEDDING_MODEL": "@cf/qwen/qwen3-embedding-0.6b",
   },
@@ -51,7 +51,7 @@
       "name": "learnwizai-api-staging",
       "vars": {
         "ENVIRONMENT": "staging",
-        "AI_PRIMARY_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "AI_PRIMARY_MODEL": "@cf/meta/llama-4-scout-17b-16e-instruct",
         "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
         "AI_EMBEDDING_MODEL": "@cf/qwen/qwen3-embedding-0.6b",
       },
@@ -78,7 +78,7 @@
       "name": "learnwizai-api-dev",
       "vars": {
         "ENVIRONMENT": "dev",
-        "AI_PRIMARY_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "AI_PRIMARY_MODEL": "@cf/meta/llama-4-scout-17b-16e-instruct",
         "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
         "AI_EMBEDDING_MODEL": "@cf/qwen/qwen3-embedding-0.6b",
       },

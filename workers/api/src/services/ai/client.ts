@@ -99,13 +99,23 @@ export async function runChat(
   })) as unknown as {
     // Legacy Workers AI shape: { response }
     response?: string;
-    // OpenAI-compatible shape (e.g. @cf/zai-org/glm-4.7-flash): { choices, usage }
-    choices?: Array<{ message?: { content?: string }; text?: string }>;
+    // Some models return content as an array of parts, e.g.
+    // [{ type: "text", text: "…" }] (llama-3.3 on Workers AI does this).
+    choices?: Array<{
+      message?: { content?: string | Array<string | { text?: string }> };
+      text?: string;
+    }>;
     usage?: { prompt_tokens?: number; completion_tokens?: number; neurons?: number };
   };
   // Model families differ in response shape — support both (§20 logs anomalies).
-  const openAiContent = result.choices?.[0]?.message?.content ?? result.choices?.[0]?.text;
-  const text = result.response ?? openAiContent ?? "";
+  const rawContent =
+    result.choices?.[0]?.message?.content ?? result.choices?.[0]?.text ?? result.response;
+  const text =
+    typeof rawContent === "string"
+      ? rawContent
+      : Array.isArray(rawContent)
+        ? rawContent.map((part) => (typeof part === "string" ? part : (part?.text ?? ""))).join("")
+        : "";
   // An empty answer is a provider failure, not a success (§18: fall back).
   if (!text) {
     console.error("ai_empty_response", {
