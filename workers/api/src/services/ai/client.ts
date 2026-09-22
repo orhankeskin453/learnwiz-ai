@@ -43,7 +43,12 @@ interface MockSpec {
 }
 
 export function primaryModel(env: Env): string {
-  return env.AI_PRIMARY_MODEL ?? "@cf/zai-org/glm-4.7-flash";
+  // Default mirrors the deployed vars. glm-4.7-flash was the original §13.2
+  // target, but on this account it spends its completion budget on hidden
+  // reasoning and returns EMPTY text (~40 tok/s) — every request then paid for a
+  // wasted generation plus the fallback. llama-4-scout is ~7x faster here and
+  // returns complete, schema-valid JSON (measured 2026-09-22/23).
+  return env.AI_PRIMARY_MODEL ?? "@cf/meta/llama-4-scout-17b-16e-instruct";
 }
 
 export function fallbackModel(env: Env): string {
