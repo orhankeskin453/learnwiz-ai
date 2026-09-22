@@ -8,7 +8,14 @@
   // Pinned to the max date supported by the installed workerd/minifare to keep local test output pristine.
   // Remote edge accepts any past date; bump together with wrangler upgrades.
   "compatibility_date": "2025-09-06",
-  "vars": { "ENVIRONMENT": "production" },
+  "vars": {
+    "ENVIRONMENT": "production",
+    // Model routing (Step 5 D1 env-tunable). Measured 2026-09-22: qwen3-30b-a3b
+    // ~3-8x faster than glm-4.7-flash here and returns complete, valid JSON.
+    "AI_PRIMARY_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "AI_EMBEDDING_MODEL": "@cf/qwen/qwen3-embedding-0.6b",
+  },
   "observability": { "enabled": true },
   "ai": { "binding": "AI" },
   "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-prod" }],
@@ -42,7 +49,12 @@
   "env": {
     "staging": {
       "name": "learnwizai-api-staging",
-      "vars": { "ENVIRONMENT": "staging" },
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "AI_PRIMARY_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+        "AI_EMBEDDING_MODEL": "@cf/qwen/qwen3-embedding-0.6b",
+      },
       "ai": { "binding": "AI" },
       "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-staging" }],
       "queues": {
@@ -64,7 +76,12 @@
     },
     "dev": {
       "name": "learnwizai-api-dev",
-      "vars": { "ENVIRONMENT": "dev" },
+      "vars": {
+        "ENVIRONMENT": "dev",
+        "AI_PRIMARY_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+        "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+        "AI_EMBEDDING_MODEL": "@cf/qwen/qwen3-embedding-0.6b",
+      },
       "ai": { "binding": "AI" },
       "vectorize": [{ "binding": "VECTORIZE", "index_name": "learwizai-docs-dev" }],
       "queues": {
