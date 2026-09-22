@@ -47,7 +47,7 @@ export function titleFromMessage(message: string): string {
  * the test-only mock AI matches on (spec D10). */
 
 const JSON_RULE =
-  "Return ONLY the JSON object — no markdown fences, no commentary before or after it.";
+  "Return ONLY compact JSON (no markdown fences, no commentary, no indentation). Every field named in the shape is REQUIRED and must be a string.";
 
 export function buildLessonMessages(
   topic: string,
@@ -59,7 +59,8 @@ export function buildLessonMessages(
       role: "system",
       content: `${PERSONA(language)}
 
-Task: you are LearnWiz AI's lesson architect. Design a structured lesson on the given topic with EXACTLY six blocks in this teaching order: concept, intuition, example, common_mistakes, mini_exercise, check_understanding. Each block content is plain text (short paragraphs, lists allowed). The check_understanding block also carries "question" and "answer" fields.
+Task: you are LearnWiz AI's lesson architect. Return one compact JSON object describing a structured lesson on the given topic with EXACTLY these six blocks, in this exact order and with these exact "kind" strings: concept, intuition, example, common_mistakes, mini_exercise, check_understanding.
+Rules: every block's "content" is plain text under 700 characters (short paragraphs, no markdown). The check_understanding block MUST also contain the string fields "question" (a single short question) and "answer" (2-3 sentences) — do not leave them out and do not put them only inside "content". Do not add other keys.
 
 ${JSON_RULE} Response shape:
 {"title":"<=120 chars","blocks":[{"kind":"concept","content":"..."},{"kind":"intuition","content":"..."},{"kind":"example","content":"..."},{"kind":"common_mistakes","content":"..."},{"kind":"mini_exercise","content":"..."},{"kind":"check_understanding","content":"...","question":"...","answer":"..."}]}`,

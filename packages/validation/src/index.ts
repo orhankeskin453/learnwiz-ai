@@ -126,24 +126,111 @@ export const attemptSchema = z.object({
 
 /** ---- AI output schemas (§10.6: validate BEFORE presenting) ---- */
 
+/**
+ * Safe repairs applied BEFORE validation (spec D1): model output varies in shape,
+ * so we coerce types, clamp lengths, reorder blocks into teaching order and drop
+ * unrecognized block kinds. Structural absence (a missing block kind) still fails
+ * validation and triggers the §18 fallback.
+ */
+const LESSON_BLOCK_ORDER = [
+  "concept",
+  "intuition",
+  "example",
+  "common_mistakes",
+  "mini_exercise",
+  "check_understanding",
+] as const;
+
+function asText(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => asText(item))
+      .filter(Boolean)
+      .join("\n");
+  }
+  if (value === null || value === undefined) return "";
+  return String(value);
+}
+
+function clampText(value: unknown, max: number): string {
+  const text = asText(value).trim();
+  return text.length > max ? text.slice(0, max - 1) + "…" : text;
+}
+
+export function normalizeLessonContent(raw: unknown): unknown {
+  if (typeof raw !== "object" || raw === null) return raw;
+  const source = raw as Record<string, unknown>;
+  const byKind = new Map<string, Record<string, unknown>>();
+  for (const item of Array.isArray(source.blocks) ? source.blocks : []) {
+    if (typeof item !== "object" || item === null) continue;
+    const block = item as Record<string, unknown>;
+    const kind = asText(block.kind)
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, "_");
+    if (!(LESSON_BLOCK_ORDER as readonly string[]).includes(kind)) continue;
+    if (!byKind.has(kind)) byKind.set(kind, block);
+  }
+  const blocks: unknown[] = [];
+  for (const kind of LESSON_BLOCK_ORDER) {
+    const block = byKind.get(kind);
+    if (!block) continue;
+    const content = clampText(block.content, 4000);
+    if (kind === "check_understanding") {
+      const question = clampText(block.question, 500) || content;
+      // An empty answer degrades the reveal (hidden in the UI) rather than failing.
+      const answer = clampText(block.answer, 1000);
+      blocks.push({ kind, content: content || question, question, answer });
+      continue;
+    }
+    blocks.push({ kind, content });
+  }
+  return { title: clampText(source.title, 120), blocks };
+}
+
+export function normalizeQuestionSet(raw: unknown): unknown {
+  if (typeof raw !== "object" || raw === null) return raw;
+  const source = raw as Record<string, unknown>;
+  const questions: unknown[] = [];
+  for (const item of Array.isArray(source.questions) ? source.questions : []) {
+    if (typeof item !== "object" || item === null) continue;
+    const q = item as Record<string, unknown>;
+    const options = (Array.isArray(q.options) ? q.options : []).map((o) => clampText(o, 200));
+    let answer = q.answer;
+    if (typeof answer === "string" && /^\d+$/.test(answer.trim())) answer = Number(answer.trim());
+    const question = clampText(q.question, 500);
+    const explanation = clampText(q.explanation, 1000);
+    if (!question || options.length !== 4 || new Set(options).size !== 4) continue;
+    if (typeof answer !== "number" || !Number.isInteger(answer) || answer < 0 || answer > 3)
+      continue;
+    questions.push({ question, options, answer, explanation });
+  }
+  return { questions };
+}
+
 const blockText = z.string().min(1).max(4000);
 
-export const lessonContentSchema = z.object({
-  title: z.string().min(1).max(120),
-  blocks: z.tuple([
-    z.object({ kind: z.literal("concept"), content: blockText }),
-    z.object({ kind: z.literal("intuition"), content: blockText }),
-    z.object({ kind: z.literal("example"), content: blockText }),
-    z.object({ kind: z.literal("common_mistakes"), content: blockText }),
-    z.object({ kind: z.literal("mini_exercise"), content: blockText }),
-    z.object({
-      kind: z.literal("check_understanding"),
-      content: blockText,
-      question: z.string().min(1).max(500),
-      answer: z.string().min(1).max(1000),
-    }),
-  ]),
-});
+export const lessonContentSchema = z.preprocess(
+  normalizeLessonContent,
+  z.object({
+    title: z.string().min(1).max(120),
+    blocks: z.tuple([
+      z.object({ kind: z.literal("concept"), content: blockText }),
+      z.object({ kind: z.literal("intuition"), content: blockText }),
+      z.object({ kind: z.literal("example"), content: blockText }),
+      z.object({ kind: z.literal("common_mistakes"), content: blockText }),
+      z.object({ kind: z.literal("mini_exercise"), content: blockText }),
+      z.object({
+        kind: z.literal("check_understanding"),
+        content: blockText,
+        question: z.string().min(1).max(500),
+        // Empty is allowed: the reveal is hidden when the model omitted the answer.
+        answer: z.string().max(1000),
+      }),
+    ]),
+  }),
+);
 
 export const questionSchema = z.object({
   question: z.string().min(1).max(500),
@@ -155,9 +242,12 @@ export const questionSchema = z.object({
   explanation: z.string().min(1).max(1000),
 });
 
-export const questionSetSchema = z.object({
-  questions: z.array(questionSchema).min(1).max(10),
-});
+export const questionSetSchema = z.preprocess(
+  normalizeQuestionSet,
+  z.object({
+    questions: z.array(questionSchema).min(1).max(10),
+  }),
+);
 
 export type LessonContent = z.infer<typeof lessonContentSchema>;
 export type QuestionSet = z.infer<typeof questionSetSchema>;

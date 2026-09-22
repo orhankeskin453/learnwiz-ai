@@ -63,13 +63,22 @@ export function LearnPage() {
           {block.question && (
             <div className="space-y-2 rounded-md border border-border bg-background p-4">
               <p className="text-sm font-medium text-foreground">{block.question}</p>
-              {revealed ? (
-                <p className="text-sm text-muted-foreground">{block.answer}</p>
-              ) : (
-                <Button type="button" variant="outline" size="sm" onClick={() => setRevealed(true)}>
-                  {t("showAnswer")}
-                </Button>
-              )}
+              {/* Degraded lessons (model omitted the answer) hide the reveal instead
+                  of showing an empty one — see normalizeLessonContent. */}
+              {block.answer ? (
+                revealed ? (
+                  <p className="text-sm text-muted-foreground">{block.answer}</p>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRevealed(true)}
+                  >
+                    {t("showAnswer")}
+                  </Button>
+                )
+              ) : null}
             </div>
           )}
         </section>

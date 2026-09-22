@@ -47,7 +47,7 @@ export function primaryModel(env: Env): string {
 }
 
 export function fallbackModel(env: Env): string {
-  return env.AI_FALLBACK_MODEL ?? "@cf/meta/llama-3.1-8b-instruct-fast";
+  return env.AI_FALLBACK_MODEL ?? "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 }
 
 function mockSpecs(env: Env): Record<string, MockSpec> | null {
@@ -59,10 +59,18 @@ function mockSpecs(env: Env): Record<string, MockSpec> | null {
  * Run a chat completion for `model`. Throws on provider failure — the router
  * decides whether to attempt the fallback model (§18).
  */
+export interface ChatRunOptions {
+  /** Output cap — structured generation needs headroom (truncation breaks JSON). */
+  maxTokens?: number;
+  /** Lower temperature keeps JSON/schema adherence high. */
+  temperature?: number;
+}
+
 export async function runChat(
   env: Env,
   model: string,
   messages: ChatMessage[],
+  options: ChatRunOptions = {},
 ): Promise<ChatCompletion> {
   const specs = mockSpecs(env);
   if (specs) {
@@ -84,7 +92,11 @@ export async function runChat(
     };
   }
 
-  const result = (await env.AI.run(model, { messages })) as unknown as {
+  const result = (await env.AI.run(model, {
+    messages,
+    ...(options.maxTokens ? { max_tokens: options.maxTokens } : {}),
+    ...(options.temperature !== undefined ? { temperature: options.temperature } : {}),
+  })) as unknown as {
     // Legacy Workers AI shape: { response }
     response?: string;
     // OpenAI-compatible shape (e.g. @cf/zai-org/glm-4.7-flash): { choices, usage }

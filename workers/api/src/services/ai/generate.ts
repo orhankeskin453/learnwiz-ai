@@ -43,7 +43,12 @@ export async function generateStructured<T>(
   opts: { messages: ChatMessage[]; schema: { parse: (value: unknown) => T } },
 ): Promise<Generated<T>> {
   const attempt = async (model: string): Promise<Generated<T>> => {
-    const completion = await runChat(env, model, opts.messages);
+    // Structured generation: cap output so long JSON is never truncated, and keep
+    // temperature low for schema adherence.
+    const completion = await runChat(env, model, opts.messages, {
+      maxTokens: 4096,
+      temperature: 0.3,
+    });
     const data = opts.schema.parse(extractJson(completion.text));
     return { data, model, fallback: model !== primaryModel(env), usage: completion.usage };
   };
