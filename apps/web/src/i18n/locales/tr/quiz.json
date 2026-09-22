@@ -4,7 +4,11 @@
   "topicLabel": "Test konusu",
   "topicPlaceholder": "örn. II. Dünya Savaşı",
   "difficultyLabel": "Zorluk",
-  "difficulties": { "easy": "Kolay", "medium": "Orta", "hard": "Zor" },
+  "difficulties": {
+    "easy": "Kolay",
+    "medium": "Orta",
+    "hard": "Zor"
+  },
   "countLabel": "Soru sayısı",
   "start": "Test üret",
   "generating": "Testin üretiliyor…",
@@ -22,5 +26,10 @@
     "quota": "Misafir test hakkın kullanıldı. Daha fazla test için hesap oluştur.",
     "unavailable": "Test üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  },
+  "progress": {
+    "stage1": "Konun okunuyor…",
+    "stage2": "Sorular paralel gruplar halinde yazılıyor…",
+    "stage3": "Soru seti birleştirilip kontrol ediliyor…"
   }
 }

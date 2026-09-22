@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { QuestionRunner } from "@/components/learning/QuestionRunner";
+import { GenerationProgress } from "@/components/learning/GenerationProgress";
 import { learningErrorKind, type LearningErrorKind } from "@/components/learning/errors";
 import { ApiError } from "@/services/apiClient";
 import { generatePractice } from "@/services/tutor";
@@ -113,6 +114,11 @@ export function PracticePage() {
         <Button type="submit" disabled={loading || topic.trim().length === 0}>
           {loading ? t("starting") : t("start")}
         </Button>
+        {loading && (
+          <GenerationProgress
+            stages={[t("progress.stage1"), t("progress.stage2"), t("progress.stage3")]}
+          />
+        )}
         {error && (
           <p role="alert" className="text-sm text-destructive">
             {error === "limit"

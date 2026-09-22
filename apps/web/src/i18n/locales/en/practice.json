@@ -23,5 +23,10 @@
     "quota": "Your guest practice questions have been used. Create an account to keep practicing.",
     "unavailable": "Question generation is unavailable right now. Please try again in a moment.",
     "generic": "Something went wrong. Please try again."
+  },
+  "progress": {
+    "stage1": "Reading your topic…",
+    "stage2": "Writing questions and options…",
+    "stage3": "Preparing explanations…"
   }
 }

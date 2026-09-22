@@ -38,6 +38,7 @@ learnRoute.post("/lessons", async (c) => {
   if (budget) return budget;
 
   const { topic, locale } = parsed.data;
+  const startedAt = Date.now();
   let generated;
   try {
     generated = await generateStructured(c.env, {
@@ -61,7 +62,7 @@ learnRoute.post("/lessons", async (c) => {
     inputTokens: generated.usage.promptTokens,
     outputTokens: generated.usage.completionTokens,
     neurons: generated.usage.neurons ?? null,
-    latencyMs: null,
+    latencyMs: Date.now() - startedAt,
     plan: ledgerPlan(identity),
     locale,
     routedFallback: generated.fallback,

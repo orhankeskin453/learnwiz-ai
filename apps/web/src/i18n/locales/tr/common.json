@@ -10,7 +10,8 @@
   "states": {
     "loading": "Yükleniyor…",
     "error": "Bir şeyler ters gitti",
-    "empty": "Henüz burada bir şey yok"
+    "empty": "Henüz burada bir şey yok",
+    "elapsedSeconds": "{{count}} sn geçti"
   },
   "theme": {
     "label": "Tema",

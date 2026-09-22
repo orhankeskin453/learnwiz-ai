@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { learningErrorKind, type LearningErrorKind } from "@/components/learning/errors";
+import { GenerationProgress } from "@/components/learning/GenerationProgress";
 import { ApiError } from "@/services/apiClient";
 import { generateLesson } from "@/services/tutor";
 import { getActiveLocale } from "@/i18n";
@@ -148,6 +149,16 @@ export function LearnPage() {
         <Button type="submit" disabled={loading || topic.trim().length === 0}>
           {loading ? t("generating") : t("generate")}
         </Button>
+        {loading && (
+          <GenerationProgress
+            stages={[
+              t("progress.stage1"),
+              t("progress.stage2"),
+              t("progress.stage3"),
+              t("progress.stage4"),
+            ]}
+          />
+        )}
         {error && (
           <p role="alert" className="text-sm text-destructive">
             {error === "limit"

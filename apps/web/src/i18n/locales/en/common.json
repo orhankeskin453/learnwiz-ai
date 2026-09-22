@@ -10,7 +10,8 @@
   "states": {
     "loading": "Loading…",
     "error": "Something went wrong",
-    "empty": "Nothing here yet"
+    "empty": "Nothing here yet",
+    "elapsedSeconds": "{{count}}s elapsed"
   },
   "theme": {
     "label": "Theme",

@@ -23,5 +23,11 @@
     "quota": "Misafir ders hakkın kullanıldı. Öğrenmeye devam etmek için hesap oluştur.",
     "unavailable": "Ders üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  },
+  "progress": {
+    "stage1": "Konun okunuyor…",
+    "stage2": "Kavram ve sezgi yazılıyor…",
+    "stage3": "Örnekler ve yaygın hatalar hazırlanıyor…",
+    "stage4": "Alıştırma ve kontrol sorusu oluşturuluyor…"
   }
 }

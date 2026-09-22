@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { QuestionRunner } from "@/components/learning/QuestionRunner";
+import { GenerationProgress } from "@/components/learning/GenerationProgress";
 import { learningErrorKind, type LearningErrorKind } from "@/components/learning/errors";
 import { ApiError } from "@/services/apiClient";
 import { generateQuiz, submitQuizAttempt } from "@/services/tutor";
@@ -163,6 +164,11 @@ export function QuizPage() {
         <Button type="submit" disabled={loading || topic.trim().length === 0}>
           {loading ? t("generating") : t("start")}
         </Button>
+        {loading && (
+          <GenerationProgress
+            stages={[t("progress.stage1"), t("progress.stage2"), t("progress.stage3")]}
+          />
+        )}
         {error && (
           <p role="alert" className="text-sm text-destructive">
             {error === "limit"

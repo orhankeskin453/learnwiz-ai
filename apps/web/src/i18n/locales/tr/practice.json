@@ -23,5 +23,10 @@
     "quota": "Misafir alıştırma soruların kullanıldı. Devam etmek için hesap oluştur.",
     "unavailable": "Soru üretimi şu anda ulaşılabilir değil. Birazdan tekrar dene.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+  },
+  "progress": {
+    "stage1": "Konun okunuyor…",
+    "stage2": "Sorular ve seçenekler yazılıyor…",
+    "stage3": "Açıklamalar hazırlanıyor…"
   }
 }

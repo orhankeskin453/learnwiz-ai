@@ -1,10 +1,10 @@
 import { Hono } from "hono";
-import { quizRequestSchema, questionSetSchema } from "@learwizai/validation";
+import { quizRequestSchema } from "@learwizai/validation";
 import type { AppEnv } from "../context";
 import { ledgerPlan } from "../services/entitlements";
 import type { QuizGenerationResponse } from "@learwizai/types";
-import { AiUnavailableError, generateStructured } from "../services/ai/generate";
-import { buildQuizMessages } from "../services/ai/prompts";
+import { AiUnavailableError } from "../services/ai/generate";
+import { generateQuestionSet } from "../services/ai/questionSets";
 import { recordAiUsage } from "../services/ai/usage";
 import { recordMastery } from "../services/dashboard";
 import {
@@ -39,12 +39,11 @@ quizRoute.post("/", async (c) => {
   if (budget) return budget;
 
   const { topic, difficulty, count, locale } = parsed.data;
+  const startedAt = Date.now();
   let generated;
   try {
-    generated = await generateStructured(c.env, {
-      messages: buildQuizMessages(topic, difficulty, count, locale),
-      schema: questionSetSchema,
-    });
+    // Large sets are generated as parallel chunks and merged (questionSets.ts).
+    generated = await generateQuestionSet(c.env, { topic, difficulty, count, locale });
   } catch (error) {
     if (error instanceof AiUnavailableError) {
       return c.json({ error: "ai_unavailable" } satisfies { error: "ai_unavailable" }, 503);
@@ -58,7 +57,7 @@ quizRoute.post("/", async (c) => {
     topic,
     difficulty,
     locale,
-    questions: generated.data.questions,
+    questions: generated.questions,
   });
   await recordAiUsage(c.env.DB, {
     userId: owner.userId,
@@ -68,7 +67,7 @@ quizRoute.post("/", async (c) => {
     inputTokens: generated.usage.promptTokens,
     outputTokens: generated.usage.completionTokens,
     neurons: generated.usage.neurons ?? null,
-    latencyMs: null,
+    latencyMs: Date.now() - startedAt,
     plan: ledgerPlan(identity),
     locale,
     routedFallback: generated.fallback,
@@ -78,7 +77,7 @@ quizRoute.post("/", async (c) => {
   if (identity.kind === "guest") {
     await recordGuestUsage(c.env.DB, identity.sessionId, "quiz");
   }
-  const body: QuizGenerationResponse = { quizId, questions: generated.data.questions };
+  const body: QuizGenerationResponse = { quizId, questions: generated.questions };
   return c.json(body);
 });
 

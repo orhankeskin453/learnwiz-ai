@@ -23,5 +23,11 @@
     "quota": "Your guest lesson limit has been used. Create an account to keep learning.",
     "unavailable": "Lesson generation is unavailable right now. Please try again in a moment.",
     "generic": "Something went wrong. Please try again."
+  },
+  "progress": {
+    "stage1": "Reading your topic…",
+    "stage2": "Writing the concept and intuition…",
+    "stage3": "Preparing examples and common mistakes…",
+    "stage4": "Building the exercise and check question…"
   }
 }

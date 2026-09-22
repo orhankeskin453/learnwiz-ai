@@ -4,7 +4,11 @@
   "topicLabel": "Quiz topic",
   "topicPlaceholder": "e.g. World War II",
   "difficultyLabel": "Difficulty",
-  "difficulties": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+  "difficulties": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
   "countLabel": "Questions",
   "start": "Generate quiz",
   "generating": "Generating your quiz…",
@@ -22,5 +26,10 @@
     "quota": "Your guest quiz has been used. Create an account to generate more quizzes.",
     "unavailable": "Quiz generation is unavailable right now. Please try again in a moment.",
     "generic": "Something went wrong. Please try again."
+  },
+  "progress": {
+    "stage1": "Reading your topic…",
+    "stage2": "Writing questions in parallel batches…",
+    "stage3": "Merging and checking the question set…"
   }
 }
