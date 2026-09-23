@@ -1,4 +1,4 @@
-import type { ApiErrorCode, ApiErrorBody, AuthErrorCode } from "@learwizai/types";
+import type { ApiErrorCode, AuthErrorCode } from "@learwizai/types";
 
 /** Typed fetch error carrying the machine-readable API error code (§23). */
 export class ApiError extends Error {
