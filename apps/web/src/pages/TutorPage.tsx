@@ -88,24 +88,15 @@ export function TutorPage() {
     }
   }
 
-  /** Send one turn; on a 401 (missing/expired guest session) create the session
-   * and retry ONCE — first-time visitors hit /tutor without any cookie. */
+  /** Send one turn. A missing/expired guest session is bootstrapped and the
+   * request replayed centrally by the api client, so no local retry is needed. */
   async function sendChat(): Promise<ChatResponse> {
-    const payload = {
+    return sendTutorMessage({
       message: input.trim(),
       action,
       locale: getActiveLocale(),
       conversationId,
-    };
-    try {
-      return await sendTutorMessage(payload);
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 401) {
-        await createGuestSession();
-        return sendTutorMessage(payload);
-      }
-      throw err;
-    }
+    });
   }
 
   async function submit(event?: React.FormEvent) {
