@@ -56,14 +56,25 @@ describe("TutorPage", () => {
     expect(screen.getByText("Meet your AI teacher")).toBeInTheDocument();
   });
 
-  it("shows the remaining quota hint from the guest session", async () => {
+  it("labels guest quota as a per-session total, not a daily window", async () => {
     stubFetchByPath({
       ...EMPTY_MOUNT,
-      "/api/tutor/quota": () => jsonResponse({ used: 2, limit: 3 }),
+      "/api/tutor/quota": () => jsonResponse({ used: 2, limit: 3, scope: "session" }),
     });
     renderAt("/en/tutor");
     expect(
-      await screen.findByText("2 of 3 free messages used today", {}, { timeout: 3000 }),
+      await screen.findByText("2 of 3 free AI tutor messages used", {}, { timeout: 3000 }),
+    ).toBeInTheDocument();
+  });
+
+  it("labels an authenticated quota as daily", async () => {
+    stubFetchByPath({
+      ...EMPTY_MOUNT,
+      "/api/tutor/quota": () => jsonResponse({ used: 2, limit: 10, scope: "daily" }),
+    });
+    renderAt("/en/tutor");
+    expect(
+      await screen.findByText("2 of 10 free messages used today", {}, { timeout: 3000 }),
     ).toBeInTheDocument();
   });
 

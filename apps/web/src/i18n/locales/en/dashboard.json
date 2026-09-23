@@ -23,7 +23,8 @@
     "title": "Your topics"
   },
   "usage": {
-    "label": "AI messages today: {{used}} of {{limit}}"
+    "label": "AI messages today: {{used}} of {{limit}}",
+    "labelSession": "AI tutor messages used: {{used}} of {{limit}}"
   },
   "progressCta": "See your progress"
 }

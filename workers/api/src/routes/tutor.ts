@@ -173,7 +173,9 @@ tutorRoute.get("/quota", async (c) => {
   }
   if (identity.kind === "guest") {
     const used = (await getGuestUsage(c.env.DB, identity.sessionId)).ai_tutor;
-    const body: QuotaState = { used, limit: GUEST_AI_LIMIT };
+    // Guest limits are per-session totals (§5.1), not a daily window — the UI
+    // labels them differently via `scope`.
+    const body: QuotaState = { used, limit: GUEST_AI_LIMIT, scope: "session" };
     return c.json(body);
   }
   if (isUnlimited(identity)) {
@@ -183,6 +185,7 @@ tutorRoute.get("/quota", async (c) => {
   const body: QuotaState = {
     used: await countUserAiUsageToday(c.env.DB, identity.userId),
     limit: FREE_DAILY_AI_LIMIT,
+    scope: "daily",
   };
   return c.json(body);
 });

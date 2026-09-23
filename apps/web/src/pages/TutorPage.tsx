@@ -219,7 +219,10 @@ export function TutorPage() {
           />
           {quota && !quota.unlimited && (
             <p className="px-2 pb-1 text-xs text-muted-foreground">
-              {t("quota.remaining", { used: quota.used, limit: quota.limit })}
+              {t(quota.scope === "session" ? "quota.remainingSession" : "quota.remaining", {
+                used: quota.used,
+                limit: quota.limit,
+              })}
             </p>
           )}
         </div>

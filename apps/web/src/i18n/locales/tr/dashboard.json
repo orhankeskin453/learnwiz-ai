@@ -23,7 +23,8 @@
     "title": "Konuların"
   },
   "usage": {
-    "label": "Bugünkü AI mesajları: {{used}} / {{limit}}"
+    "label": "Bugünkü AI mesajları: {{used}} / {{limit}}",
+    "labelSession": "AI özel ders mesajı: {{used}} / {{limit}}"
   },
   "progressCta": "Gelişimini gör"
 }

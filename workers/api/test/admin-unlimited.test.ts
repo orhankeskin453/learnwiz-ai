@@ -195,3 +195,32 @@ describe("bootstrap admins skip email verification (§40.6 testing access)", () 
     expect(row).toEqual({ role: "user", status: "pending" });
   });
 });
+
+describe("quota scope labelling (§5.1 vs §10.10)", () => {
+  it("reports guest quota as a per-session scope and user quota as daily", async () => {
+    const guestRes = await SELF.fetch("http://local/api/guest/session", {
+      method: "POST",
+      headers: { "CF-Connecting-IP": "198.51.100.91" },
+    });
+    const guestCookie =
+      guestRes.headers.get("set-cookie")?.match(/learwiz_guest_session=([^;]+)/)?.[1] ?? "";
+    expect(guestCookie).not.toBe("");
+    const guestQuota = await SELF.fetch("http://local/api/tutor/quota", {
+      headers: {
+        "CF-Connecting-IP": "198.51.100.91",
+        cookie: `learwiz_guest_session=${guestCookie}`,
+      },
+    });
+    expect(await guestQuota.json()).toMatchObject({ limit: 3, scope: "session" });
+
+    const user = await createUserSession("scope-user@example.com");
+    const userQuota = await SELF.fetch("http://local/api/tutor/quota", {
+      headers: {
+        "CF-Connecting-IP": "198.51.100.91",
+        "content-type": "application/json",
+        cookie: `learwiz_session=${user}`,
+      },
+    });
+    expect(await userQuota.json()).toMatchObject({ limit: 10, scope: "daily" });
+  });
+});

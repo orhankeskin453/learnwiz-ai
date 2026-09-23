@@ -83,13 +83,17 @@ export async function getDashboard(db: D1Database, owner: Owner): Promise<Dashbo
 async function getAiUsage(db: D1Database, owner: Owner): Promise<QuotaState> {
   const { countUserAiUsageToday } = await import("./ai/usage");
   if (owner.userId) {
-    return { used: await countUserAiUsageToday(db, owner.userId), limit: FREE_DAILY_AI_LIMIT };
+    return {
+      used: await countUserAiUsageToday(db, owner.userId),
+      limit: FREE_DAILY_AI_LIMIT,
+      scope: "daily",
+    };
   }
-  // Guests: the tutor quota is the ai_tutor counter (§5.1).
-  if (!owner.guestSessionId) return { used: 0, limit: 0 };
+  // Guests: the tutor counter is a per-SESSION total (§5.1), not a daily window.
+  if (!owner.guestSessionId) return { used: 0, limit: 0, scope: "session" };
   const { getGuestUsage } = await import("./guestSessions");
   const usage = await getGuestUsage(db, owner.guestSessionId);
-  return { used: usage.ai_tutor, limit: GUEST_ENTITLEMENTS.ai_tutor };
+  return { used: usage.ai_tutor, limit: GUEST_ENTITLEMENTS.ai_tutor, scope: "session" };
 }
 
 export async function getProgress(db: D1Database, owner: Owner): Promise<ProgressData> {

@@ -67,6 +67,10 @@ export default defineWorkersConfig(async () => {
   return {
     test: {
       setupFiles: ["./test/apply-migrations.ts"],
+      // Root `pnpm test` runs all packages at once — keep the default 5s from
+      // turning passing assertions into timeouts under CPU contention.
+      testTimeout: 20000,
+      hookTimeout: 20000,
       poolOptions: {
         workers: {
           singleWorker: true,

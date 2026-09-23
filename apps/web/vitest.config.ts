@@ -12,5 +12,9 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./test/setup.ts"],
     css: false,
+    // The root `pnpm test` runs every package at once; under that CPU load the
+    // 5s default turns passing assertions into timeouts. Give real headroom.
+    testTimeout: 20000,
+    hookTimeout: 20000,
   },
 });

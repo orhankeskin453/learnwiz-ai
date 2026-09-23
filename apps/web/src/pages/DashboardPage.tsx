@@ -51,6 +51,13 @@ export function DashboardPage() {
     );
   }
 
+  /** Guest limits are per-session totals, Free limits reset daily (§5.1/§10.10). */
+  const usageLabel = (usage: { used: number; limit: number; scope?: "daily" | "session" }) =>
+    t(usage.scope === "session" ? "usage.labelSession" : "usage.label", {
+      used: usage.used,
+      limit: usage.limit,
+    });
+
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <header className="flex flex-wrap items-center justify-between gap-3">
@@ -60,10 +67,10 @@ export function DashboardPage() {
         {data && (
           <span
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium tabular-nums text-muted-foreground"
-            aria-label={t("usage.label", { used: data.aiUsage.used, limit: data.aiUsage.limit })}
+            aria-label={usageLabel(data.aiUsage)}
           >
             <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
-            {t("usage.label", { used: data.aiUsage.used, limit: data.aiUsage.limit })}
+            {usageLabel(data.aiUsage)}
           </span>
         )}
       </header>
@@ -156,7 +163,7 @@ export function DashboardPage() {
                     <p className="text-muted-foreground">{t("quizStats.empty")}</p>
                   )}
                   <p className="rounded-lg bg-secondary/60 px-3 py-2 text-xs tabular-nums text-muted-foreground">
-                    {t("usage.label", { used: data.aiUsage.used, limit: data.aiUsage.limit })}
+                    {usageLabel(data.aiUsage)}
                   </p>
                 </CardContent>
               </Card>

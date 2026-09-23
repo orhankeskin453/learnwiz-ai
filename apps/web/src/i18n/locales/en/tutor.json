@@ -26,6 +26,7 @@
     "generic": "Something went wrong. Please try again."
   },
   "quota": {
-    "remaining": "{{used}} of {{limit}} free messages used today"
+    "remaining": "{{used}} of {{limit}} free messages used today",
+    "remainingSession": "{{used}} of {{limit}} free AI tutor messages used"
   }
 }

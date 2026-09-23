@@ -127,6 +127,8 @@ export interface ConversationDetail extends ConversationSummary {
 export interface QuotaState {
   used: number;
   limit: number;
+  /** "daily" = resets at UTC midnight (Free plan); "session" = guest per-session total (§5.1). */
+  scope?: "daily" | "session";
   /** Admin/testing accounts bypass quotas (limit display hidden client-side). */
   unlimited?: boolean;
 }

@@ -26,6 +26,7 @@
     "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
   },
   "quota": {
-    "remaining": "Bugün {{limit}} ücretsiz mesajın {{used}} tanesi kullanıldı"
+    "remaining": "Bugün {{limit}} ücretsiz mesajın {{used}} tanesi kullanıldı",
+    "remainingSession": "{{limit}} ücretsiz AI özel ders mesajının {{used}} tanesi kullanıldı"
   }
 }
