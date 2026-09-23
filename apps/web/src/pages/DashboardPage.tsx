@@ -153,7 +153,7 @@ export function DashboardPage() {
                       </p>
                     </>
                   ) : (
-                    <p className="text-muted-foreground">{t("recentLessons.empty")}</p>
+                    <p className="text-muted-foreground">{t("quizStats.empty")}</p>
                   )}
                   <p className="rounded-lg bg-secondary/60 px-3 py-2 text-xs tabular-nums text-muted-foreground">
                     {t("usage.label", { used: data.aiUsage.used, limit: data.aiUsage.limit })}

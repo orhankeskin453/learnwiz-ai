@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,9 +8,8 @@ import { getProgress, type ProgressTopic } from "@/services/dashboard";
 /** Progress (§10.8): per-topic mastery, weak areas, recommended review. */
 export function ProgressPage() {
   const { t } = useTranslation("progress");
-  const [searchParams] = useSearchParams();
+  const { locale = "en" } = useParams();
   const [topics, setTopics] = useState<ProgressTopic[] | null>(null);
-  const prefillTopic = searchParams.get("topic") ?? "";
 
   useEffect(() => {
     let cancelled = false;
@@ -75,7 +74,7 @@ export function ProgressPage() {
                 .filter((topic) => topic.mastery < 0.8)
                 .map((topic) => (
                   <Button key={topic.topic} type="button" variant="outline" size="sm" asChild>
-                    <Link to={`practice?topic=${encodeURIComponent(topic.topic)}`}>
+                    <Link to={`/${locale}/practice?topic=${encodeURIComponent(topic.topic)}`}>
                       {t("practiceCta", { topic: topic.topic })}
                     </Link>
                   </Button>
@@ -84,7 +83,6 @@ export function ProgressPage() {
           </div>
         </div>
       )}
-      {prefillTopic && <span className="hidden">{prefillTopic}</span>}
     </div>
   );
 }

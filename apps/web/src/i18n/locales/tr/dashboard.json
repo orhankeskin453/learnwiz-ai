@@ -1,5 +1,9 @@
 {
-  "greeting": { "morning": "Günaydın", "afternoon": "İyi günler", "evening": "İyi akşamlar" },
+  "greeting": {
+    "morning": "Günaydın",
+    "afternoon": "İyi günler",
+    "evening": "İyi akşamlar"
+  },
   "continueLearning": {
     "title": "Öğrenmeye devam et",
     "resume": "Sohbeti sürdür",
@@ -12,9 +16,14 @@
   "quizStats": {
     "title": "Test performansı",
     "attempts": "{{count}} test denemesi",
-    "avg": "Ortalama puan %{{percent}}"
+    "avg": "Ortalama puan %{{percent}}",
+    "empty": "Henüz test çözmedin — puanını görmek için bir test oluştur."
   },
-  "topics": { "title": "Konuların" },
-  "usage": { "label": "Bugünkü AI mesajları: {{used}} / {{limit}}" },
+  "topics": {
+    "title": "Konuların"
+  },
+  "usage": {
+    "label": "Bugünkü AI mesajları: {{used}} / {{limit}}"
+  },
   "progressCta": "Gelişimini gör"
 }

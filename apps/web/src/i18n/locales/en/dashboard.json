@@ -16,9 +16,14 @@
   "quizStats": {
     "title": "Quiz performance",
     "attempts": "{{count}} quiz attempts",
-    "avg": "Average score {{percent}}%"
+    "avg": "Average score {{percent}}%",
+    "empty": "No quiz attempts yet — generate a quiz to see your score here."
   },
-  "topics": { "title": "Your topics" },
-  "usage": { "label": "AI messages today: {{used}} of {{limit}}" },
+  "topics": {
+    "title": "Your topics"
+  },
+  "usage": {
+    "label": "AI messages today: {{used}} of {{limit}}"
+  },
   "progressCta": "See your progress"
 }
