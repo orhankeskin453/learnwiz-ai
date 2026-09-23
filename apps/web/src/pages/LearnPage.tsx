@@ -46,24 +46,48 @@ export function LearnPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold text-foreground">{lesson.title}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{lessonTopic}</p>
+          <h1 className="text-[28px] font-bold tracking-tight text-foreground">{lesson.title}</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">{lessonTopic}</p>
         </header>
 
-        <Progress
-          value={((blockIndex + 1) / lesson.blocks.length) * 100}
-          aria-label={t(`blocks.${kind}`)}
-        />
+        <div className="rounded-[16px] border border-border bg-card p-4">
+          <div className="mb-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+            <span className="shrink-0 font-mono text-[11px] font-medium tabular-nums tracking-[0.1em] text-muted-foreground">
+              {String(blockIndex + 1).padStart(2, "0")}
+              <span aria-hidden="true">/{String(lesson.blocks.length).padStart(2, "0")}</span>
+            </span>
+            <Badge variant="secondary">{t(`blocks.${kind}`)}</Badge>
+            <span className="ml-auto shrink-0 font-mono text-[11px] font-medium tabular-nums text-muted-foreground">
+              {Math.round(((blockIndex + 1) / lesson.blocks.length) * 100)}%
+            </span>
+          </div>
+          <div className="flex gap-1" role="presentation">
+            {lesson.blocks.map((b, i) => (
+              <span
+                key={`${b.kind}-${i}`}
+                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                  i < blockIndex ? "bg-primary/60" : i === blockIndex ? "bg-primary" : "bg-muted/70"
+                }`}
+              />
+            ))}
+          </div>
+          <Progress
+            value={((blockIndex + 1) / lesson.blocks.length) * 100}
+            aria-label={t(`blocks.${kind}`)}
+            className="sr-only"
+          />
+        </div>
 
         <section
           aria-label={t(`blocks.${kind}`)}
-          className="min-h-48 space-y-4 rounded-lg border border-border bg-card p-6"
+          className="min-h-48 space-y-4 rounded-[20px] border border-border bg-card p-6 md:p-7"
         >
-          <Badge variant="secondary">{t(`blocks.${kind}`)}</Badge>
-          <p className="whitespace-pre-wrap text-sm leading-6 text-foreground">{block.content}</p>
+          <p className="whitespace-pre-wrap text-[15px] leading-7 text-foreground">
+            {block.content}
+          </p>
           {block.question && (
-            <div className="space-y-2 rounded-md border border-border bg-background p-4">
-              <p className="text-sm font-medium text-foreground">{block.question}</p>
+            <div className="space-y-3 rounded-xl border border-border/80 bg-background/60 p-4">
+              <p className="text-sm font-semibold text-foreground">{block.question}</p>
               {/* Degraded lessons (model omitted the answer) hide the reveal instead
                   of showing an empty one — see normalizeLessonContent. */}
               {block.answer ? (
@@ -128,13 +152,16 @@ export function LearnPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      <form onSubmit={submit} className="max-w-md space-y-4">
+      <form
+        onSubmit={submit}
+        className="max-w-md space-y-5 rounded-[20px] border border-border bg-card p-6"
+      >
         <div className="grid gap-2">
-          <label htmlFor="learn-topic" className="text-sm font-medium text-foreground">
+          <label htmlFor="learn-topic" className="text-sm font-semibold text-foreground">
             {t("topicLabel")}
           </label>
           <Input

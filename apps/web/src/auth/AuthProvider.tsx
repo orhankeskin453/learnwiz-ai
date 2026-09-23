@@ -45,6 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout: async () => {
         try {
           await authApi.logout();
+        } catch (error) {
+          // Server-side revocation is best-effort: the local session must still
+          // end, and callers use `void logout()` so this must never reject.
+          console.warn("logout_request_failed", error instanceof Error ? error.message : error);
         } finally {
           setUser(null);
         }

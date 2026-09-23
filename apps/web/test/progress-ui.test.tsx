@@ -1,12 +1,16 @@
 import "@/i18n";
 import { act } from "react";
-import { render, screen } from "@testing-library/react";
+import { configure, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "@/routes";
 import { ThemeProvider } from "@/theme/ThemeProvider";
 import { GenerationProgress } from "@/components/learning/GenerationProgress";
+
+// CI runs packages in parallel; give async queries headroom so a loaded runner
+// cannot turn a passing assertion into a timeout flake.
+configure({ asyncUtilTimeout: 4000 });
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });

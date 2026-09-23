@@ -64,17 +64,19 @@ export function QuizPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold text-foreground">{t("summary.title")}</h1>
+          <h1 className="text-[28px] font-bold tracking-tight text-foreground">
+            {t("summary.title")}
+          </h1>
         </header>
-        <section className="rounded-lg border border-border bg-card p-6">
-          <p className="text-lg font-medium text-foreground">
+        <section className="rounded-[20px] border border-border bg-card p-8 text-center md:p-10">
+          <p className="text-2xl font-bold tracking-tight text-foreground">
             {result.score >= 0
               ? t("summary.score", { score: result.score, total: result.total })
               : t("summary.title")}
           </p>
           <Button
             type="button"
-            className="mt-4"
+            className="mt-5"
             onClick={() => {
               setQuestions(null);
               setResult(null);
@@ -93,7 +95,7 @@ export function QuizPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+          <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
         </header>
         <section className="rounded-lg border border-border bg-card p-6">
           <QuestionRunner
@@ -110,13 +112,16 @@ export function QuizPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+        <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      <form onSubmit={submit} className="max-w-md space-y-4">
+      <form
+        onSubmit={submit}
+        className="max-w-md space-y-5 rounded-[20px] border border-border bg-card p-6"
+      >
         <div className="grid gap-2">
-          <label htmlFor="quiz-topic" className="text-sm font-medium text-foreground">
+          <label htmlFor="quiz-topic" className="text-sm font-semibold text-foreground">
             {t("topicLabel")}
           </label>
           <Input

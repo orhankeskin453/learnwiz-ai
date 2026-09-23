@@ -30,10 +30,10 @@ export function ProgressPage() {
   if (topics === null) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
+        <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
         <div className="space-y-3" aria-busy="true">
-          <div className="h-16 w-full animate-pulse rounded-md bg-muted" />
-          <div className="h-16 w-full animate-pulse rounded-md bg-muted" />
+          <div className="h-16 w-full animate-pulse rounded-[16px] bg-muted" />
+          <div className="h-16 w-full animate-pulse rounded-[16px] bg-muted" />
         </div>
       </div>
     );
@@ -42,8 +42,8 @@ export function ProgressPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
 
       {topics.length === 0 ? (
@@ -51,34 +51,36 @@ export function ProgressPage() {
       ) : (
         <div className="space-y-4">
           {topics.map((topic) => (
-            <div key={topic.topic} className="rounded-lg border border-border bg-card p-4">
+            <div key={topic.topic} className="rounded-[16px] border border-border bg-card p-5">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium text-foreground">{topic.topic}</p>
-                <span className="text-sm text-muted-foreground">
+                <p className="text-sm font-semibold text-foreground">{topic.topic}</p>
+                <span className="font-mono text-sm font-semibold tabular-nums text-muted-foreground">
                   {t("mastery", { percent: Math.round(topic.mastery * 100) })}
                 </span>
               </div>
               <Progress
                 value={topic.mastery * 100}
                 aria-label={t("mastery", { percent: Math.round(topic.mastery * 100) })}
-                className="mt-2"
+                className="mt-3 h-1.5 bg-muted"
               />
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-2 text-xs text-muted-foreground">
                 {t("questions", { correct: topic.correctQuestions, total: topic.totalQuestions })}
               </p>
             </div>
           ))}
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground">{t("weakAreas")}</p>
-            {topics
-              .filter((topic) => topic.mastery < 0.8)
-              .map((topic) => (
-                <Button key={topic.topic} type="button" variant="outline" size="sm" asChild>
-                  <Link to={`practice?topic=${encodeURIComponent(topic.topic)}`}>
-                    {t("practiceCta", { topic: topic.topic })}
-                  </Link>
-                </Button>
-              ))}
+          <div className="rounded-[16px] border border-border bg-card p-5">
+            <p className="text-sm font-semibold text-foreground">{t("weakAreas")}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {topics
+                .filter((topic) => topic.mastery < 0.8)
+                .map((topic) => (
+                  <Button key={topic.topic} type="button" variant="outline" size="sm" asChild>
+                    <Link to={`practice?topic=${encodeURIComponent(topic.topic)}`}>
+                      {t("practiceCta", { topic: topic.topic })}
+                    </Link>
+                  </Button>
+                ))}
+            </div>
           </div>
         </div>
       )}

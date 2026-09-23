@@ -17,8 +17,8 @@ export function PlanCard() {
   const { user, loading, logout } = useAuth();
 
   return (
-    <Card>
-      <CardContent className="p-4 text-sm">
+    <Card className="border-border bg-secondary/40 shadow-none">
+      <CardContent className="space-y-2 p-4 text-sm">
         {user ? (
           <>
             <div className="flex items-center justify-between gap-2">

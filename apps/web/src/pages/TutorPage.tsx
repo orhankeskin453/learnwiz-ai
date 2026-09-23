@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
+import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -137,8 +138,8 @@ export function TutorPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
+        <p className="mt-1.5 max-w-xl text-sm leading-6 text-muted-foreground">{t("subtitle")}</p>
       </header>
 
       <section aria-label={t("suggested.label")} className="flex flex-wrap gap-2">
@@ -163,13 +164,16 @@ export function TutorPage() {
       <section
         aria-label={t("title")}
         aria-live="polite"
-        className="space-y-4 rounded-lg border border-border bg-card p-5 min-h-64"
+        className="space-y-4 rounded-[20px] border border-border bg-card p-5 min-h-64"
       >
         {turns.length === 0 && !sending ? (
-          <div className="flex h-48 items-center justify-center">
+          <div className="flex h-64 flex-col items-center justify-center text-center">
+            <span className="mb-4 flex size-14 items-center justify-center rounded-[18px] bg-primary text-primary-foreground shadow-lg">
+              <Sparkles className="size-6" aria-hidden="true" />
+            </span>
             <div className="text-center">
               <p className="text-lg font-semibold text-foreground">{t("chat.emptyTitle")}</p>
-              <p className="mt-1 max-w-md text-sm text-muted-foreground">
+              <p className="mx-auto mt-1 max-w-sm text-sm leading-6 text-muted-foreground">
                 {t("chat.emptyDescription")}
               </p>
             </div>
@@ -179,10 +183,10 @@ export function TutorPage() {
             <div
               key={index}
               className={cn(
-                "max-w-[85%] rounded-lg px-4 py-3 text-sm whitespace-pre-wrap",
+                "max-w-[85%] rounded-[18px] px-4 py-3 text-sm leading-6 whitespace-pre-wrap",
                 turn.role === "user"
-                  ? "ml-auto bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground",
+                  ? "ml-auto rounded-br-md bg-primary text-primary-foreground"
+                  : "rounded-bl-md bg-secondary text-secondary-foreground",
                 turn.pending && "animate-pulse text-muted-foreground",
               )}
             >
@@ -193,7 +197,10 @@ export function TutorPage() {
       </section>
 
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
           {error === "limit"
             ? t("errors.limitReached")
             : error === "unavailable"
@@ -202,8 +209,11 @@ export function TutorPage() {
         </p>
       )}
 
-      <form onSubmit={submit} className="flex items-end gap-2">
-        <div className="grid flex-1 gap-2">
+      <form
+        onSubmit={submit}
+        className="flex items-end gap-2 rounded-[20px] border border-border bg-card p-2 transition-colors focus-within:border-ring/70"
+      >
+        <div className="grid flex-1 gap-1.5">
           <label htmlFor="tutor-input" className="sr-only">
             {t("input.label")}
           </label>
@@ -214,9 +224,10 @@ export function TutorPage() {
             placeholder={t("input.placeholder")}
             maxLength={2000}
             disabled={sending}
+            className="border-0 bg-transparent px-2 shadow-none focus-visible:ring-0"
           />
           {quota && !quota.unlimited && (
-            <p className="text-xs text-muted-foreground">
+            <p className="px-2 pb-1 text-xs text-muted-foreground">
               {t("quota.remaining", { used: quota.used, limit: quota.limit })}
             </p>
           )}

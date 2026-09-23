@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -136,13 +137,16 @@ export function DocumentsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-[28px] font-bold tracking-tight text-foreground">{t("title")}</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      <form onSubmit={submit} className="flex items-end gap-2">
-        <div className="grid flex-1 gap-2">
-          <label htmlFor="doc-file" className="text-sm font-medium text-foreground">
+      <form
+        onSubmit={submit}
+        className="flex flex-wrap items-end gap-3 rounded-[20px] border border-dashed border-border bg-card/60 p-5"
+      >
+        <div className="grid min-w-52 flex-1 gap-2">
+          <label htmlFor="doc-file" className="text-sm font-semibold text-foreground">
             {t("uploadLabel")}
           </label>
           <Input
@@ -179,9 +183,13 @@ export function DocumentsPage() {
           <p className="text-sm text-muted-foreground">{t("empty")}</p>
         ) : (
           docs.map((doc) => (
-            <Card key={doc.id} className="flex items-center justify-between gap-3 p-4">
+            <Card
+              key={doc.id}
+              className="flex items-center justify-between gap-3 rounded-[16px] p-4 transition-colors hover:border-border/70"
+            >
+              <FileText className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-foreground">{doc.title}</p>
+                <p className="truncate text-sm font-semibold text-foreground">{doc.title}</p>
                 {doc.status === "failed" && (
                   <p className="text-xs text-destructive">{t("failedReason", { reason: "" })}</p>
                 )}
@@ -228,8 +236,8 @@ export function DocumentsPage() {
                   key={i}
                   className={
                     turn.role === "user"
-                      ? "ml-auto max-w-[85%] rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
-                      : "max-w-[85%] rounded-lg bg-secondary px-4 py-2 text-sm text-secondary-foreground"
+                      ? "ml-auto max-w-[85%] rounded-[18px] rounded-br-md bg-primary px-4 py-2.5 text-sm leading-6 text-primary-foreground"
+                      : "max-w-[85%] rounded-[18px] rounded-bl-md bg-secondary px-4 py-2.5 text-sm leading-6 text-secondary-foreground"
                   }
                 >
                   <p className="whitespace-pre-wrap">{turn.content}</p>

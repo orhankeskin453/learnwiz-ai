@@ -40,7 +40,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={tCommon("aria.mobileNavigation")}
-      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-card md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
     >
       <BottomLink to="" end icon={LayoutDashboard} label={t("mobile.home")} />
       <BottomLink to="tutor" icon={Sparkles} label={t("items.tutor")} />

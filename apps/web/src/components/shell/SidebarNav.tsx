@@ -48,8 +48,8 @@ function SidebarLink({ entry }: { entry: NavEntry }) {
       end={entry.end}
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring",
-          isActive && "bg-accent text-accent-foreground",
+          "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring",
+          isActive && "bg-accent font-semibold text-accent-foreground",
         )
       }
     >
@@ -66,9 +66,14 @@ export function SidebarNav() {
   const { t: tCommon } = useTranslation("common");
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border bg-card md:flex">
-      <div className="flex h-14 items-center px-4">
+      <div className="flex h-16 items-center gap-2.5 px-4">
         {/* Brand name is a proper noun — not translated (documented exception). */}
-        <span className="text-base font-semibold text-foreground">{t("brand")}</span>
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-sm">
+          <Sparkles className="size-4" aria-hidden="true" />
+        </span>
+        <span className="text-[15px] font-semibold tracking-tight text-foreground">
+          {t("brand")}
+        </span>
       </div>
       <nav
         aria-label={tCommon("aria.mainNavigation")}

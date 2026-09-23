@@ -40,5 +40,13 @@
     "mobileNavigation": "Mobil gezinme",
     "moreMenu": "Diğer seçenekler",
     "skipToContent": "İçeriğe geç"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "subtitle": "Hesap, dil, tema ve bildirim tercihleri.",
+    "appearance": "Görünüm",
+    "appearanceDescription": "Sistem, açık veya koyu",
+    "account": "Hesap",
+    "accountDescription": "Giriş yapılan e-posta ve plan"
   }
 }

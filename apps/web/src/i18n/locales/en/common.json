@@ -40,5 +40,13 @@
     "mobileNavigation": "Mobile navigation",
     "moreMenu": "More options",
     "skipToContent": "Skip to content"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Account, language, theme and notifications.",
+    "appearance": "Appearance",
+    "appearanceDescription": "System, light or dark",
+    "account": "Account",
+    "accountDescription": "Signed-in email and plan"
   }
 }

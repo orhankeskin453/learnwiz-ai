@@ -3,7 +3,7 @@ import { LocaleGate } from "@/components/routing/LocaleGate";
 import { LocaleRedirect } from "@/components/routing/LocaleRedirect";
 import { AppShell } from "@/components/shell/AppShell";
 import { NotFoundPage } from "@/pages/NotFoundPage";
-import { PlaceholderPage } from "@/pages/PlaceholderPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 import { StyleGuidePage } from "@/pages/StyleGuidePage";
 import { TutorPage } from "@/pages/TutorPage";
 import { LearnPage } from "@/pages/LearnPage";
@@ -46,7 +46,7 @@ export const routes: RouteObject[] = [
           { path: "quizzes", element: <QuizPage /> },
           { path: "documents", element: <DocumentsPage /> },
           { path: "progress", element: <ProgressPage /> },
-          { path: "settings", element: <PlaceholderPage section="settings" /> },
+          { path: "settings", element: <SettingsPage /> },
         ],
       },
       { path: "style-guide", element: <StyleGuidePage /> },
